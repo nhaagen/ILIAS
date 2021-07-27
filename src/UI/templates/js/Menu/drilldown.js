@@ -8,8 +8,8 @@ il.UI.menu = il.UI.menu || {};
 		var init = function (component_id) {
 			var dd = $('#' + component_id),
 				structure = dd.children('.il-drilldown-structure'),
-				visible = dd.children('.il-drilldown-visible'),
-				current = dd.children('.il-drilldown-current'),
+				visible = dd.find('.il-drilldown-visible'),
+				current = dd.find('.il-drilldown-current'),
 
 				firstentry = structure.children('.il-menu-item'),
 				firstlevel = firstentry.children('.il-menu-level');
@@ -23,8 +23,8 @@ il.UI.menu = il.UI.menu || {};
 		};
 
 		var initEntries= function (drilldown) {
-			var entries = drilldown.children('.il-drilldown-visible').children('.il-menu-item'),
-				backlinks = drilldown.children('.il-drilldown-backlink').children('.il-menu-item');
+			var entries = drilldown.find('.il-drilldown-visible').children('.il-menu-item'),
+				backlinks = drilldown.find('.il-drilldown-backlink').children('.il-menu-item');
 
 			$.merge(entries, backlinks);
 
@@ -44,9 +44,9 @@ il.UI.menu = il.UI.menu || {};
 				structure = dd.children('.il-drilldown-structure'),
 				all_entries = structure.children('.il-menu-item');
 				struct_entry = structure.find('#' + entry.attr('id')),
-				backlink = dd.children('.il-drilldown-backlink'),
-				visible = dd.children('.il-drilldown-visible')
-				current = dd.children('.il-drilldown-current')
+				backlink = dd.find('.il-drilldown-backlink'),
+				visible = dd.find('.il-drilldown-visible')
+				current = dd.find('.il-drilldown-current')
 				back_entry = struct_entry.parents('.il-menu-item');
 
 			if(back_entry.length > 1) {

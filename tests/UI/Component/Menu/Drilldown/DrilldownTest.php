@@ -206,10 +206,13 @@ class DrilldownTest extends ILIAS_UI_TestBase
 						</ul>
 					</li>
 				</ul>
-
-				<ul class="il-drilldown-backlink"></ul>
-				<ul class="il-drilldown-current"></ul>
-				<ul class="il-drilldown-visible"></ul>
+				<div class="il-drilldown-navigation">
+					<ul class="il-drilldown-backlink"></ul>
+					<ul class="il-drilldown-current"></ul>
+				</div>
+				<div class="il-drilldown-contents">
+					<ul class="il-drilldown-visible"></ul>
+				</div>
 			</div>
 EOT;
 
