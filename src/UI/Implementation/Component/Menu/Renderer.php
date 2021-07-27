@@ -28,11 +28,12 @@ class Renderer extends AbstractComponentRenderer
             $tpl_name = "tpl.drilldown.html";
             $tpl = $this->getTemplate($tpl_name, true, true);
             $tpl->setVariable('DRILLDOWN', $html);
-
+            /*
             $component = $component->withAdditionalOnLoadCode(function ($id) {
                 return "il.UI.menu.drilldown.init('$id');";
             });
             $id = $this->bindJavaScript($component);
+            */
             $tpl->setVariable("ID", $id);
 
             return $tpl->get();
@@ -54,8 +55,12 @@ class Renderer extends AbstractComponentRenderer
         /**
          * @var $label Component\Component
          */
-        $label = $this->maybeConvertLabelToShy($component->getLabel());
-        $tpl->setVariable('LABEL', $default_renderer->render($label));
+        
+        $label = $component->getLabel();
+        if (!is_string($label)) {
+            $label = $default_renderer->render($label);
+        }
+        $tpl->setVariable('LABEL', $label);
 
         if ($component instanceof Menu\Sub) {
             if ($component->isInitiallyActive()) {
@@ -65,12 +70,13 @@ class Renderer extends AbstractComponentRenderer
         /**
          * @var $component Menu\Menu
          */
-        $component = $component->withAdditionalOnLoadCode(function ($id) {
-            return '';
-        });
-        $id = $this->bindJavaScript($component);
-        $tpl->setVariable("ID", $id);
-
+        /*
+                $component = $component->withAdditionalOnLoadCode(function ($id) {
+                    return '';
+                });
+                $id = $this->bindJavaScript($component);
+                $tpl->setVariable("ID", $id);
+        */
         foreach ($component->getItems() as $subitem) {
             if ($subitem instanceof Menu\Menu) {
                 $html = $default_renderer->render($subitem);
