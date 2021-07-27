@@ -1,27 +1,127 @@
+@il-drilldown-item-padding: 10px;
+
 .il-drilldown {
-	ul {
-		list-style: none;
+	// un-styling list elements
+	ul, li {
 		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	// un-styling menulevel button
+	.menulevel, .menulevel:focus, .menulevel:active {
+		font-size: inherit;
+		text-align: left;
+		outline: none;
+		background: transparent;
+		border: none;
+	}
+	hr {
+		margin: @il-slate-content-padding 0;
 	}
 
-	.btn-bulky,
-	.link-bulky {
-		align-items: center;
+	header {
+		position: relative; // so backnav can be positioned on top
 		display: flex;
+		align-items: center;
+		min-height: 48px;
+		margin-bottom: @il-slate-content-spacing;
+		padding: @il-drilldown-item-padding;
+		padding-left: 0px;
+		h2 {
+			// remove default headline margin, headline is centered using flex
+			margin: 0;
+		}
+		.backnav {
+			display: none;
+		}
 	}
-
-	.il-drilldown-current {
-		 & .btn-bulky,
-		 & .link-bulky {
-			cursor: auto;
+	header.show-backnav {
+		padding-left: 40px; // to make space for back glyphicon
+		.backnav {
+			display: block;
+			position: absolute;
+			// overlay that spans over entire header size
+			top: 0;
+			left: 0;
+			right: 0;
+			.glyphicon {
+				display: none;
+			}
+			.btn-bulky:before {
+				content: " \e605";
+				display: block;
+				font-family: "il-icons";
+				font-size: @il-slate-bulky-label-size;
+			}
 		}
 	}
 
-	.il-drilldown-structure,
-	.il-drilldown-current ul,
-	.il-drilldown-backlink ul,
-	.il-drilldown-visible ul {
-		display: none;
+	// styling shared by all menu items (parts taken from slate.less)
+	.menulevel,
+	.btn-bulky,
+	.link-bulky {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: @il-drilldown-item-padding;
+		min-height: 48px;
+		margin-bottom: @il-slate-content-spacing;
+		.icon {
+			align-self: flex-start;
+			margin-top: @padding-small-vertical;
+			margin-right: @il-slate-bulky-glyph-margin-right;
+			filter: invert(50%);
+		}
+		.bulky-label {
+			flex-grow: 1; // pushes elements before and after to the outer side
+			white-space: normal; // to allow linebreaks
+			// margin-top: @il-mainbar-bulky-label-margin-top;
+			font-size: @il-slate-bulky-label-size;
+			line-height: @il-slate-bulky-label-size * 1.133333333333333;
+			text-align: left;
+			word-break: normal;
+		}
+	}
+	// special styling for some menu items (parts taken from slate.less)
+	.menulevel {
+		// padding with room for glyph at the right
+		// padding: @il-slate-bulky-padding;
+		background-color: @il-slate-bulky-bg-color;
+		&:hover {
+			background-color: @il-slate-bulky-bg-color-engaged;
+		    color: inherit;
+		}
+		&:after {
+			content: " \e606";
+			font-family: "il-icons";
+			font-size: @il-slate-bulky-glyph-size * 0.85;
+			margin-left: @il-padding-small-horizontal;
+		}
+	}
+	.btn-bulky,
+	.link-bulky {
+		// padding: @il-slate-bulky-link-padding;
+		background-color: transparent;
+		&:hover {
+			background-color: @il-slate-bulky-bg-color-engaged;
+		    color: inherit;
+		}
+	}
+
+	li > .menulevel,
+	li > .btn-bulky,
+	li > .link-bulky,
+	li > hr {
+    	display: none;
+	}
+	.engaged ~ ul > li > .menulevel,
+	.engaged ~ ul > li > .btn-bulky,
+	.engaged ~ ul > li > .link-bulky {
+    	display: flex;
+	}
+	.engaged ~ ul > li > hr {
+		display: block;
 	}
 }
-
