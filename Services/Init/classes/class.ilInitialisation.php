@@ -15,10 +15,12 @@ use ILIAS\GlobalScreen\Services;
 use ILIAS\ResourceStorage\Information\Repository\InformationARRepository;
 use ILIAS\ResourceStorage\Resource\Repository\ResourceARRepository;
 use ILIAS\ResourceStorage\Revision\Repository\RevisionARRepository;
-use ILIAS\ResourceStorage\StorageHandler\FileSystemStorageHandler;
 use ILIAS\ResourceStorage\Stakeholder\Repository\StakeholderARRepository;
 use ILIAS\ResourceStorage\Lock\LockHandlerilDB;
 use ILIAS\ResourceStorage\Policy\WhiteAndBlacklistedFileNamePolicy;
+use ILIAS\ResourceStorage\StorageHandler\StorageHandlerFactory;
+use ILIAS\ResourceStorage\StorageHandler\FileSystemBased\MaxNestingFileSystemStorageHandler;
+use ILIAS\ResourceStorage\StorageHandler\FileSystemBased\FileSystemStorageHandler;
 
 require_once("libs/composer/vendor/autoload.php");
 
@@ -204,7 +206,10 @@ class ilInitialisation
 
         $DIC['resource_storage'] = static function (Container $c) : \ILIAS\ResourceStorage\Services {
             return new \ILIAS\ResourceStorage\Services(
-                new FileSystemStorageHandler($c['filesystem.storage'], Location::STORAGE),
+                new StorageHandlerFactory([
+                    new MaxNestingFileSystemStorageHandler($c['filesystem.storage'], Location::STORAGE),
+                    new FileSystemStorageHandler($c['filesystem.storage'], Location::STORAGE)
+                ]),
                 new RevisionARRepository(),
                 new ResourceARRepository(),
                 new InformationARRepository(),
@@ -1866,15 +1871,16 @@ class ilInitialisation
             return true;
         }
 
-        if (strtolower((string) $_REQUEST["baseClass"]) == "ilstartupgui") {
-            $cmd_class = $_REQUEST["cmdClass"];
-
-            if ($cmd_class == "ilaccountregistrationgui" ||
-                $cmd_class == "ilpasswordassistancegui") {
-                ilLoggerFactory::getLogger('auth')->debug('Blocked authentication for cmdClass: ' . $cmd_class);
+        $requestBaseClass = strtolower((string) $_REQUEST['baseClass']);
+        if ($requestBaseClass == strtolower(ilStartUpGUI::class)) {
+            $requestCmdClass = strtolower((string) $_REQUEST['cmdClass']);
+            if (
+                $requestCmdClass == strtolower(ilAccountRegistrationGUI::class) ||
+                $requestCmdClass == strtolower(ilPasswordAssistanceGUI::class)
+            ) {
+                ilLoggerFactory::getLogger('auth')->debug('Blocked authentication for cmdClass: ' . $requestCmdClass);
                 return true;
             }
-
             $cmd = self::getCurrentCmd();
             if (
                 $cmd == "showTermsOfService" || $cmd == "showClientList" ||
@@ -1889,7 +1895,7 @@ class ilInitialisation
 
         // #12884
         if (($a_current_script == "goto.php" && $_GET["target"] == "impr_0") ||
-            $_GET["baseClass"] == "ilImprintGUI") {
+            strtolower((string) $_GET["baseClass"]) == strtolower(ilImprintGUI::class)) {
             ilLoggerFactory::getLogger('auth')->debug('Blocked authentication for baseClass: ' . $_GET['baseClass']);
             return true;
         }
@@ -1900,7 +1906,6 @@ class ilInitialisation
             ilLoggerFactory::getLogger('auth')->debug('Blocked authentication for goto target: ' . $_GET['target']);
             return true;
         }
-
         ilLoggerFactory::getLogger('auth')->debug('Authentication required');
         return false;
     }
@@ -2052,7 +2057,7 @@ class ilInitialisation
         };
 
         $c["bt.persistence"] = function ($c) {
-            return new \ILIAS\BackgroundTasks\Implementation\Persistence\BasicPersistence();
+            return \ILIAS\BackgroundTasks\Implementation\Persistence\BasicPersistence::instance();
         };
 
         $c["bt.injector"] = function ($c) {

@@ -1197,7 +1197,9 @@ CREATE TABLE `booking_reservation` (
   `context_obj_id` int(11) DEFAULT 0,
   PRIMARY KEY (`booking_reservation_id`),
   KEY `i1_idx` (`user_id`),
-  KEY `i2_idx` (`object_id`)
+  KEY `i2_idx` (`object_id`),
+  KEY `i3_idx` (`date_from`),
+  KEY `i4_idx` (`date_to`)
 ) ;
 
 --
@@ -6728,7 +6730,9 @@ CREATE TABLE `il_bt_value` (
   `class_name` varchar(256) DEFAULT NULL,
   `serialized` longtext DEFAULT NULL,
   `bucket_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `position` bigint(20) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `i1_idx` (`bucket_id`)
 ) ;
 
 --
@@ -6759,7 +6763,10 @@ CREATE TABLE `il_bt_value_to_task` (
   `task_id` bigint(20) DEFAULT NULL,
   `value_id` bigint(20) DEFAULT NULL,
   `bucket_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `position` bigint(20) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `i1_idx` (`task_id`),
+  KEY `i2_idx` (`value_id`)
 ) ;
 
 --
@@ -8724,7 +8731,8 @@ CREATE TABLE `il_meta_meta_data_seq` (
 CREATE TABLE `il_meta_oer_stat` (
   `obj_id` int(11) NOT NULL,
   `href_id` int(11) NOT NULL,
-  `blocked` tinyint(4) NOT NULL DEFAULT 0
+  `blocked` tinyint(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`obj_id`)
 ) ;
 
 --
@@ -20361,7 +20369,7 @@ INSERT INTO `settings` VALUES ('common','soap_connect_timeout','0');
 INSERT INTO `settings` VALUES ('common','rpc_server_host','');
 INSERT INTO `settings` VALUES ('common','rpc_server_port','0');
 INSERT INTO `settings` VALUES ('common','inst_id','0');
-INSERT INTO `settings` VALUES ('common','db_hotfixes_7','42');
+INSERT INTO `settings` VALUES ('common','db_hotfixes_7','48');
 INSERT INTO `settings` VALUES ('adve','autosave','30');
 
 --
@@ -24970,4 +24978,4 @@ CREATE TABLE `xmlvalue_seq` (
 
 
 
--- Dump completed on 2021-04-30 13:34:09
+-- Dump completed on 2021-06-25 17:06:20
