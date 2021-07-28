@@ -6,10 +6,9 @@ function drilldown()
         0 Tier des Jahres
         1    Schweiz
         1.1        Bachflohkrebs
-        1.1.1        Bachflohkrebs
         1.2        Wildkatze
-        1.2.1            gewöhnliche Wildkatze
-        1.2.2            große Wildkatze
+        1.2.1           gewöhnliche Wildkatze
+        1.2.2           große Wildkatze
         2    Deutschland
         2.1        Fischotter
         2.2        Maulwurf

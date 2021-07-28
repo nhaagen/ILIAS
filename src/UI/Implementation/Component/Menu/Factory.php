@@ -10,7 +10,7 @@ class Factory implements IMenu\Factory
     /**
      * @inheritdoc
      */
-    public function drilldown($label, array $items) : IMenu\Drilldown
+    public function drilldown(string $label, array $items) : IMenu\Drilldown
     {
         return new Drilldown($label, $items);
     }

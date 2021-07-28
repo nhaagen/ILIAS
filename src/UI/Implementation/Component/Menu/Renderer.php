@@ -27,13 +27,15 @@ class Renderer extends AbstractComponentRenderer
         if ($component instanceof Menu\Drilldown) {
             $tpl_name = "tpl.drilldown.html";
             $tpl = $this->getTemplate($tpl_name, true, true);
+            $tpl->setVariable('TITLE', $component->getLabel());
+            $tpl->setVariable('BACKNAV', 'BACK BUTTON');
             $tpl->setVariable('DRILLDOWN', $html);
-            /*
+
             $component = $component->withAdditionalOnLoadCode(function ($id) {
-                return "il.UI.menu.drilldown.init('$id');";
+                return "";
+                //return "il.UI.menu.drilldown.init('$id');";
             });
             $id = $this->bindJavaScript($component);
-            */
             $tpl->setVariable("ID", $id);
 
             return $tpl->get();
@@ -49,76 +51,29 @@ class Renderer extends AbstractComponentRenderer
         Menu\Menu $component,
         RendererInterface $default_renderer
     ) : string {
-        $tpl_name = "tpl.menuitem.html";
-        $tpl = $this->getTemplate($tpl_name, true, true);
+        $tpl_menu = $this->getTemplate('tpl.menu.html', true, true);
 
-        /**
-         * @var $label Component\Component
-         */
-        
         $label = $component->getLabel();
         if (!is_string($label)) {
             $label = $default_renderer->render($label);
         }
-        $tpl->setVariable('LABEL', $label);
+        $tpl_menu->setVariable('LABEL', $label);
 
-        if ($component instanceof Menu\Sub) {
-            if ($component->isInitiallyActive()) {
-                $tpl->touchBlock('active');
-            }
-        }
-        /**
-         * @var $component Menu\Menu
-         */
         /*
-                $component = $component->withAdditionalOnLoadCode(function ($id) {
-                    return '';
-                });
-                $id = $this->bindJavaScript($component);
-                $tpl->setVariable("ID", $id);
+                if ($component->isInitiallyActive()) {
+                    $tpl->touchBlock('active');
+                }
         */
-        foreach ($component->getItems() as $subitem) {
-            if ($subitem instanceof Menu\Menu) {
-                $html = $default_renderer->render($subitem);
-            } else {
-                $html = $this->wrapMenuEntry($subitem, $default_renderer);
-            }
-            $tpl->setCurrentBlock('subitems');
-            $tpl->setVariable('SUBITEMS', $html);
-            $tpl->parseCurrentBlock();
+  
+        $html = '';
+        foreach ($component->getItems() as $item) {
+            $tpl_item = $this->getTemplate('tpl.menuitem.html', true, true);
+            $tpl_item->setVariable('ITEM', $default_renderer->render($item));
+            $html .= $tpl_item->get();
         }
-
-        return $tpl->get();
+        $tpl_menu->setVariable('ITEMS', $html);
+        return $tpl_menu->get();
     }
-
-    /**
-     * Wrap an entry like Clickable or Divider to fit the menu-structure.
-     */
-    protected function wrapMenuEntry(
-        Component\Component $component,
-        RendererInterface $default_renderer
-    ) : string {
-        $tpl_name = "tpl.menuitem.html";
-        $tpl = $this->getTemplate($tpl_name, true, true);
-
-        $label = $default_renderer->render($component);
-        $tpl->setVariable('LABEL', $label);
-        return $tpl->get();
-    }
-
-
-    /**
-     * A string will be converted to a Shy Button, any Clickables
-     * will be returned as they are.
-     */
-    protected function maybeConvertLabelToShy($label) : Component\Clickable
-    {
-        if (is_string($label)) {
-            $label = $this->getUIFactory()->button()->shy($label, '');
-        }
-        return $label;
-    }
-
 
     /**
      * @inheritdoc

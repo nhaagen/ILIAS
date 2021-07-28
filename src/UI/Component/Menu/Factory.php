@@ -49,7 +49,7 @@ interface Factory
      * @param 	array<Component\Menu\Sub | Component\Clickable| Divider\Horizontal| Divider\Horizontal> $items
      * @return 	\ILIAS\UI\Component\Menu\Drilldown
      */
-    public function drilldown($label, array $items) : Drilldown;
+    public function drilldown(string $label, array $items) : Drilldown;
 
 
     /**
