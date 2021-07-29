@@ -32,8 +32,7 @@ class Renderer extends AbstractComponentRenderer
             $tpl->setVariable('DRILLDOWN', $html);
 
             $component = $component->withAdditionalOnLoadCode(function ($id) {
-                return "";
-                //return "il.UI.menu.drilldown.init('$id');";
+                return "il.UI.menu.drilldown.init('$id');";
             });
             $id = $this->bindJavaScript($component);
             $tpl->setVariable("ID", $id);
