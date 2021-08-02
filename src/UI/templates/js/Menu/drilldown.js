@@ -25,11 +25,13 @@ il.UI.menu.drilldown = {
 			classes = il.UI.menu.drilldown.classes,
 			current = event.currentTarget,
 			dd = current.closest('.' + classes.MENU),
+			title = dd.getElementsByTagName('h2')[0],
 			buttons = dd.getElementsByClassName(classes.BUTTON);
 
 		for (i = 0; i < buttons.length; i = i + 1) { 
 			buttons[i].classList.remove(classes.ACTIVE);
 		}
 		current.classList.add(classes.ACTIVE);
+		title.innerHTML = current.innerHTML;
 	}
 };
