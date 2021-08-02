@@ -10219,25 +10219,178 @@ footer {
     border-top: none;
   }
 }
-.il-drilldown ul {
-  list-style: none;
+.il-drilldown {
+  /*
+	.btn-bulky,
+	.link-bulky {
+		align-items: flex-start;
+		background-color: @il-slate-bulky-bg-color;
+		border: none;
+		display: flex;
+		margin-bottom: @il-slate-content-spacing;
+		position: relative;
+		&.engaged:after,
+		&.disengaged:after {
+				font-family: "il-icons";
+				font-size: @il-slate-bulky-glyph-size * 0.85;
+				position: absolute;
+				right: 10px;
+				top: 20px;
+		}
+		&.engaged:after {
+				content: " \e604";
+		}
+		&.disengaged:after {
+				content: " \e606";
+		}
+		&:hover,
+		&.engaged {
+			background-color: @il-slate-bulky-bg-color-engaged;
+		    color: inherit;
+		}
+		.icon {
+			margin-top: @padding-small-vertical;
+			margin-right: @il-slate-bulky-glyph-margin-right;
+			filter: invert(50%);
+
+		}
+		.icon.small {
+			min-width: @il-icon-size-small;
+		}
+		.icon.medium {
+			min-width: @il-icon-size-medium;
+		}
+		.bulky-label {
+			font-size: @il-slate-bulky-label-size;
+			line-height: @il-slate-bulky-label-size * 1.133333333333333;
+			text-align: left;
+			word-break: normal;
+		}
+	}
+	*/
+}
+.il-drilldown ul,
+.il-drilldown li {
   padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.il-drilldown .menulevel,
+.il-drilldown .menulevel:focus,
+.il-drilldown .menulevel:active {
+  font-size: inherit;
+  text-align: left;
+  outline: none;
+  background: transparent;
+  border: none;
+}
+.il-drilldown header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  margin-bottom: 2px;
+  padding: 10px;
+  padding-left: 40px;
+}
+.il-drilldown header h2 {
+  margin: 0;
+}
+.il-drilldown header .backnav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.il-drilldown header .backnav .glyphicon {
+  display: none;
+}
+.il-drilldown header .backnav .btn-bulky:before {
+  content: " \e605";
+  display: block;
+  font-family: "il-icons";
+  font-size: 1.5rem;
+}
+.il-drilldown .menulevel,
+.il-drilldown .btn-bulky,
+.il-drilldown .link-bulky {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  min-height: 48px;
+  margin-bottom: 2px;
+}
+.il-drilldown .menulevel .icon,
+.il-drilldown .btn-bulky .icon,
+.il-drilldown .link-bulky .icon {
+  align-self: flex-start;
+  margin-top: 3px;
+  margin-right: 5px;
+  filter: invert(50%);
+}
+.il-drilldown .menulevel .bulky-label,
+.il-drilldown .btn-bulky .bulky-label,
+.il-drilldown .link-bulky .bulky-label {
+  flex-grow: 1;
+  white-space: normal;
+  font-size: 1.5rem;
+  line-height: 1.7rem;
+  text-align: left;
+  word-break: normal;
+}
+.il-drilldown .menulevel {
+  background-color: #f2f2f2;
+}
+.il-drilldown .menulevel:hover {
+  background-color: rgba(76, 101, 134, 0.3);
+  color: inherit;
+}
+.il-drilldown .menulevel:after {
+  content: " \e606";
+  font-family: "il-icons";
+  font-size: 1.7rem;
 }
 .il-drilldown .btn-bulky,
 .il-drilldown .link-bulky {
-  align-items: center;
-  display: flex;
+  background-color: transparent;
 }
-.il-drilldown .il-drilldown-current .btn-bulky,
-.il-drilldown .il-drilldown-current .link-bulky {
-  cursor: auto;
+.il-drilldown .btn-bulky:hover,
+.il-drilldown .link-bulky:hover {
+  background-color: rgba(76, 101, 134, 0.3);
+  color: inherit;
 }
-.il-drilldown .il-drilldown-structure,
-.il-drilldown .il-drilldown-current ul,
-.il-drilldown .il-drilldown-backlink ul,
-.il-drilldown .il-drilldown-visible ul {
+.il-drilldown li > .menulevel,
+.il-drilldown li > .btn-bulky,
+.il-drilldown li > .link-bulky {
   display: none;
 }
+.il-drilldown .engaged ~ ul > li > .menulevel,
+.il-drilldown .engaged ~ ul > li > .btn-bulky,
+.il-drilldown .engaged ~ ul > li > .link-bulky {
+  display: flex;
+}
+/*
+.il-drilldown {
+	
+	.btn-bulky,
+	.link-bulky {
+		align-items: center;
+		display: flex;
+	}
+
+	.il-drilldown-current {
+		 & .btn-bulky,
+		 & .link-bulky {
+			cursor: auto;
+		}
+	}
+
+	
+}
+*/
 .icon {
   display: inline-block;
   text-align: center;

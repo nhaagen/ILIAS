@@ -1,3 +1,175 @@
+@il-drilldown-item-padding: 10px;
+
+.il-drilldown {
+	// un-styling list elements
+	ul, li {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	// un-styling menulevel button
+	.menulevel, .menulevel:focus, .menulevel:active {
+		font-size: inherit;
+		text-align: left;
+		outline: none;
+		background: transparent;
+		border: none;
+	}
+
+	header {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 48px;
+		margin-bottom: @il-slate-content-spacing;
+		padding: @il-drilldown-item-padding;
+		padding-left: 40px; // to make space for back glyphicon
+		h2 {
+			// remove default headline margin, headline is centered using flex
+			margin: 0;
+		}
+		.backnav {
+			position: absolute;
+			// span over entire header size
+			top: 0;
+			left: 0;
+			right: 0;
+			.glyphicon {
+				display: none;
+			}
+			.btn-bulky:before {
+				content: " \e605";
+				display: block;
+				font-family: "il-icons";
+				font-size: @il-slate-bulky-label-size;
+			}
+		}
+	}
+
+	// styling shared by all menu items (parts taken from slate.less)
+	.menulevel,
+	.btn-bulky,
+	.link-bulky {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: @il-drilldown-item-padding;
+		min-height: 48px;
+		margin-bottom: @il-slate-content-spacing;
+		.icon {
+			align-self: flex-start;
+			margin-top: @padding-small-vertical;
+			margin-right: @il-slate-bulky-glyph-margin-right;
+			filter: invert(50%);
+		}
+		.bulky-label {
+			flex-grow: 1; // pushes elements before and after to the outer side
+			white-space: normal; // to allow linebreaks
+			// margin-top: @il-mainbar-bulky-label-margin-top;
+			font-size: @il-slate-bulky-label-size;
+			line-height: @il-slate-bulky-label-size * 1.133333333333333;
+			text-align: left;
+			word-break: normal;
+		}
+	}
+	// special styling for some menu items (parts taken from slate.less)
+	.menulevel {
+		// padding with room for glyph at the right
+		// padding: @il-slate-bulky-padding;
+		background-color: @il-slate-bulky-bg-color;
+		&:hover {
+			background-color: @il-slate-bulky-bg-color-engaged;
+		    color: inherit;
+		}
+		&:after {
+			content: " \e606";
+			font-family: "il-icons";
+			font-size: @il-slate-bulky-glyph-size * 0.85;
+		}
+	}
+	.btn-bulky,
+	.link-bulky {
+		// padding: @il-slate-bulky-link-padding;
+		background-color: transparent;
+		&:hover {
+			background-color: @il-slate-bulky-bg-color-engaged;
+		    color: inherit;
+		}
+	}
+
+
+	// styling menu items like in slate
+	/*
+	.btn-bulky,
+	.link-bulky {
+		align-items: flex-start;
+		background-color: @il-slate-bulky-bg-color;
+		border: none;
+		display: flex;
+		margin-bottom: @il-slate-content-spacing;
+		position: relative;
+		&.engaged:after,
+		&.disengaged:after {
+				font-family: "il-icons";
+				font-size: @il-slate-bulky-glyph-size * 0.85;
+				position: absolute;
+				right: 10px;
+				top: 20px;
+		}
+		&.engaged:after {
+				content: " \e604";
+		}
+		&.disengaged:after {
+				content: " \e606";
+		}
+		&:hover,
+		&.engaged {
+			background-color: @il-slate-bulky-bg-color-engaged;
+		    color: inherit;
+		}
+		.icon {
+			margin-top: @padding-small-vertical;
+			margin-right: @il-slate-bulky-glyph-margin-right;
+			filter: invert(50%);
+
+		}
+		.icon.small {
+			min-width: @il-icon-size-small;
+		}
+		.icon.medium {
+			min-width: @il-icon-size-medium;
+		}
+		.bulky-label {
+			font-size: @il-slate-bulky-label-size;
+			line-height: @il-slate-bulky-label-size * 1.133333333333333;
+			text-align: left;
+			word-break: normal;
+		}
+	}
+	*/
+
+
+	li > .menulevel,
+	li > .btn-bulky,
+	li > .link-bulky {
+    	display: none;
+	}
+	.engaged ~ ul > li > .menulevel,
+	.engaged ~ ul > li > .btn-bulky,
+	.engaged ~ ul > li > .link-bulky {
+    	display: flex;
+	}
+}
+
+
+
+
+
+	
+
+/*
 .il-drilldown {
 	
 	.btn-bulky,
@@ -15,4 +187,4 @@
 
 	
 }
-
+*/
