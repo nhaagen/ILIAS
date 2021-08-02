@@ -25,17 +25,31 @@ class Renderer extends AbstractComponentRenderer
         $html = $this->renderMenu($component, $default_renderer);
 
         if ($component instanceof Menu\Drilldown) {
+
+            //$back_signal = $component->getBacklinkSignal();
+            $signal_generator = new \ILIAS\UI\Implementation\Component\SignalGenerator();
+            $back_signal = $signal_generator->create();
+
+
+            $ui_factory = $this->getUIFactory();
+
+            $glyph = $ui_factory->symbol()->glyph()->back();
+            $btn = $ui_factory->button()->bulky($glyph, '', '#')->withOnClick($back_signal);
+            $back_button_html = $default_renderer->render($btn);
+
+            $component = $component->withAdditionalOnLoadCode(
+                function ($id) use ($back_signal) {
+                    return "il.UI.menu.drilldown.init('$id', '$back_signal');";
+                }
+            );
+            $id = $this->bindJavaScript($component);
+
             $tpl_name = "tpl.drilldown.html";
             $tpl = $this->getTemplate($tpl_name, true, true);
-            $tpl->setVariable('TITLE', $component->getLabel());
-            $tpl->setVariable('BACKNAV', 'BACK BUTTON');
-            $tpl->setVariable('DRILLDOWN', $html);
-
-            $component = $component->withAdditionalOnLoadCode(function ($id) {
-                return "il.UI.menu.drilldown.init('$id');";
-            });
-            $id = $this->bindJavaScript($component);
             $tpl->setVariable("ID", $id);
+            $tpl->setVariable('TITLE', $component->getLabel());
+            $tpl->setVariable('BACKNAV', $back_button_html);
+            $tpl->setVariable('DRILLDOWN', $html);
 
             return $tpl->get();
         }

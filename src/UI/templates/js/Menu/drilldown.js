@@ -10,7 +10,7 @@ il.UI.menu.drilldown = {
 		ACTIVE: 'engaged'
 	},
 
-	init : function (component_id) {
+	init : function (component_id, back_signal) {
 		var i,
 			dd = document.getElementById(component_id),
 			buttons = dd.getElementsByClassName(this.classes.BUTTON);
@@ -18,20 +18,47 @@ il.UI.menu.drilldown = {
 		for (i = 0; i < buttons.length; i = i + 1) { 
 			buttons[i].addEventListener('click', this.menulevelOnClick);
 		}
+	
+		$(document).on(back_signal, this.menuOnUplevel);
 	},
 	
-	menulevelOnClick : function(event) {
-		var i,
-			classes = il.UI.menu.drilldown.classes,
-			current = event.currentTarget,
-			dd = current.closest('.' + classes.MENU),
-			title = dd.getElementsByTagName('h2')[0],
-			buttons = dd.getElementsByClassName(classes.BUTTON);
+	getMenuParts : function(menu_inner_element) {
+		var classes = il.UI.menu.drilldown.classes,
+			dd = menu_inner_element.closest('.' + classes.MENU),
+			parts = {
+				title : dd.getElementsByTagName('h2')[0],
+				buttons : dd.getElementsByClassName(classes.BUTTON),
+				active : dd.getElementsByClassName(classes.ACTIVE).item(0),
+				upper : null
+			};
 
-		for (i = 0; i < buttons.length; i = i + 1) { 
-			buttons[i].classList.remove(classes.ACTIVE);
+			if(parts.active) {
+				parts.upper = parts.active.closest('ul').parentElement.getElementsByClassName(classes.BUTTON).item(0);
+			}
+			return parts;
+	},
+
+	menulevelOnClick : function(event) {
+		var classes = il.UI.menu.drilldown.classes,
+			parts = il.UI.menu.drilldown.getMenuParts(event.currentTarget);
+			
+		for (i = 0; i < parts.buttons.length; i = i + 1) { 
+			parts.buttons[i].classList.remove(classes.ACTIVE);
 		}
-		current.classList.add(classes.ACTIVE);
-		title.innerHTML = current.innerHTML;
+		event.currentTarget.classList.add(classes.ACTIVE);
+		parts.title.innerHTML = event.currentTarget.innerHTML;
+	},
+
+	menuOnUplevel : function(event) {
+		var classes = il.UI.menu.drilldown.classes,
+			parts = il.UI.menu.drilldown.getMenuParts(event.target);
+
+		for (i = 0; i < parts.buttons.length; i = i + 1) { 
+			parts.buttons[i].classList.remove(classes.ACTIVE);
+		}
+		if(parts.upper) {
+			parts.upper.classList.add(classes.ACTIVE);
+			parts.title.innerHTML = parts.upper.innerHTML;
+		}
 	}
 };
