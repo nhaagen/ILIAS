@@ -7,7 +7,8 @@ il.UI.menu.drilldown = {
 	classes : {
 		MENU: 'il-drilldown',
 		BUTTON: 'menulevel',
-		ACTIVE: 'engaged'
+		ACTIVE: 'engaged',
+		WITH_BACKLINK: 'show-backnav',
 	},
 
 	init : function (component_id, back_signal) {
@@ -21,6 +22,7 @@ il.UI.menu.drilldown = {
 		}
 		
 		parts.buttons[0].classList.add(this.classes.ACTIVE);
+		parts.header.classList.remove(this.classes.WITH_BACKLINK);
 		parts.title.innerHTML = parts.buttons[0].innerHTML;
 	},
 	
@@ -31,6 +33,7 @@ il.UI.menu.drilldown = {
 				title : dd.getElementsByTagName('h2')[0],
 				buttons : dd.getElementsByClassName(classes.BUTTON),
 				active : dd.getElementsByClassName(classes.ACTIVE).item(0),
+				header : dd.getElementsByTagName('header')[0],
 				upper : null
 			};
 
@@ -49,6 +52,12 @@ il.UI.menu.drilldown = {
 		}
 		event.currentTarget.classList.add(classes.ACTIVE);
 		parts.title.innerHTML = event.currentTarget.innerHTML;
+
+		if(event.currentTarget == parts.buttons[0]) {
+			parts.header.classList.remove(classes.WITH_BACKLINK);
+		} else {
+			parts.header.classList.add(classes.WITH_BACKLINK);
+		}
 	},
 
 	menuOnUplevel : function(event) {
@@ -58,9 +67,16 @@ il.UI.menu.drilldown = {
 		for (i = 0; i < parts.buttons.length; i = i + 1) { 
 			parts.buttons[i].classList.remove(classes.ACTIVE);
 		}
+
 		if(parts.upper) {
-			parts.upper.classList.add(classes.ACTIVE);
 			parts.title.innerHTML = parts.upper.innerHTML;
+			parts.upper.classList.add(classes.ACTIVE);
+		}
+
+		if(parts.upper == parts.buttons[0]) {
+			parts.header.classList.remove(classes.WITH_BACKLINK);
+		} else {
+			parts.header.classList.add(classes.WITH_BACKLINK);
 		}
 	}
 };
