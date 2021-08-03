@@ -20,7 +20,7 @@ il.UI.menu.drilldown = {
 			parts.buttons[i].addEventListener('click', this.menulevelOnClick);
 		}
 		
-		parts.buttons[0].classList.add(classes.ACTIVE);
+		parts.buttons[0].classList.add(this.classes.ACTIVE);
 		parts.title.innerHTML = parts.buttons[0].innerHTML;
 	},
 	
