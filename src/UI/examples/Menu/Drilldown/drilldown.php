@@ -29,6 +29,7 @@ function drilldown()
 
     $uri = new \ILIAS\Data\URI('https://ilias.de');
     $link = $f->link()->bulky($ico->withAbbreviation('>'), 'Link', $uri);
+    $divider = $f->divider()->horizontal();
 
     $items = [
         $f->menu()->sub('Schweiz (1)', [
@@ -37,7 +38,7 @@ function drilldown()
 
             $f->menu()->sub('Wildkatze (1.2)', [
                 $f->menu()->sub('gewöhnliche Wildkatze (1.2.1)', [$button, $link]),
-                $f->menu()->sub('große Wildkatze (1.2.2)', [$button, $link])
+                $f->menu()->sub('große Wildkatze (1.2.2)', [$button, $link, $divider, $link])
             ]),
             $button,
             $link
@@ -46,6 +47,7 @@ function drilldown()
         $f->menu()->sub('Deutschland (2)', [
             $f->menu()->sub('Fischotter (2.1)', [$button, $link]),
             $f->menu()->sub('Maulwurf (2.2)', [$button, $link]),
+            $divider,
             $f->menu()->sub('Reh (2.3)', [$button, $link])
         ])
     ];

@@ -25,7 +25,7 @@ class Drilldown extends LabeledMenu implements IMenu\Drilldown
      */
     public function __construct(
         SignalGeneratorInterface $signal_generator,
-        string $label,
+        $label,
         array $items
     ) {
         $this->checkLabelParameter($label);

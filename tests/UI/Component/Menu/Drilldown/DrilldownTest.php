@@ -34,6 +34,14 @@ class DrilldownTest extends ILIAS_UI_TestBase
                     new I\SignalGenerator()
                 );
             }
+            public function symbol() : \ILIAS\UI\Component\Symbol\Factory
+            {
+                return new I\Symbol\Factory(
+                    new I\Symbol\Icon\Factory(),
+                    new I\Symbol\Glyph\Factory(),
+                    new I\Symbol\Avatar\Factory()
+                );
+            }
         };
         return $factory;
     }
@@ -148,14 +156,6 @@ class DrilldownTest extends ILIAS_UI_TestBase
         $menu = $f->menu()->drilldown('label', [$this->legacy]);
     }
 
-
-    public function brutallyTrimHTML($html)
-    {
-        $html = str_replace(["\n", "\t"], "", $html);
-        $html = preg_replace('# {2,}#', " ", $html);
-        return trim($html);
-    }
-
     /**
      * @depends testWithEntries
      */
@@ -164,61 +164,38 @@ class DrilldownTest extends ILIAS_UI_TestBase
         $r = $this->getDefaultRenderer();
         $html = $r->render($menu);
         $expected = <<<EOT
-			<div class="il-drilldown" id="id_3">
-				<ul class="il-drilldown-structure">
-					<li class="il-menu-item" id="id_1">
-						<span class="il-menu-item-label">
-							<button class="btn btn-link" data-action="">root</button>
-						</span>
-
-						<ul class="il-menu-level">
-							<li class="il-menu-item" id="id_2">
-								<span class="il-menu-item-label">
-									<button class="btn btn-link" data-action="">sub</button>
-								</span>
-
-								<ul class="il-menu-level">
-									<li class="il-menu-item" id="">
-										<span class="il-menu-item-label">
-											<button class="btn btn-default" data-action=""></button>
-										</span>
-									</li>
-								</ul>
-
-								<ul class="il-menu-level">
-									<li class="il-menu-item" id="">
-										<span class="il-menu-item-label">
-											<a class="glyph" href="" aria-label="show_who_is_online"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
-										</span>
-									</li>
-								</ul>
-							</li>
-						</ul>
-						<ul class="il-menu-level">
-							<li class="il-menu-item" id="">
-								<span class="il-menu-item-label">
-									<hr />
-								</span>
-							</li>
-						</ul>
-
-						<ul class="il-menu-level">
-							<li class="il-menu-item" id="">
-								<span class="il-menu-item-label">
-									<button class="btn btn-default" data-action=""></button>
-								</span>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<div class="il-drilldown-navigation">
-					<ul class="il-drilldown-backlink"></ul>
-					<ul class="il-drilldown-current"></ul>
-				</div>
-				<div class="il-drilldown-contents">
-					<ul class="il-drilldown-visible"></ul>
-				</div>
-			</div>
+<div class="il-drilldown" id="id_2"> 
+    <header class="show-title show-backnav"> 
+        <h2>root</h2> 
+        <div class="backnav">
+            <button class="btn btn-bulky" id="id_1" ><span class="glyph" aria-label="back"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></span><span class="bulky-label"></span></button>
+        </div> 
+    </header>
+    <ul> 
+        <li> 
+            <button class="menulevel">root</button>
+            <ul>
+                <li> 
+                    <button class="menulevel">sub</button>
+                    <ul>
+                        <li>
+                            <button class="btn btn-default" data-action=""></button>
+                        </li>
+                        <li>
+                            <a class="glyph" href="" aria-label="show_who_is_online"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <hr />
+                </li>
+                <li>
+                    <button class="btn btn-default" data-action=""></button>
+                </li>
+            </ul> 
+        </li> 
+    </ul>
+</div>
 EOT;
 
         $this->assertEquals(
