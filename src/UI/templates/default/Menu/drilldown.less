@@ -17,10 +17,10 @@
 	}
 
 	header {
-		position: relative;
+		position: relative; // so backnav can be positioned on top
 		display: flex;
 		align-items: center;
-		height: 48px;
+		min-height: 48px;
 		margin-bottom: @il-slate-content-spacing;
 		padding: @il-drilldown-item-padding;
 		padding-left: 40px; // to make space for back glyphicon
@@ -30,7 +30,7 @@
 		}
 		.backnav {
 			position: absolute;
-			// span over entire header size
+			// overlay that spans over entire header size
 			top: 0;
 			left: 0;
 			right: 0;
@@ -87,6 +87,7 @@
 			content: " \e606";
 			font-family: "il-icons";
 			font-size: @il-slate-bulky-glyph-size * 0.85;
+			margin-left: @il-padding-small-horizontal;
 		}
 	}
 	.btn-bulky,

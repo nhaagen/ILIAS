@@ -10288,7 +10288,7 @@ footer {
   position: relative;
   display: flex;
   align-items: center;
-  height: 48px;
+  min-height: 48px;
   margin-bottom: 2px;
   padding: 10px;
   padding-left: 40px;
@@ -10352,6 +10352,7 @@ footer {
   content: " \e606";
   font-family: "il-icons";
   font-size: 1.7rem;
+  margin-left: 6px;
 }
 .il-drilldown .btn-bulky,
 .il-drilldown .link-bulky {
