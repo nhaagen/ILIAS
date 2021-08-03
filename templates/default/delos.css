@@ -10228,14 +10228,10 @@ footer {
 .il-drilldown .menulevel,
 .il-drilldown .menulevel:focus,
 .il-drilldown .menulevel:active {
-  font-size: inherit;
   text-align: left;
   outline: none;
   background: transparent;
   border: none;
-}
-.il-drilldown hr {
-  margin: 10px 0;
 }
 .il-drilldown header {
   position: relative;
@@ -10251,25 +10247,43 @@ footer {
 }
 .il-drilldown header .backnav {
   display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.il-drilldown header .backnav .btn-bulky {
+  height: 100%;
+}
+.il-drilldown header .backnav .btn-bulky .glyphicon {
+  display: none;
+}
+.il-drilldown header .backnav .btn-bulky:before {
+  content: " \e605";
+  display: block;
+  font-family: "il-icons";
+  font-size: 1.5rem;
 }
 .il-drilldown header.show-backnav {
   padding-left: 40px;
 }
 .il-drilldown header.show-backnav .backnav {
   display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
 }
-.il-drilldown header.show-backnav .backnav .glyphicon {
+.il-drilldown li > .menulevel,
+.il-drilldown li > .btn-bulky,
+.il-drilldown li > .link-bulky,
+.il-drilldown li > hr {
   display: none;
 }
-.il-drilldown header.show-backnav .backnav .btn-bulky:before {
-  content: " \e605";
+.il-drilldown .engaged ~ ul > li > .menulevel,
+.il-drilldown .engaged ~ ul > li > .btn-bulky,
+.il-drilldown .engaged ~ ul > li > .link-bulky {
+  display: flex;
+}
+.il-drilldown .engaged ~ ul > li > hr {
   display: block;
-  font-family: "il-icons";
-  font-size: 1.5rem;
 }
 .il-drilldown .menulevel,
 .il-drilldown .btn-bulky,
@@ -10279,27 +10293,14 @@ footer {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 10px;
   min-height: 48px;
+  padding: 10px;
   margin-bottom: 2px;
-}
-.il-drilldown .menulevel .icon,
-.il-drilldown .btn-bulky .icon,
-.il-drilldown .link-bulky .icon {
-  align-self: flex-start;
-  margin-top: 3px;
-  margin-right: 5px;
-  filter: invert(50%);
-}
-.il-drilldown .menulevel .bulky-label,
-.il-drilldown .btn-bulky .bulky-label,
-.il-drilldown .link-bulky .bulky-label {
-  flex-grow: 1;
-  white-space: normal;
   font-size: 1.5rem;
   line-height: 1.7rem;
-  text-align: left;
-  word-break: normal;
+}
+.il-drilldown hr {
+  margin: 10px 0;
 }
 .il-drilldown .menulevel {
   background-color: #f2f2f2;
@@ -10323,19 +10324,19 @@ footer {
   background-color: rgba(76, 101, 134, 0.3);
   color: inherit;
 }
-.il-drilldown li > .menulevel,
-.il-drilldown li > .btn-bulky,
-.il-drilldown li > .link-bulky,
-.il-drilldown li > hr {
-  display: none;
+.il-drilldown .btn-bulky .icon,
+.il-drilldown .link-bulky .icon {
+  align-self: flex-start;
+  margin-top: 3px;
+  margin-right: 5px;
+  filter: invert(50%);
 }
-.il-drilldown .engaged ~ ul > li > .menulevel,
-.il-drilldown .engaged ~ ul > li > .btn-bulky,
-.il-drilldown .engaged ~ ul > li > .link-bulky {
-  display: flex;
-}
-.il-drilldown .engaged ~ ul > li > hr {
-  display: block;
+.il-drilldown .btn-bulky .bulky-label,
+.il-drilldown .link-bulky .bulky-label {
+  flex-grow: 1;
+  white-space: normal;
+  text-align: left;
+  word-break: normal;
 }
 .icon {
   display: inline-block;
