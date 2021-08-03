@@ -19,7 +19,9 @@ class DrilldownTest extends ILIAS_UI_TestBase
         $factory = new class extends NoUIFactory {
             public function menu() : C\Menu\Factory
             {
-                return new Menu\Factory();
+                return new Menu\Factory(
+                    new I\SignalGenerator()
+                );
             }
             public function button()
             {
@@ -27,7 +29,10 @@ class DrilldownTest extends ILIAS_UI_TestBase
             }
             public function legacy($content)
             {
-                return new I\Legacy\Legacy($content, new I\SignalGenerator());
+                return new I\Legacy\Legacy(
+                    $content,
+                    new I\SignalGenerator()
+                );
             }
         };
         return $factory;

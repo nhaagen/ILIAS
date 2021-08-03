@@ -21,12 +21,12 @@ interface Factory
      *     there is only one level of branches visible at a time, so that space is
      *     saved and the users attention is not being obstrused by irrelevant options.
      *   composition: >
-     *     Drilldown Menus consist of a list of Buttons organized in three areas:
-     *     The backlink-area holds exactly one Button to navigate to a higher level of
-     *     entries, the following area again holds exactly one button to outline
-     *     the current position within the tree-structure and finally the main area
-     *     consisting of an unlimited number of buttons.
+     *     Drilldown Menus are rendered as a ul-list; an entry contains
+     *     either a button plus a further list for a menu level
+     *     or a list of buttons or links as leafs.
      *     Also, Dividers may be used so separate entries from each other.
+     *     In the header-section of the menu the currently selected level is shown as headline,
+     *     and a bulky button offers navigation to an upper level.
      *   effect: >
      *     Buttons within the Drilldown Menu will either affect the Menu itself or
      *     trigger other navigational events.
@@ -49,7 +49,7 @@ interface Factory
      * @param 	array<Component\Menu\Sub | Component\Clickable| Divider\Horizontal| Divider\Horizontal> $items
      * @return 	\ILIAS\UI\Component\Menu\Drilldown
      */
-    public function drilldown(string $label, array $items) : Drilldown;
+    public function drilldown($label, array $items) : Drilldown;
 
 
     /**

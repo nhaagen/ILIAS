@@ -1572,7 +1572,9 @@ class ilInitialisation
             );
         };
         $c["ui.factory.menu"] = function ($c) {
-            return new ILIAS\UI\Implementation\Component\Menu\Factory();
+            return new ILIAS\UI\Implementation\Component\Menu\Factory(
+                $c['ui.signal_generator']
+            );
         };
         $c["ui.factory.symbol.glyph"] = function ($c) {
             return new ILIAS\UI\Implementation\Component\Symbol\Glyph\Factory();

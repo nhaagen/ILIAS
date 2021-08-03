@@ -13,13 +13,15 @@ il.UI.menu.drilldown = {
 	init : function (component_id, back_signal) {
 		var i,
 			dd = document.getElementById(component_id),
-			buttons = dd.getElementsByClassName(this.classes.BUTTON);
+			parts = this.getMenuParts(dd);
 		
-		for (i = 0; i < buttons.length; i = i + 1) { 
-			buttons[i].addEventListener('click', this.menulevelOnClick);
-		}
-	
 		$(document).on(back_signal, this.menuOnUplevel);
+		for (i = 0; i < parts.buttons.length; i = i + 1) { 
+			parts.buttons[i].addEventListener('click', this.menulevelOnClick);
+		}
+		
+		parts.buttons[0].classList.add(classes.ACTIVE);
+		parts.title.innerHTML = parts.buttons[0].innerHTML;
 	},
 	
 	getMenuParts : function(menu_inner_element) {

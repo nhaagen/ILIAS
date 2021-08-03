@@ -25,14 +25,8 @@ class Renderer extends AbstractComponentRenderer
         $html = $this->renderMenu($component, $default_renderer);
 
         if ($component instanceof Menu\Drilldown) {
-
-            //$back_signal = $component->getBacklinkSignal();
-            $signal_generator = new \ILIAS\UI\Implementation\Component\SignalGenerator();
-            $back_signal = $signal_generator->create();
-
-
             $ui_factory = $this->getUIFactory();
-
+            $back_signal = $component->getBacklinkSignal();
             $glyph = $ui_factory->symbol()->glyph()->back();
             $btn = $ui_factory->button()->bulky($glyph, '', '#')->withOnClick($back_signal);
             $back_button_html = $default_renderer->render($btn);
@@ -73,9 +67,9 @@ class Renderer extends AbstractComponentRenderer
         $tpl_menu->setVariable('LABEL', $label);
 
         /*
-                if ($component->isInitiallyActive()) {
-                    $tpl->touchBlock('active');
-                }
+            if ($component->isInitiallyActive()) {
+                $tpl->touchBlock('active');
+            }
         */
   
         $html = '';
