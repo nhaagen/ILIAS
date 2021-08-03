@@ -10219,56 +10219,6 @@ footer {
     border-top: none;
   }
 }
-.il-drilldown {
-  /*
-	.btn-bulky,
-	.link-bulky {
-		align-items: flex-start;
-		background-color: @il-slate-bulky-bg-color;
-		border: none;
-		display: flex;
-		margin-bottom: @il-slate-content-spacing;
-		position: relative;
-		&.engaged:after,
-		&.disengaged:after {
-				font-family: "il-icons";
-				font-size: @il-slate-bulky-glyph-size * 0.85;
-				position: absolute;
-				right: 10px;
-				top: 20px;
-		}
-		&.engaged:after {
-				content: " \e604";
-		}
-		&.disengaged:after {
-				content: " \e606";
-		}
-		&:hover,
-		&.engaged {
-			background-color: @il-slate-bulky-bg-color-engaged;
-		    color: inherit;
-		}
-		.icon {
-			margin-top: @padding-small-vertical;
-			margin-right: @il-slate-bulky-glyph-margin-right;
-			filter: invert(50%);
-
-		}
-		.icon.small {
-			min-width: @il-icon-size-small;
-		}
-		.icon.medium {
-			min-width: @il-icon-size-medium;
-		}
-		.bulky-label {
-			font-size: @il-slate-bulky-label-size;
-			line-height: @il-slate-bulky-label-size * 1.133333333333333;
-			text-align: left;
-			word-break: normal;
-		}
-	}
-	*/
-}
 .il-drilldown ul,
 .il-drilldown li {
   padding: 0;
@@ -10284,6 +10234,9 @@ footer {
   background: transparent;
   border: none;
 }
+.il-drilldown hr {
+  margin: 10px 0;
+}
 .il-drilldown header {
   position: relative;
   display: flex;
@@ -10291,21 +10244,28 @@ footer {
   min-height: 48px;
   margin-bottom: 2px;
   padding: 10px;
-  padding-left: 40px;
+  padding-left: 0px;
 }
 .il-drilldown header h2 {
   margin: 0;
 }
 .il-drilldown header .backnav {
+  display: none;
+}
+.il-drilldown header.show-backnav {
+  padding-left: 40px;
+}
+.il-drilldown header.show-backnav .backnav {
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
 }
-.il-drilldown header .backnav .glyphicon {
+.il-drilldown header.show-backnav .backnav .glyphicon {
   display: none;
 }
-.il-drilldown header .backnav .btn-bulky:before {
+.il-drilldown header.show-backnav .backnav .btn-bulky:before {
   content: " \e605";
   display: block;
   font-family: "il-icons";
@@ -10365,7 +10325,8 @@ footer {
 }
 .il-drilldown li > .menulevel,
 .il-drilldown li > .btn-bulky,
-.il-drilldown li > .link-bulky {
+.il-drilldown li > .link-bulky,
+.il-drilldown li > hr {
   display: none;
 }
 .il-drilldown .engaged ~ ul > li > .menulevel,
@@ -10373,25 +10334,9 @@ footer {
 .il-drilldown .engaged ~ ul > li > .link-bulky {
   display: flex;
 }
-/*
-.il-drilldown {
-	
-	.btn-bulky,
-	.link-bulky {
-		align-items: center;
-		display: flex;
-	}
-
-	.il-drilldown-current {
-		 & .btn-bulky,
-		 & .link-bulky {
-			cursor: auto;
-		}
-	}
-
-	
+.il-drilldown .engaged ~ ul > li > hr {
+  display: block;
 }
-*/
 .icon {
   display: inline-block;
   text-align: center;

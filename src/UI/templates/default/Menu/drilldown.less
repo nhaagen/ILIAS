@@ -15,6 +15,9 @@
 		background: transparent;
 		border: none;
 	}
+	hr {
+		margin: @il-slate-content-padding 0;
+	}
 
 	header {
 		position: relative; // so backnav can be positioned on top
@@ -23,12 +26,19 @@
 		min-height: 48px;
 		margin-bottom: @il-slate-content-spacing;
 		padding: @il-drilldown-item-padding;
-		padding-left: 40px; // to make space for back glyphicon
+		padding-left: 0px;
 		h2 {
 			// remove default headline margin, headline is centered using flex
 			margin: 0;
 		}
 		.backnav {
+			display: none;
+		}
+	}
+	header.show-backnav {
+		padding-left: 40px; // to make space for back glyphicon
+		.backnav {
+			display: block;
 			position: absolute;
 			// overlay that spans over entire header size
 			top: 0;
@@ -100,61 +110,10 @@
 		}
 	}
 
-
-	// styling menu items like in slate
-	/*
-	.btn-bulky,
-	.link-bulky {
-		align-items: flex-start;
-		background-color: @il-slate-bulky-bg-color;
-		border: none;
-		display: flex;
-		margin-bottom: @il-slate-content-spacing;
-		position: relative;
-		&.engaged:after,
-		&.disengaged:after {
-				font-family: "il-icons";
-				font-size: @il-slate-bulky-glyph-size * 0.85;
-				position: absolute;
-				right: 10px;
-				top: 20px;
-		}
-		&.engaged:after {
-				content: " \e604";
-		}
-		&.disengaged:after {
-				content: " \e606";
-		}
-		&:hover,
-		&.engaged {
-			background-color: @il-slate-bulky-bg-color-engaged;
-		    color: inherit;
-		}
-		.icon {
-			margin-top: @padding-small-vertical;
-			margin-right: @il-slate-bulky-glyph-margin-right;
-			filter: invert(50%);
-
-		}
-		.icon.small {
-			min-width: @il-icon-size-small;
-		}
-		.icon.medium {
-			min-width: @il-icon-size-medium;
-		}
-		.bulky-label {
-			font-size: @il-slate-bulky-label-size;
-			line-height: @il-slate-bulky-label-size * 1.133333333333333;
-			text-align: left;
-			word-break: normal;
-		}
-	}
-	*/
-
-
 	li > .menulevel,
 	li > .btn-bulky,
-	li > .link-bulky {
+	li > .link-bulky,
+	li > hr {
     	display: none;
 	}
 	.engaged ~ ul > li > .menulevel,
@@ -162,30 +121,7 @@
 	.engaged ~ ul > li > .link-bulky {
     	display: flex;
 	}
-}
-
-
-
-
-
-	
-
-/*
-.il-drilldown {
-	
-	.btn-bulky,
-	.link-bulky {
-		align-items: center;
-		display: flex;
+	.engaged ~ ul > li > hr {
+		display: block;
 	}
-
-	.il-drilldown-current {
-		 & .btn-bulky,
-		 & .link-bulky {
-			cursor: auto;
-		}
-	}
-
-	
 }
-*/
