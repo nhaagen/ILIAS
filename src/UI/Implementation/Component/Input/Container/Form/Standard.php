@@ -36,7 +36,7 @@ class Standard extends Form implements C\Input\Container\Form\Standard
     /**
      * @inheritDoc
      */
-    public function withSubmitCaption(string $caption) : C\Input\Container\Form\Standard
+    public function withSubmitCaption(string $caption) : self
     {
         $clone = clone $this;
         $clone->submit_caption = $caption;

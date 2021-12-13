@@ -1,0 +1,20 @@
+<div class="il-wizard">
+	<h2>{WIZARD_TITLE}</h2>
+	<p>{WIZARD_DESCRIPTION}</p>
+
+	<div class="il-wizard-step">
+		<h3>{STEP_TITLE}</h3>
+		<p>{STEP_DESCRIPTION}</p>
+
+		<form role="form" class="il-standard-form form-horizontal" enctype="multipart/form-data" <!-- BEGIN action --> action="{URL}"<!-- END action --> method="post" novalidate="novalidate">
+			<!--div class="il-standard-form-header clearfix">
+				<div class="il-standard-form-cmd">{BUTTONS_TOP}</div>
+			</div-->
+			{INPUTS}
+			<div class="il-standard-form-footer clearfix">
+				<div class="il-standard-form-cmd">{BUTTONS_BOTTOM}</div>
+			</div>
+		</form>
+		
+	</div>
+</div>

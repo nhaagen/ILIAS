@@ -189,4 +189,29 @@ interface Factory
      * @return \ILIAS\UI\Component\Input\Container\ViewControl\Factory
      */
     public function viewControl() : ViewControl\Factory;
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *      XX
+     *   composition: >
+     *      XX
+     *   rivals:
+     *      filter: >
+     *          XX
+     *      form: >
+     *          XX
+     * rules:
+     *   usage:
+     *     1: >
+     *        XX
+     *   interaction:
+     *     1: >
+     *        X
+     *
+     * ---
+     * @return \ILIAS\UI\Component\Input\Container\Wizard\Factory
+     */
+    public function wizard() : Wizard\Factory;
 }

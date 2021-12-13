@@ -11,15 +11,18 @@ class Factory implements I\Container\Factory
     protected Form\Factory $form_factory;
     protected Filter\Factory $filter_factory;
     protected ViewControl\Factory $view_control_factory;
+    protected Wizard\Factory $wizard_factory;
 
     public function __construct(
         Form\Factory $form_factory,
         Filter\Factory $filter_factory,
-        ViewControl\Factory $view_control_factory
+        ViewControl\Factory $view_control_factory,
+        Wizard\Factory $wizard_factory
     ) {
         $this->form_factory = $form_factory;
         $this->filter_factory = $filter_factory;
         $this->view_control_factory = $view_control_factory;
+        $this->wizard_factory = $wizard_factory;
     }
 
     /**
@@ -44,5 +47,13 @@ class Factory implements I\Container\Factory
     public function viewControl() : I\Container\ViewControl\Factory
     {
         return $this->view_control_factory;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function wizard() : I\Container\Wizard\Factory
+    {
+        return $this->wizard_factory;
     }
 }

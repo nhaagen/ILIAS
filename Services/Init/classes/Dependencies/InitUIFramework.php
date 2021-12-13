@@ -169,7 +169,8 @@ class InitUIFramework
             return new ILIAS\UI\Implementation\Component\Input\Container\Factory(
                 $c["ui.factory.input.container.form"],
                 $c["ui.factory.input.container.filter"],
-                $c["ui.factory.input.container.viewcontrol"]
+                $c["ui.factory.input.container.viewcontrol"],
+                $c["ui.factory.input.container.wizard"]
             );
         };
         $c["ui.factory.input.container.form"] = function ($c) {
@@ -251,6 +252,10 @@ class InitUIFramework
 
         $c["ui.pathresolver"] = function ($c) : ILIAS\UI\Implementation\Render\ImagePathResolver {
             return new ilImagePathResolver();
+        };
+
+        $c["ui.factory.input.container.wizard"] = function ($c) {
+            return new ILIAS\UI\Implementation\Component\Input\Container\Wizard\Factory();
         };
     }
 }
