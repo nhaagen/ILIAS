@@ -4,63 +4,65 @@
 
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
-use ILIAS\UI\Implementation\Component\Input\Container\Form\Standard as StandardForm;
-use ILIAS\UI\Implementation\Component\Input\Field\Factory as FieldFactory;
 use ILIAS\UI\Component\Input\Container\Wizard as W;
+use ILIAS\UI\Implementation\Component\Input\Field\Group;
 
 /**
  *
  */
-class Step extends StandardForm implements W\Step
+class Step extends Group implements
+    W\Step
+//class Step implements W\Step
 {
-    protected $title;
-    protected $description;
+    protected string $title = '';
+    //protected string $description = '';
+    protected string $submit_caption = 'next';
     
     protected FieldFactory $field_factory;
     
-    public function __construct(FieldFactory $field_factory, array $inputs)
+    /*
+    public function __construct(array $inputs)
     {
-        $this->field_factory = $field_factory;
+        $this->inputs = $inputs;
         parent::__construct($field_factory, '', $inputs);
     }
+    */
+    
 
     public function getTitle() : ?string
     {
-        return $this->title;
-    }
-
-    public function withTitle(string $title) : self
-    {
-        $clone = clone $this;
-        $clone->title = $title;
-        return $clone;
+        return $this->label;
+        //return $this->title;
     }
 
     public function getDescription() : ?string
     {
-        return $this->description;
+        return $this->byline;
+        //return $this->description;
     }
 
-    public function withDescription(string $description) : self
+
+    public function getSubmitCaption() : ?string
+    {
+        return $this->submit_caption;
+    }
+
+    public function withSubmitCaption(string $submit_caption) : self
     {
         $clone = clone $this;
-        $clone->description = $description;
+        $clone->submit_caption = $submit_caption;
         return $clone;
     }
  
+    /*
     public function withInputs(array $inputs) : self
-    {
-        $clone = clone $this;
-        $clone->input_group = $clone->field_factory
-            ->group($inputs)
-            ->withNameFrom($this);
-        return $clone;
-    }
+     {
+         $clone = clone $this;
+         $clone->input_group = $clone->field_factory
+             ->group($inputs)
+             ->withNameFrom($this);
+         return $clone;
+     }
 
-    public function withPostURL(string $post_url) : self
-    {
-        $clone = clone $this;
-        $clone->post_url = $post_url;
-        return $clone;
-    }
+    */
 }

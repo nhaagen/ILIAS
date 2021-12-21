@@ -23,10 +23,11 @@ interface Factory
      * @return \ILIAS\UI\Component\Input\Container\Wizard\Dynamic
      */
     public function dynamic(
+        Storage $storage,
+        StepBuilder $builder,
+        string $post_url, //'string' is a legacy from form
         string $title,
-        string $description,
-        \Closure $completion_condition,
-        StepBuilder $builder
+        string $description
     ) : Dynamic;
 
 

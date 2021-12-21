@@ -5,27 +5,51 @@
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
 use ILIAS\UI\Component\Input\Container\Wizard as W;
+use ILIAS\UI\Implementation\Component\Input;
+use ILIAS\Refinery\Factory as RefineryFactory;
+use ILIAS\UI\Implementation\Component\Input\Field\Factory as FieldFactory;
+use ILIAS\Data\Factory as DataFactory;
+use ilLanguage;
 
 /**
  * Factory for the Wizard Containers
  */
 class Factory implements W\Factory
 {
-    public function step($field_factory) : W\Step
-    {
-        return new Step($field_factory, []);
+    protected RefineryFactory $refinery;
+    protected FieldFactory $field_factory;
+    protected DataFactory $data_factory;
+    protected ilLanguage $lng;
+
+    public function __construct(
+        RefineryFactory $refinery,
+        FieldFactory $field_factory,
+        DataFactory $data_factory,
+        ilLanguage $lng
+    ) {
+        $this->refinery = $refinery;
+        $this->field_factory = $field_factory;
+        $this->data_factory = $data_factory;
+        $this->lng = $lng;
     }
 
     /**
      * @inheritdoc
      */
     public function dynamic(
+        W\Storage $storage,
+        W\StepBuilder $builder,
+        string $post_url,
         string $title,
-        string $description,
-        \Closure $completion_condition,
-        W\StepBuilder $builder
+        string $description
     ) : W\Dynamic {
-        return new Dynamic($title, $description, $completion_condition, $builder);
+        $step_factory = new StepFactory(
+            $this->refinery,
+            $this->field_factory,
+            $this->data_factory,
+            $this->lng
+        );
+        return new Dynamic($step_factory, $storage, $builder, $post_url, $title, $description);
     }
 
 

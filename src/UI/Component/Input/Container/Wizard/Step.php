@@ -4,22 +4,16 @@
 
 namespace ILIAS\UI\Component\Input\Container\Wizard;
 
-use \ILIAS\UI\Component\Input\Container\Form;
-
-//use \ILIAS\UI\Component\Input\Field\Input;
-
+use \ILIAS\UI\Component\Input\Field\Group;
 
 /**
  * This describes a Step in a Wizard.
  */
-interface Step extends Form\Form
+interface Step extends Group
 {
     public function getTitle() : ?string;
-    public function withTitle(string $title) : self;
-
     public function getDescription() : ?string;
-    public function withDescription(string $description) : self;
     
-    public function withInputs(array $inputs) : self;
-    public function withPostURL(string $url) : self;
+    public function getSubmitCaption() : ?string;
+    public function withSubmitCaption(string $submit_caption) : self;
 }

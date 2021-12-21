@@ -28,36 +28,20 @@ class Renderer extends AbstractComponentRenderer
 
     protected function renderStandard(Wizard\Wizard $component, RendererInterface $default_renderer) : string
     {
-        $factory = $this->getUIFactory();
-        $refinery = $this->getRefinery();
+        $step_factory = $component->getStepFactory();
+        $data = $component->getStoredData();
 
-        $field_factory = $factory->input()->field();
-        $nullstep = $factory->input()->container()->wizard()->step(
-            $field_factory
-        );
-        $data = $component->getData();
 
-        $step = $component->getStepBuilder()->build(
-            $field_factory,
-            $refinery,
-            $nullstep,
-            $data
-        );
+        $step = $component->getStepBuilder()->build($step_factory, $data)
+            ->withNameFrom($component);
     
 
         $submit_caption = $step->getSubmitCaption() ?? $this->txt("next");
-        $submit_button = $factory->button()->standard($submit_caption, "");
+        $submit_button = $this->getUIFactory()->button()->standard($submit_caption, "");
 
         $tpl = $this->getTemplate("tpl.wizard.html", true, true);
 
-        if ($step->getPostURL() != "") {
-            $tpl->setCurrentBlock("action");
-            $tpl->setVariable("URL", $step->getPostURL());
-            $tpl->parseCurrentBlock();
-        }
-        /*
-        */
-        
+        $tpl->setVariable("URL", $component->getPostURL());
         $tpl->setVariable("WIZARD_TITLE", $component->getTitle());
         $tpl->setVariable("WIZARD_DESCRIPTION", $component->getDescription());
         
@@ -66,7 +50,7 @@ class Renderer extends AbstractComponentRenderer
         
 
         $tpl->setVariable("BUTTONS_BOTTOM", $default_renderer->render($submit_button));
-        $tpl->setVariable("INPUTS", $default_renderer->render($step->getInputGroup()));
+        $tpl->setVariable("INPUTS", $default_renderer->render($step->getInputs()));
         return $tpl->get();
     }
 

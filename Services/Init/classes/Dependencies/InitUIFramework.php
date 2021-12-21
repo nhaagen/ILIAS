@@ -255,7 +255,13 @@ class InitUIFramework
         };
 
         $c["ui.factory.input.container.wizard"] = function ($c) {
-            return new ILIAS\UI\Implementation\Component\Input\Container\Wizard\Factory();
+            $data_factory = new ILIAS\Data\Factory();
+            return new ILIAS\UI\Implementation\Component\Input\Container\Wizard\Factory(
+                $c["refinery"],
+                $c["ui.factory.input.field"],
+                $data_factory,
+                $c["lng"]
+            );
         };
     }
 }

@@ -5,8 +5,10 @@
 namespace ILIAS\UI\Component\Input\Container\Wizard;
 
 /**
- * This describes a highly customizable Wizard
+ * Storage used (internally) by Wizards
  */
-interface Dynamic extends Wizard
+interface Storage
 {
+    public function set(mixed $data) : void;
+    public function get() : mixed;
 }

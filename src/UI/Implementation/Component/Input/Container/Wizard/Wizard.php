@@ -6,25 +6,41 @@ namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
 use ILIAS\UI\Component\Input\Container\Wizard as W;
 use ILIAS\UI\Implementation\Component\ComponentHelper;
+use ILIAS\UI\Implementation\Component\Input\Container\Form;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  *
  */
-abstract class Wizard implements W\Wizard
+abstract class Wizard extends Form\Standard implements W\Wizard
 {
     use ComponentHelper;
-
+    protected W\StepFactory $step_factory;
+    protected W\Storage $storage;
+    protected W\StepBuilder $builder;
+    protected string $post_url;
     protected string $title;
     protected string $description;
-    protected \Closure $completion_condition;
-    protected mixed $data = null;
-
-    public function __construct(string $title, string $description, \Closure $completion_condition)
-    {
+    
+    public function __construct(
+        W\StepFactory $step_factory,
+        W\Storage $storage,
+        W\StepBuilder $builder,
+        string $post_url,
+        string $title,
+        string $description
+    ) {
+        $this->step_factory = $step_factory;
+        $this->storage = $storage;
+        $this->builder = $builder;
+        $this->post_url = $post_url;
         $this->title = $title;
         $this->description = $description;
-        $this->completion_condition = $completion_condition;
+    }
+
+    public function getStepFactory() : W\StepFactory
+    {
+        return $this->step_factory;
     }
 
     public function getTitle() : string
@@ -32,70 +48,48 @@ abstract class Wizard implements W\Wizard
         return $this->title;
     }
 
-    public function withTitle(string $title) : self
-    {
-        $clone = clone $this;
-        $clone->title = $title;
-        return $clone;
-    }
-
     public function getDescription() : string
     {
         return $this->description;
     }
-
-    public function withDescription(string $description) : self
-    {
-        $clone = clone $this;
-        $clone->description = $description;
-        return $clone;
-    }
     
+    public function getStepBuilder() : W\StepBuilder
+    {
+        return $this->builder;
+    }
+
     public function withRequest(ServerRequestInterface $request) : self
     {
-        global $DIC; //TODO: remove
-        $factory = $DIC['ui.factory'];
-        $field_factory = $factory->input()->field();
-        $refinery = $DIC['refinery'];
+        $step_factory = $this->getStepFactory();
+        $data = $this->getStoredData();
+        $step = $this->getStepBuilder()->build($step_factory, $data);
 
-        $nullstep = $factory->input()->container()->wizard()->step(
-            $field_factory
-        );
-
-        $data = $this->getData();
-        $step = $this->getStepBuilder()->build(
-            $field_factory,
-            $refinery,
-            $nullstep,
-            $data
-        );
-        $data = $step->withRequest($request)->getData();
-
-        if ($data) {
-            return $this->withData($data);
-        }
-        return $this;
-    }
-
-    public function withData(mixed $data) : self
-    {
+        $post_data = $this->extractPostData($request);
         $clone = clone $this;
-        $clone->data = $data;
-        return $clone;
-    }
+        $clone->input_group = $step
+            ->withNameFrom($this)
+            ->withInput($post_data);
 
-    public function getData() : mixed
-    {
-        return $this->data;
+        $nu_data = $clone->getData();
+        if ($nu_data) {
+            $clone->storeData($nu_data);
+        }
+        return $clone;
     }
 
     public function isFinished() : bool
     {
-        return $this->checkForCompleteness($this->data);
+        $data = $this->getStoredData();
+        return $this->getStepBuilder()->isComplete($data);
     }
 
-    protected function checkForCompleteness() : bool
+    public function getStoredData() : mixed
     {
-        return call_user_func_array($this->completion_condition, [$this->data]);
+        return $this->storage->get();
+    }
+
+    public function storeData(mixed $data) : void
+    {
+        $this->storage->set($data);
     }
 }
