@@ -194,21 +194,34 @@ interface Factory
      * ---
      * description:
      *   purpose: >
-     *      XX
+     *      A Wizard is a sequence of forms to break up a prompt for a user's input
+     *      into smaller, cohesive chunks.
      *   composition: >
-     *      XX
+     *      Wizards feature a title plus description close to a Step: a Form,
+     *      again with title and description.
+     *      Steps - as Form Groups - are composed of Input Fields, displaying
+     *      their labels and bylines.
+     *   effect: >
+     *      It is a wizards nature to collect data over several requests;
+     *      therefore, it does not only need some kind of storage, but must also provide
+     *      some exit-condition and a mechanism to construct the next form.
+     *      Forms will be constructed and displayed until the exit-condition is met.
+     *      Titles and descriptive Texts provide orientation and instructions.
      *   rivals:
-     *      filter: >
-     *          XX
      *      form: >
-     *          XX
+     *          While forms display all of its fields at once, Wizards
+     *          connect Forms/Fields to several Steps - still resulting in one
+     *          Result. Use Wizards to break up prompts into (thematically) separated
+     *          steps or when following forms depend on former input.
+     *
      * rules:
      *   usage:
      *     1: >
-     *        XX
-     *   interaction:
-     *     1: >
-     *        X
+     *        Wizards SHOULD NOT be used to _edit_ sets of properties.
+     *        To initially collect those property values, however, wizards
+     *        MAY be a good choice.
+     *     2: >
+     *        Inputs forming a Wizard's Steps MUST be thematically cohesive.
      *
      * ---
      * @return \ILIAS\UI\Component\Input\Container\Wizard\Factory

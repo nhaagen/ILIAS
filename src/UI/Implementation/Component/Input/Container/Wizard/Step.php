@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-/* Copyright (c) 2021 Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
+/* Copyright (c) 2022Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
@@ -8,11 +8,9 @@ use ILIAS\UI\Component\Input\Container\Wizard as W;
 use ILIAS\UI\Implementation\Component\Input\Field\Group;
 
 /**
- *
+ * A Step is one displayable "stop" in a Wizard
  */
-class Step extends Group implements
-    W\Step
-//class Step implements W\Step
+class Step extends Group implements W\Step
 {
     protected string $title = '';
     //protected string $description = '';

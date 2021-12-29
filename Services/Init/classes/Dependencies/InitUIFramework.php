@@ -259,6 +259,7 @@ class InitUIFramework
             return new ILIAS\UI\Implementation\Component\Input\Container\Wizard\Factory(
                 $c["refinery"],
                 $c["ui.factory.input.field"],
+                $c["ui.factory.listing"],
                 $data_factory,
                 $c["lng"]
             );
