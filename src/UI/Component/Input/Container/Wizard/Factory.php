@@ -48,8 +48,6 @@ interface Factory
      *   purpose: >
      *      A Static Sequence is a Wizard with predefined Steps that are shown
      *      one after the other regadless of provided data/input.
-     *   effect: >
-     *      The Static Sequence
      *   composition: >
      *      Next to title description and Form, the Static Sequence will also use
      *      a Linear Workflow Listing to indicate the current step and the overall

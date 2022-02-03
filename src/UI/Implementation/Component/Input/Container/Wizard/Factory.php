@@ -22,6 +22,7 @@ class Factory implements W\Factory
     protected ListingFactory $listing_factory;
     protected DataFactory $data_factory;
     protected ilLanguage $lng;
+    protected W\StepFactory $step_factory;
 
     public function __construct(
         RefineryFactory $refinery,
@@ -35,6 +36,13 @@ class Factory implements W\Factory
         $this->listing_factory = $listing_factory;
         $this->data_factory = $data_factory;
         $this->lng = $lng;
+
+        $this->step_factory = new StepFactory(
+            $this->refinery,
+            $this->field_factory,
+            $this->data_factory,
+            $this->lng
+        );
     }
 
     /**
@@ -47,13 +55,7 @@ class Factory implements W\Factory
         string $title,
         string $description
     ) : W\Dynamic {
-        $step_factory = new StepFactory(
-            $this->refinery,
-            $this->field_factory,
-            $this->data_factory,
-            $this->lng
-        );
-        return new Dynamic($step_factory, $storage, $builder, $post_url, $title, $description);
+        return new Dynamic($this->step_factory, $storage, $builder, $post_url, $title, $description);
     }
 
 
@@ -67,10 +69,14 @@ class Factory implements W\Factory
         string $title,
         string $description
     ) : W\StaticSequence {
+        $builder = new StaticStepBuilder($steps);
+
         return new StaticSequence(
-            $this->workflow_listing_factory,
+            $this->listing_factory,
+            $this->step_factory,
             $storage,
-            $steps,
+            //$steps,
+            $builder,
             $post_url,
             $title,
             $description

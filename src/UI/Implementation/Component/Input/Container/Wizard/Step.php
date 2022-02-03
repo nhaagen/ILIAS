@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-/* Copyright (c) 2022Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
+/* Copyright (c) 2022 Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
@@ -26,7 +26,6 @@ class Step extends Group implements W\Step
     }
     */
     
-
     public function getTitle() : ?string
     {
         return $this->label;
@@ -39,6 +38,14 @@ class Step extends Group implements W\Step
         //return $this->description;
     }
 
+    public function withInputs(array $inputs) : self
+    {
+        $clone = clone $this;
+        $clone->input_group = $clone->field_factory
+             ->group($inputs)
+             ->withNameFrom($this);
+        return $clone;
+    }
 
     public function getSubmitCaption() : ?string
     {

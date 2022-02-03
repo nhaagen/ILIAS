@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-/* Copyright (c) 202 Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
+/* Copyright (c) 2022 Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
@@ -54,6 +54,7 @@ class Dynamic extends Wizard implements W\Dynamic
         $data = $this->getStoredData();
         return $this->getStepBuilder()->isComplete($data);
     }
+
     public function getStepFactory() : W\StepFactory
     {
         return $this->step_factory;

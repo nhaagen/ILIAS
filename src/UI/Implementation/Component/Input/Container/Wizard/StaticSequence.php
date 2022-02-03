@@ -10,22 +10,65 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class StaticSequence extends Wizard implements W\StaticSequence
 {
-    protected WorkflowListingFactory $listing;
+    protected Listing\Factory $listing_factory;
+    protected W\StepFactory $step_factory;
+    protected W\StepBuilder $builder;
     
     public function __construct(
         Listing\Factory $listing_factory,
+        W\StepFactory $step_factory,
         W\Storage $storage,
-        array $steps,
+        W\StepBuilder $builder,
         string $post_url,
         string $title,
         string $description
     ) {
-        $this->listing = $lsiting_factory->workflow()->linear('', $steps);
+        $this->listing_factory = $listing_factory; //->workflow()->linear('', $steps);
+        
+        $this->step_factory = $step_factory;
+        $this->builder = $builder;
+
         parent::__construct(
             $storage,
             $post_url,
             $title,
             $description
         );
+    }
+
+    public function isFinished() : bool
+    {
+        return false;
+        $data = $this->getStoredData();
+        return $this->getStepBuilder()->isComplete($data);
+    }
+    
+    public function getStepFactory() : W\StepFactory
+    {
+        return $this->step_factory;
+    }
+
+    public function getStepBuilder() : W\StepBuilder
+    {
+        return $this->builder;
+    }
+
+    public function withRequest(ServerRequestInterface $request) : self
+    {
+        $step_factory = $this->getStepFactory();
+        $data = $this->getStoredData();
+        $step = $this->getStepBuilder()->build($step_factory, $data);
+
+        $post_data = $this->extractPostData($request);
+        $clone = clone $this;
+        $clone->input_group = $step
+            ->withNameFrom($this)
+            ->withInput($post_data);
+
+        $nu_data = $clone->getData();
+        if ($nu_data) {
+            $clone->storeData($nu_data);
+        }
+        return $clone;
     }
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-/* Copyright (c) 2021 Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
+/* Copyright (c) 2022 Nils Haagen <nils.haagen@concepts-and-training.de> Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
@@ -22,6 +22,12 @@ class Renderer extends AbstractComponentRenderer
         if ($component instanceof Wizard\Wizard) {
             return $this->renderStandard($component, $default_renderer);
         }
+
+        if ($component instanceof Wizard\StaticSequence) {
+            return $this->renderStandard($component, $default_renderer);
+            //return $this->renderStatic($component, $default_renderer);
+        }
+
 
         throw new LogicException("Cannot render: " . get_class($component));
     }
@@ -54,11 +60,40 @@ class Renderer extends AbstractComponentRenderer
         return $tpl->get();
     }
 
+    protected function renderStatic(Wizard\Wizard $component, RendererInterface $default_renderer) : string
+    {
+        $data = $component->getStoredData();
+
+
+        $step = $component->getCurrentStep()
+            ->withNameFrom($component);
+
+        $submit_caption = $step->getSubmitCaption() ?? $this->txt("next");
+        $submit_button = $this->getUIFactory()->button()->standard($submit_caption, "");
+
+        $tpl = $this->getTemplate("tpl.wizard.html", true, true);
+
+        $tpl->setVariable("URL", $component->getPostURL());
+        $tpl->setVariable("WIZARD_TITLE", $component->getTitle());
+        $tpl->setVariable("WIZARD_DESCRIPTION", $component->getDescription());
+        
+        $tpl->setVariable("STEP_TITLE", $step->getTitle());
+        $tpl->setVariable("STEP_DESCRIPTION", $step->getDescription());
+        
+
+        $tpl->setVariable("BUTTONS_BOTTOM", $default_renderer->render($submit_button));
+        $tpl->setVariable("INPUTS", $default_renderer->render($step->getInputs()));
+        return $tpl->get();
+    }
+
     /**
      * @inheritdoc
      */
     protected function getComponentInterfaceName() : array
     {
-        return array(Component\Input\Container\Wizard\Dynamic::class);
+        return [
+            Component\Input\Container\Wizard\Dynamic::class,
+            Component\Input\Container\Wizard\StaticSequence::class
+        ];
     }
 }
