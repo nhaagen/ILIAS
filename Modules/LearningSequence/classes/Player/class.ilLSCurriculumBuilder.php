@@ -1,11 +1,7 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Builds the overview (curriculum) of a LearningSequence.
- *
- * @author Nils Haagen <nils.haagen@concepts-and-training.de>
  */
 class ilLSCurriculumBuilder
 {

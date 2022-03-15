@@ -14,16 +14,22 @@ class ilLSLocalDI extends Container
         DataFactory $data_factory,
         ilObjLearningSequence $object
     ) {
-        $ref_id = (int) $object->getRefId();
         $obj_id = (int) $object->getId();
         $obj_title = $object->getTitle();
 
         $current_user = $dic['ilUser'];
         $current_user_id = (int) $current_user->getId();
-
         $data_factory = new \ILIAS\Data\Factory();
 
-        $this["obj.ref_id"] = $ref_id;
+        $this["obj.ref_id"] = function ($c) use ($object) : int {
+            $ref = $object->getRefId();
+            if (!$ref) {
+                $refs = ilObject::_getAllReferences($object->getId());
+                $ref = array_shift($refs);
+            }
+            return (int) $ref;
+        };
+
         $this["obj.obj_id"] = $obj_id;
         $this["obj.title"] = (string) $obj_title;
 
@@ -61,13 +67,11 @@ class ilLSLocalDI extends Container
         };
 
         $this["gui.learner"] = function ($c) use ($dic, $lsdic, $object) : ilObjLearningSequenceLearnerGUI {
-            $first_access = $c["learneritems"]->getFirstAccess();
+            $intro = $object->getContentPageHTML($object::CP_INTRO);
+            $extro = $object->getContentPageHTML($object::CP_EXTRO);
 
             return new ilObjLearningSequenceLearnerGUI(
-                $c["obj.ref_id"],
-                $first_access,
                 $c["usr.id"],
-                $dic["ilAccess"],
                 $dic["ilCtrl"],
                 $dic["lng"],
                 $dic["tpl"],
@@ -77,7 +81,10 @@ class ilLSLocalDI extends Container
                 $c["roles"],
                 $lsdic["db.settings"]->getSettingsFor($c["obj.obj_id"]),
                 $c["player.curriculumbuilder"],
-                $c["player"]
+                $c["player.launchlinksbuilder"],
+                $c["player"],
+                $intro,
+                $extro
             );
         };
 
@@ -160,6 +167,21 @@ class ilLSLocalDI extends Container
             );
         };
 
+        $this["player.launchlinksbuilder"] = function ($c) use ($dic) : ilLSLaunchlinksBuilder {
+            $first_access = $c["learneritems"]->getFirstAccess();
+            
+            return new ilLSLaunchlinksBuilder(
+                $dic["lng"],
+                $dic["ilAccess"],
+                $dic["ilCtrl"],
+                $dic["ui.factory"],
+                $c["obj.ref_id"],
+                $c["usr.id"],
+                $first_access,
+                $c["roles"]
+            );
+        };
+
         $this["player"] = function ($c) use ($dic, $lsdic) : ilLSPlayer {
             return new ilLSPlayer(
                 $c["obj.title"],
@@ -194,6 +216,10 @@ class ilLSLocalDI extends Container
                 $dic["ilDB"],
                 $current_user
             );
+        };
+
+        $this["ui.renderer"] = function ($c) use ($dic) : ILIAS\UI\Renderer {
+            return $dic['ui.renderer'];
         };
     }
 }

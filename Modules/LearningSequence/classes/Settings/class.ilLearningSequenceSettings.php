@@ -9,7 +9,6 @@ declare(strict_types=1);
  */
 class ilLearningSequenceSettings
 {
-
     /**
      * @var int
      */

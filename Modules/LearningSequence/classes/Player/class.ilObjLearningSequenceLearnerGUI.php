@@ -10,15 +10,27 @@ class ilObjLearningSequenceLearnerGUI
     const CMD_UNSUBSCRIBE = 'unsubscribe';
     const CMD_VIEW = 'view';
     const CMD_START = 'start';
+
     const PARAM_LSO_NEXT_ITEM = 'lsoni';
     const LSO_CMD_NEXT = 'lson';
     const LSO_CMD_PREV = 'lsop';
+    protected ilCtrl $ctrl;
+    protected ilLanguage $lng;
+    protected ilGlobalTemplateInterface $tpl;
+    protected ilToolbarGUI $toolbar;
+    protected ILIAS\UI\Factory $ui_factory;
+    protected ILIAS\UI\Renderer $renderer;
+    protected ilLearningSequenceRoles $roles;
+    protected ilLearningSequenceSettings $settings;
+    protected ilLSCurriculumBuilder $curriculum_builder;
+    protected ilLSLaunchlinksBuilder $launchlinks_builder;
+    protected ilLSPlayer $player;
+    protected string $intro;
+    protected string $extro;
+
 
     public function __construct(
-        int $ls_ref_id,
-        $first_access,
         int $usr_id,
-        ilAccess $access,
         ilCtrl $ctrl,
         ilLanguage $lng,
         ilGlobalTemplateInterface $tpl,
@@ -28,13 +40,12 @@ class ilObjLearningSequenceLearnerGUI
         ilLearningSequenceRoles $roles,
         ilLearningSequenceSettings $settings,
         ilLSCurriculumBuilder $curriculum_builder,
-        ilLSPlayer $player
+        ilLSLaunchlinksBuilder $launchlinks_builder,
+        ilLSPlayer $player,
+        string $intro,
+        string $extro
     ) {
-        $this->ls_object = $ls_object;
-        $this->ls_ref_id = $ls_ref_id;
-        $this->first_access = $first_access;
         $this->usr_id = $usr_id;
-        $this->access = $access;
         $this->ctrl = $ctrl;
         $this->lng = $lng;
         $this->tpl = $tpl;
@@ -44,7 +55,10 @@ class ilObjLearningSequenceLearnerGUI
         $this->roles = $roles;
         $this->settings = $settings;
         $this->curriculum_builder = $curriculum_builder;
+        $this->launchlinks_builder = $launchlinks_builder;
         $this->player = $player;
+        $this->intro = $intro;
+        $this->extro = $extro;
     }
 
     public function executeCommand()
@@ -83,15 +97,19 @@ class ilObjLearningSequenceLearnerGUI
 
     protected function view(string $cmd)
     {
-        $this->initToolbar($cmd);
-        
-        $content = $this->getMainContent($cmd);
-        $this->tpl->setContent(
-            $this->getWrappedHTML($content)
+        $content = $this->getWrappedHTML(
+            $this->getMainContent($cmd)
         );
-        
-        $curriculum = $this->curriculum_builder->getLearnerCurriculum();
-        if (count($curriculum->getSteps()) > 0) {
+
+        $this->tpl->setContent($content);
+
+        $element = '<' . ilPCLauncher::PCELEMENT . '>';
+        if (!str_contains($content, $element)) {
+            $this->initToolbar($cmd);
+        }
+        $element = '<' . ilPCCurriculum::PCELEMENT . '>';
+        if (!str_contains($content, $element)) {
+            $curriculum = $this->curriculum_builder->getLearnerCurriculum();
             $this->tpl->setRightContent(
                 $this->getWrappedHTML([$curriculum])
             );
@@ -106,68 +124,14 @@ class ilObjLearningSequenceLearnerGUI
         }
     }
 
-
-    protected function userMayUnparticipate() : bool
-    {
-        return $this->access->checkAccess('unparticipate', '', $this->ls_ref_id);
-    }
-
-    protected function userMayJoin() : bool
-    {
-        return $this->access->checkAccess('participate', '', $this->ls_ref_id);
-    }
-
     protected function initToolbar(string $cmd)
     {
-        $is_member = $this->roles->isMember($this->usr_id);
-        $completed = $this->roles->isCompletedByUser($this->usr_id);
-
-        if (!$is_member) {
-            $may_subscribe = $this->userMayJoin();
-            if ($may_subscribe) {
-                $this->toolbar->addButton(
-                    $this->lng->txt("lso_player_start"),
-                    $this->ctrl->getLinkTarget($this, self::CMD_START)
-                );
-            }
-        } else {
-            if (!$completed) {
-                $label = "lso_player_resume";
-                if ($this->first_access === -1) {
-                    $label = "lso_player_start";
-                }
-
-                $this->toolbar->addButton(
-                    $this->lng->txt($label),
-                    $this->ctrl->getLinkTarget($this, self::CMD_VIEW)
-                );
-            } else {
-                $this->toolbar->addButton(
-                    $this->lng->txt("lso_player_review"),
-                    $this->ctrl->getLinkTarget($this, self::CMD_VIEW)
-                );
-
-                if ($cmd === self::CMD_STANDARD) {
-                    $this->toolbar->addButton(
-                        $this->lng->txt("lso_player_extro"),
-                        $this->ctrl->getLinkTarget($this, self::CMD_EXTRO)
-                    );
-                }
-                if ($cmd === self::CMD_EXTRO) {
-                    $this->toolbar->addButton(
-                        $this->lng->txt("lso_player_abstract"),
-                        $this->ctrl->getLinkTarget($this, self::CMD_STANDARD)
-                    );
-                }
-            }
-
-            $may_unsubscribe = $this->userMayUnparticipate();
-            if ($may_unsubscribe) {
-                $this->toolbar->addButton(
-                    $this->lng->txt("unparticipate"),
-                    $this->ctrl->getLinkTarget($this, self::CMD_UNSUBSCRIBE)
-                );
-            }
+        foreach ($this->launchlinks_builder->getLinks() as $entry) {
+            list($label, $link) = $entry;
+            $this->toolbar->addButton(
+                $label,
+                $link
+            );
         }
     }
 
@@ -184,21 +148,32 @@ class ilObjLearningSequenceLearnerGUI
 
     private function getMainContent(string $cmd) : array
     {
+        $img = null;
+        $contents = [];
+
         if ($cmd === self::CMD_STANDARD) {
-            $txt = $this->settings->getAbstract();
-            $img = $this->settings->getAbstractImage();
+            if ($this->intro === '') {
+                $contents[] = $this->ui_factory->legacy($this->settings->getAbstract());
+                $img = $this->settings->getAbstractImage();
+                if ($img) {
+                    $contents[] = $this->ui_factory->image()->responsive($img, '');
+                }
+            } else {
+                $contents[] = $this->ui_factory->legacy($this->intro);
+            }
         }
 
         if ($cmd === self::CMD_EXTRO) {
-            $txt = $this->settings->getExtro();
-            $img = $this->settings->getExtroImage();
+            if ($this->intro === '') {
+                $contents[] = $this->ui_factory->legacy($this->settings->getExtro());
+                $img = $this->settings->getExtroImage();
+                if ($img) {
+                    $contents[] = $this->ui_factory->image()->responsive($img, '');
+                }
+            } else {
+                $contents[] = $this->ui_factory->legacy($this->intro);
+            }
         }
-
-        $contents = [$this->ui_factory->legacy($txt)];
-        if (!is_null($img)) {
-            $contents[] = $this->ui_factory->image()->responsive($img, '');
-        }
-
         return $contents;
     }
 

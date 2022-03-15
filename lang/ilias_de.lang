@@ -16223,7 +16223,7 @@ qpl#:#qpl_page_type_qfbg#:#Generelles Feedback
 qpl#:#qpl_page_type_qfbs#:#Spezielles Feedback
 sc13#:#sc13_page_type_sahs#:#SCORM-Editor-Seite
 copg#:#copg_page_type_stys#:#Seitenlayout
-cont#:#cont_page_type_cont#:#Magazinseite (Kurs, Gruppe, Kategorie, ...)
+cont#:#cont_page_type_cont#:#Magazinseite (Kurs, Gruppe, Kategorie, Sequenz, ...)
 cont#:#cont_page_type_cstr#:#Startseite lernzielorientierter Kurs
 auth#:#auth_page_type_auth#:#Login-Seite
 impr#:#impr_page_type_impr#:#Impressum
@@ -16648,3 +16648,9 @@ rating#:#rating_open_dialog#:#Bewertungsskala aufklappen
 tagging#:#tagging_no_obj_for_tag#:#Es sind keine Inhalte mit '%s' verschlagwortet.
 rep#:#rep_favourites#:#Favoriten
 rep#:#rep_favourites_info#:#Benutzer können einzelne Magazinobjekte als Favorit markieren. Favoritenlisten können in der Dashboard- und Hauptmenükonfiguration aktiviert werden.
+lso#:#cont_ed_insert_lsocurriculum#:#Curriculum einfügen
+lso#:#cont_ed_insert_lsostartbutton#:#"Lernsequenz starten" einfügen
+lso#:#lso_intropages_deprecationhint#:#Die Einleitungs-/Abschlussseite können Sie unter "Inhalt" editieren.
+lso#:#lso_settings_old_intro#:#Inhalte der (ehemaligen) Einleitungsseite
+lso#:#lso_settings_old_extro#:#Inhalte der (ehemaligen) Abschlussseite
+lso#:#settings_misc#:#Sonstige

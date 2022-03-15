@@ -4184,6 +4184,36 @@
 	</xsl:if>
 </xsl:template>
 
+<!-- (LSO) Curriculum -->
+<xsl:template match="Curriculum">
+	<xsl:if test="$mode = 'edit'">
+		<div class="copg-new-content-placeholder">
+			<img class="icon pemed medium" src="./templates/default/images/icon_lso.svg" alt="curriculum" />
+			<div>Curriculum</div>
+		</div>
+	</xsl:if>
+	<xsl:if test="$mode != 'edit'">
+		<Curriculum>
+			[[[CURRICULUM]]]
+		</Curriculum>
+	</xsl:if>
+</xsl:template>
+
+<!-- (LSO) Launcher -->
+<xsl:template match="Launcher">
+	<xsl:if test="$mode = 'edit'">
+		<div class="copg-new-content-placeholder">
+			<button class="btn btn-primary">Start LSO</button>
+		</div>
+	</xsl:if>
+	<xsl:if test="$mode != 'edit'">
+		<Launcher>
+			[[[LAUNCHER]]]
+		</Launcher>
+	</xsl:if>
+</xsl:template>
+
+
 <!-- helper functions -->
 
 <xsl:template name="substring-before-last">

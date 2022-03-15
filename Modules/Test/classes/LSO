@@ -1,0 +1,8 @@
+Änderungen der LSO:
+    
+- Einführung von Subtabs "Einleitungsseite" "Abschlussseite" (Benennung prüfen @Nils) im Reiter Inhalt
+- Im Page-Editor von Einleitungsseite und Abschlussseite werden leere Seiten angelegt und die Toolbar und das Curriculum werden implizit angezeigt, BIS sie explizit als Inhaltselement angelegt werden 
+- Umbenennung von Subtab "Inhalt" im Reiter "Inhalt" hin zu "Zeigen"
+- Landing Page ist ab da für alle der Sub-Tab "Zeigen" im Reiter "Inhalt"
+- für 8: Toolbar bekommt die beiden Buttons: "Alte Intro-Seite anzeigen", "Alte Outro-Seite" anzeigen"
+- Blauer Info-Kasten bleibt im Reiter "Einstellungen"
