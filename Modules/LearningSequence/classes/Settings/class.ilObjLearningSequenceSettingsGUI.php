@@ -189,7 +189,7 @@ class ilObjLearningSequenceSettingsGUI
         }
 
         $section_misc = new ilFormSectionHeaderGUI();
-        $section_misc->setTitle($txt('lso_settings_misc'));
+        $section_misc->setTitle($txt('settings_misc'));
         $show_members_gallery = new ilCheckboxInputGUI($txt("members_gallery"), self::PROP_GALLERY);
         $show_members_gallery->setInfo($txt('lso_show_members_info'));
 

@@ -16649,7 +16649,7 @@ rep#:#rep_favourites#:#Favourites
 rep#:#rep_favourites_info#:#Users can mark single repository items as favourites. Favourites lists can be activated and configured in the dashboard and menu settings.
 lso#:#cont_ed_insert_lsocurriculum#:#Insert Curriculum
 lso#:#cont_ed_insert_lsostartbutton#:#Insert Startbutton
-lso#:#lso_intropages_deprecationhint#:#See (former) abstrat/extro in "contents".
-lso#:#lso_settings_old_intro#:#(former) abstract page
-lso#:#lso_settings_old_extro#:#(former) exit page
+lso#:#lso_intropages_deprecationhint#:#You can edit the abstract/exit page under "Contents".
+lso#:#lso_settings_old_intro#:#View Old Abstract
+lso#:#lso_settings_old_extro#:#View Old Exitpage
 lso#:#settings_misc#:#misc.

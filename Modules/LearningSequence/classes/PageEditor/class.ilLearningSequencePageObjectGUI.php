@@ -11,7 +11,7 @@ abstract class ilLearningSequencePageObjectGUI extends ilPageObjectGUI
 {
     public function getTabs($a_activate = "")
     {
-        $this->tabs_gui->activateTab(ilObjLearningSequenceGUI::TAB_VIEW_CONTENT);
+        $this->tabs_gui->activateTab(ilObjLearningSequenceGUI::TAB_CONTENT_MAIN);
     }
 
     public function getPageConfig()
