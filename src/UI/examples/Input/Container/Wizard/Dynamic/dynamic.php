@@ -35,6 +35,7 @@ function dynamic()
                     ->withValue($summand)
                     ->withDisabled(true);
             }
+            
             $inputs[] = $factory->fields()->numeric('+');
 
             $filter_nulls_trafo = $factory->refinery()->custom()->transformation(

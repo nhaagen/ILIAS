@@ -37,13 +37,6 @@ function staticSequence()
         }
     };
 
-
-    $named_key_trafo = $refinery->custom()->transformation(
-        function ($v) {
-            return ['name' => $v];
-        }
-    );
-
     $steps = [];
     $steps[] = function ($factory, $data) use ($refinery) {
         $inputs = [
@@ -56,14 +49,33 @@ function staticSequence()
         return $factory->step($inputs, 'Step 1', 'Tell us something about yourself');
     };
 
-    $steps[] = function ($factory, $data) {
+    $steps[] = function ($factory, $data) use ($refinery) {
         $inputs = [
             $factory->fields()->numeric('How old are you?')
                 ->withValue($data['age']),
             $factory->fields()->numeric('And how old dow you feel?')
                 ->withValue($data['felt_age'])
         ];
-        return $factory->step($inputs, 'Step 2', 'Tell us more about yourself');
+        return $factory->step($inputs, 'Step 2', 'Tell us more about yourself')
+            ->withAdditionalTransformation(
+                $refinery->custom()->transformation(
+                    fn ($v) => [[
+                        'age' => $v[0],
+                        'felt_age' => $v[1]
+                    ]]
+                )
+            );
+    };
+
+    $steps[] = function ($factory, $data) use ($refinery) {
+        $inputs = [
+            $factory->fields()->textarea('comments')
+                ->withValue($data['comments'])
+                ->withAdditionalTransformation(
+                    $refinery->custom()->transformation(fn ($v) => ['comments' => $v])
+                )
+        ];
+        return $factory->step($inputs, 'Step 3', 'anything else?');
     };
 
     //build wizard
@@ -74,18 +86,19 @@ function staticSequence()
         'Collect Something',
         'we collect some user input...'
     );
+
     
     // init/reset
     if (!isset($_SESSION['_wizard_staticseq_data']) || $_GET['reset'] == 1) {
         $storage->reset([
             'name' => 'name?',
             'age' => 0,
-            'felt_age' => 0
+            'felt_age' => 0,
+            'comments' => ''
         ]);
     }
 
     // run wizard
-    
     if ($request->getMethod() == "POST") {
         $wizard = $wizard->withRequest($request);
     }
@@ -97,7 +110,6 @@ function staticSequence()
 
     return "<pre>"
         . print_r($wizard->getStoredData(), true)
-        . "<br />"
         . $r->render($f->button()->shy('click here to reset storage', $url . '&reset=1'))
         . "</pre><br/>"
         . "</pre><br />"

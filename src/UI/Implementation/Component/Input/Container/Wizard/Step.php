@@ -12,38 +12,24 @@ use ILIAS\UI\Implementation\Component\Input\Field\Group;
  */
 class Step extends Group implements W\Step
 {
-    protected string $title = '';
-    //protected string $description = '';
     protected string $submit_caption = 'next';
     
     protected FieldFactory $field_factory;
-    
-    /*
-    public function __construct(array $inputs)
-    {
-        $this->inputs = $inputs;
-        parent::__construct($field_factory, '', $inputs);
-    }
-    */
-    
+
     public function getTitle() : ?string
     {
         return $this->label;
-        //return $this->title;
     }
 
     public function getDescription() : ?string
     {
         return $this->byline;
-        //return $this->description;
     }
 
     public function withInputs(array $inputs) : self
     {
         $clone = clone $this;
-        $clone->input_group = $clone->field_factory
-             ->group($inputs)
-             ->withNameFrom($this);
+        $clone->input_group = $clone->field_factory->group($inputs);
         return $clone;
     }
 
@@ -58,16 +44,4 @@ class Step extends Group implements W\Step
         $clone->submit_caption = $submit_caption;
         return $clone;
     }
- 
-    /*
-    public function withInputs(array $inputs) : self
-     {
-         $clone = clone $this;
-         $clone->input_group = $clone->field_factory
-             ->group($inputs)
-             ->withNameFrom($this);
-         return $clone;
-     }
-
-    */
 }

@@ -5,6 +5,7 @@
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
 use ILIAS\UI\Component\Input\Container\Wizard as W;
+use ILIAS\UI\Implementation\Component\Input\Container\Wizard\WizardInputNameSource;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Dynamic extends Wizard implements W\Dynamic
@@ -14,6 +15,7 @@ class Dynamic extends Wizard implements W\Dynamic
     
     public function __construct(
         W\StepFactory $step_factory,
+        WizardInputNameSource $name_source,
         W\Storage $storage,
         W\StepBuilder $builder,
         string $post_url,
@@ -22,42 +24,14 @@ class Dynamic extends Wizard implements W\Dynamic
     ) {
         $this->step_factory = $step_factory;
         $this->builder = $builder;
+
         parent::__construct(
             $storage,
+            $name_source,
             $post_url,
             $title,
             $description
         );
-    }
-    
-    public function withRequest(ServerRequestInterface $request) : self
-    {
-        $step_factory = $this->getStepFactory();
-        $data = $this->getStoredData();
-        $step = $this->getStepBuilder()->build($step_factory, $data);
-
-        $post_data = $this->extractPostData($request);
-        $clone = clone $this;
-        $clone->input_group = $step
-            ->withNameFrom($this)
-            ->withInput($post_data);
-
-        $nu_data = $clone->getData();
-        if ($nu_data) {
-            $clone->storeData($nu_data);
-        }
-        return $clone;
-    }
-
-    public function isFinished() : bool
-    {
-        $data = $this->getStoredData();
-        return $this->getStepBuilder()->isComplete($data);
-    }
-
-    public function getStepFactory() : W\StepFactory
-    {
-        return $this->step_factory;
     }
 
     public function getStepBuilder() : W\StepBuilder

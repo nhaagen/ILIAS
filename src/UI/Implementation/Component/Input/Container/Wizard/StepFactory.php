@@ -17,7 +17,6 @@ class StepFactory implements W\StepFactory
     private DataFactory $data_factory;
     private ilLanguage $lng;
 
-
     public function __construct(
         RefineryFactory $refinery,
         FieldFactory $fields,

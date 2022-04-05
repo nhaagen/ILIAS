@@ -7,6 +7,8 @@ namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 use ILIAS\UI\Component\Input\Container\Wizard as W;
 use ILIAS\UI\Implementation\Component\ComponentHelper;
 use ILIAS\UI\Implementation\Component\Input\Container\Form;
+use ILIAS\UI\Component\Input\NameSource;
+use ILIAS\UI\Implementation\Component\Input\Container\Wizard\WizardInputNameSource;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -22,11 +24,13 @@ abstract class Wizard extends Form\Standard implements W\Wizard
     
     public function __construct(
         W\Storage $storage,
+        WizardInputNameSource $name_source,
         string $post_url,
         string $title,
         string $description
     ) {
         $this->storage = $storage;
+        $this->name_source = $name_source;
         $this->post_url = $post_url;
         $this->title = $title;
         $this->description = $description;
@@ -52,6 +56,43 @@ abstract class Wizard extends Form\Standard implements W\Wizard
         $this->storage->set($data);
     }
 
-    //abstract public function withRequest(ServerRequestInterface $request) : self;
-    abstract public function isFinished() : bool;
+    public function getNameSource() : WizardInputNameSource
+    {
+        return $this->name_source->withReset();
+    }
+
+    public function withRequest(ServerRequestInterface $request) : self
+    {
+        $step_factory = $this->getStepFactory();
+        $data = $this->getStoredData();
+        $step = $this->getStepBuilder()
+            ->build($step_factory, $data)
+            ->withNameFrom($this->getNameSource());
+
+        $post_data = $this->extractPostData($request);
+
+        $clone = clone $this;
+        $clone->input_group = $step->withInput($post_data);
+        
+        $nu_data = $clone->getData();
+        if ($nu_data) {
+            $clone->storeData($nu_data);
+        }
+        return $clone;
+    }
+
+    public function isFinished() : bool
+    {
+        $data = $this->getStoredData();
+        return $this->getStepBuilder()->isComplete($data);
+    }
+    
+    public function getStepFactory() : W\StepFactory
+    {
+        return $this->step_factory;
+    }
+
+
+
+    //abstract public function isFinished() : bool;
 }
