@@ -61,26 +61,6 @@ abstract class Wizard extends Form\Standard implements W\Wizard
         return $this->name_source->withReset();
     }
 
-    public function withRequest(ServerRequestInterface $request) : self
-    {
-        $step_factory = $this->getStepFactory();
-        $data = $this->getStoredData();
-        $step = $this->getStepBuilder()
-            ->build($step_factory, $data)
-            ->withNameFrom($this->getNameSource());
-
-        $post_data = $this->extractPostData($request);
-
-        $clone = clone $this;
-        $clone->input_group = $step->withInput($post_data);
-        
-        $nu_data = $clone->getData();
-        if ($nu_data) {
-            $clone->storeData($nu_data);
-        }
-        return $clone;
-    }
-
     public function isFinished() : bool
     {
         $data = $this->getStoredData();
@@ -91,8 +71,4 @@ abstract class Wizard extends Form\Standard implements W\Wizard
     {
         return $this->step_factory;
     }
-
-
-
-    //abstract public function isFinished() : bool;
 }

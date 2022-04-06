@@ -10,6 +10,7 @@ use ILIAS\UI\Implementation\Component\Input\Field\Factory as FieldFactory;
 use ILIAS\UI\Implementation\Component\Listing\Factory as ListingFactory;
 use ILIAS\UI\Implementation\Component\Input\Container\Wizard\WizardInputNameSource;
 use ILIAS\Data\Factory as DataFactory;
+use ILIAS\HTTP\Wrapper\ArrayBasedRequestWrapper;
 use ilLanguage;
 
 /**
@@ -20,23 +21,23 @@ class Factory implements W\Factory
     protected RefineryFactory $refinery;
     protected FieldFactory $field_factory;
     protected WizardInputNameSource $name_source;
-    protected ListingFactory $listing_factory;
     protected DataFactory $data_factory;
+    protected ArrayBasedRequestWrapper $query_wrapper;
     protected ilLanguage $lng;
     protected W\StepFactory $step_factory;
 
     public function __construct(
         RefineryFactory $refinery,
+        ArrayBasedRequestWrapper $query_wrapper,
         FieldFactory $field_factory,
         WizardInputNameSource $name_source,
-        ListingFactory $listing_factory,
         DataFactory $data_factory,
         ilLanguage $lng
     ) {
         $this->refinery = $refinery;
+        $this->query_wrapper = $query_wrapper;
         $this->field_factory = $field_factory;
         $this->name_source = $name_source;
-        $this->listing_factory = $listing_factory;
         $this->data_factory = $data_factory;
         $this->lng = $lng;
 
@@ -83,11 +84,10 @@ class Factory implements W\Factory
         $builder = new StaticStepBuilder($steps);
 
         return new StaticSequence(
-            $this->listing_factory,
+            $this->query_wrapper,
             $this->step_factory,
             $this->name_source,
             $storage,
-            //$steps,
             $builder,
             $post_url,
             $title,

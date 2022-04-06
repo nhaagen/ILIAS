@@ -5,20 +5,23 @@
 namespace ILIAS\UI\Implementation\Component\Input\Container\Wizard;
 
 use ILIAS\UI\Component\Input\Container\Wizard as W;
-use ILIAS\UI\Component\Listing as Listing;
 use ILIAS\UI\Implementation\Component\Input\Container\Wizard\WizardInputNameSource;
 use Psr\Http\Message\ServerRequestInterface;
+use ILIAS\HTTP\Wrapper\ArrayBasedRequestWrapper;
 
 class StaticSequence extends Wizard implements W\StaticSequence
 {
-    protected Listing\Factory $listing_factory;
+    const QUERY_PARAM_STEPNR = 'wzssnr';
+    const QUERY_PARAM_STEPNR_JUMP = 'wzsjsnr';
+
     protected W\StepFactory $step_factory;
     protected W\StepBuilder $builder;
-    
+    protected ArrayBasedRequestWrapper $request_wrapper;
+
     protected int $current_step = 0;
     
     public function __construct(
-        Listing\Factory $listing_factory,
+        ArrayBasedRequestWrapper $query_wrapper,
         W\StepFactory $step_factory,
         WizardInputNameSource $name_source,
         W\Storage $storage,
@@ -27,8 +30,7 @@ class StaticSequence extends Wizard implements W\StaticSequence
         string $title,
         string $description
     ) {
-        $this->listing_factory = $listing_factory; //->workflow()->linear('', $steps);
-        
+        $this->query_wrapper = $query_wrapper;
         $this->step_factory = $step_factory;
         $this->builder = $builder;
 
@@ -43,12 +45,14 @@ class StaticSequence extends Wizard implements W\StaticSequence
 
     public function withRequest(ServerRequestInterface $request) : self
     {
-        //TODO: get-wrapper!!!
         $current_step_from_get = 0;
-        if ($_GET['stepnr']) {
-            $current_step_from_get = (int) $_GET['stepnr'];
+        if ($this->query_wrapper->has(self::QUERY_PARAM_STEPNR)) {
+            $current_step_from_get = $this->query_wrapper->retrieve(
+                self::QUERY_PARAM_STEPNR,
+                $this->step_factory->refinery()->kindlyTo()->int()
+            );
         }
-        
+      
         $post_data = $this->extractPostData($request);
         $data = $this->getStoredData();
         $step_factory = $this->getStepFactory();
@@ -60,15 +64,15 @@ class StaticSequence extends Wizard implements W\StaticSequence
             ->withNameFrom($this->getNameSource())
             ->withInput($post_data);
     
-
         $nu_data = $clone->getData();
-        $nu_step_nr = $current_step_from_get + 1;
+        if ($nu_data) {
+            $nu_step_nr = $current_step_from_get + 1;
+            $clone = $clone->withCurrentStep($nu_step_nr);
+            $clone->storeData($nu_data);
+        }
 
-        $clone = $clone->withCurrentStep($nu_step_nr);
-        $clone->storeData($nu_data);
         return $clone;
     }
-
  
     public function withCurrentStep(int $step) : self
     {
@@ -76,6 +80,7 @@ class StaticSequence extends Wizard implements W\StaticSequence
         $clone->current_step = $step;
         return $clone;
     }
+
     public function getCurrentStep() : int
     {
         return $this->current_step;

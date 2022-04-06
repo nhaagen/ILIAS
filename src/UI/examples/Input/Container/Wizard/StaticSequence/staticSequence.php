@@ -38,45 +38,60 @@ function staticSequence()
     };
 
     $steps = [];
-    $steps[] = function ($factory, $data) use ($refinery) {
-        $inputs = [
-            $factory->fields()->text('What is your name?')
-                ->withValue($data['name'])
-                ->withAdditionalTransformation(
-                    $refinery->custom()->transformation(fn ($v) => ['name' => $v])
-                )
-        ];
-        return $factory->step($inputs, 'Step 1', 'Tell us something about yourself');
-    };
+    
+    $steps[] = [
+        'Step 1',  //title
+        'Tell us something about yourself', //description
+        fn ($factory, $data, $title, $description) => $factory->step(
+            [
+                $factory->fields()->text('What is your name?')
+                    ->withValue($data['name'])
+                    ->withAdditionalTransformation(
+                        $factory->refinery()->custom()->transformation(fn ($v) => ['name' => $v])
+                    )
+            ],
+            $title,
+            $description
+        )
+    ];
+    
+    $steps[] = [
+        'Step 2',
+        'Tell us more about yourself',
+        fn ($factory, $data, $title, $description) => $factory->step(
+            [
+                $factory->fields()->numeric('How old are you?')
+                    ->withValue($data['age']),
+                $factory->fields()->numeric('And how old dow you feel?')
+                    ->withValue($data['felt_age'])
+            ],
+            $title,
+            $description
+        )->withAdditionalTransformation(
+            $refinery->custom()->transformation(
+                fn ($v) => [[
+                    'age' => $v[0],
+                    'felt_age' => $v[1]
+                ]]
+            )
+        )
+    ];
 
-    $steps[] = function ($factory, $data) use ($refinery) {
-        $inputs = [
-            $factory->fields()->numeric('How old are you?')
-                ->withValue($data['age']),
-            $factory->fields()->numeric('And how old dow you feel?')
-                ->withValue($data['felt_age'])
-        ];
-        return $factory->step($inputs, 'Step 2', 'Tell us more about yourself')
-            ->withAdditionalTransformation(
-                $refinery->custom()->transformation(
-                    fn ($v) => [[
-                        'age' => $v[0],
-                        'felt_age' => $v[1]
-                    ]]
-                )
-            );
-    };
-
-    $steps[] = function ($factory, $data) use ($refinery) {
-        $inputs = [
-            $factory->fields()->textarea('comments')
-                ->withValue($data['comments'])
-                ->withAdditionalTransformation(
-                    $refinery->custom()->transformation(fn ($v) => ['comments' => $v])
-                )
-        ];
-        return $factory->step($inputs, 'Step 3', 'anything else?');
-    };
+    $steps[] = [
+        'Step 3',
+        'Anything else?',
+        fn ($factory, $data, $title, $description) => $factory->step(
+            [
+                $factory->fields()->textarea('comments')
+                    ->withValue($data['comments'])
+                    ->withAdditionalTransformation(
+                        $refinery->custom()->transformation(fn ($v) => ['comments' => $v])
+                    )
+            ],
+            $title,
+            $description
+        )
+    ];
 
     //build wizard
     $wizard = $f->input()->container()->wizard()->staticsequence(
