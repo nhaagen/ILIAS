@@ -9,6 +9,6 @@ namespace ILIAS\UI\Component\Input\Container\Wizard;
  */
 interface StepBuilder
 {
-    public function isComplete(mixed $data) : bool;
-    public function build(StepFactory $factory, mixed $data) : Step;
+    public function isComplete($data) : bool;
+    public function build(StepFactory $factory, $data) : Step;
 }

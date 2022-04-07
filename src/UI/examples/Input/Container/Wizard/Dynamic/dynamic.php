@@ -20,13 +20,13 @@ function dynamic()
     $magic = new class() implements Wizard\StepBuilder {
 
         //When is data complete? As long as this ist false, wizard must continue collecting.
-        public function isComplete(mixed $data) : bool
+        public function isComplete($data) : bool
         {
             return is_array($data) && array_sum($data) === 10;
         }
 
         //define the process to create a new step based on some data
-        public function build(Wizard\StepFactory $factory, mixed $data) : Wizard\Step
+        public function build(Wizard\StepFactory $factory, $data) : Wizard\Step
         {
             $inputs = [];
             foreach ($data as $idx => $summand) {
@@ -54,11 +54,11 @@ function dynamic()
     //super minimalistic session storage
     $storage = new class() implements Wizard\Storage {
         protected $k = '_wizard_dummy_data';
-        public function set(mixed $data) : void
+        public function set($data) : void
         {
             $_SESSION[$this->k] = $data;
         }
-        public function get() : mixed
+        public function get()
         {
             return $_SESSION[$this->k];
         }

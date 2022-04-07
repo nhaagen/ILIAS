@@ -19,12 +19,12 @@ function staticSequence()
     //super minimalistic session storage
     $storage = new class() implements Wizard\Storage {
         protected $k = '_wizard_staticseq_data';
-        public function set(mixed $data) : void
+        public function set($data) : void
         {
             $data = array_merge($this->get(), array_shift($data));
             $_SESSION[$this->k] = $data;
         }
-        public function get() : mixed
+        public function get()
         {
             if (!array_key_exists($this->k, $_SESSION)) {
                 $this->set([]);

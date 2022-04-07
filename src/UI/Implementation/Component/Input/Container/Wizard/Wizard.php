@@ -46,12 +46,12 @@ abstract class Wizard extends Form\Standard implements W\Wizard
         return $this->description;
     }
 
-    public function getStoredData() : mixed
+    public function getStoredData()
     {
         return $this->storage->get();
     }
 
-    public function storeData(mixed $data) : void
+    public function storeData($data) : void
     {
         $this->storage->set($data);
     }

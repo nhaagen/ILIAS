@@ -20,12 +20,12 @@ class StaticStepBuilder implements W\StepBuilder
         $this->step_definitions = $step_definitions;
     }
 
-    public function isComplete(mixed $data) : bool
+    public function isComplete($data) : bool
     {
         return $this->current_step >= count($this->step_definitions);
     }
 
-    public function build(W\StepFactory $factory, mixed $data) : W\Step
+    public function build(W\StepFactory $factory, $data) : W\Step
     {
         list($title, $description, $step_building_closure) = $this->step_definitions[$this->current_step];
         $step = $step_building_closure($factory, $data, $title, $description);

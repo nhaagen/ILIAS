@@ -9,6 +9,6 @@ namespace ILIAS\UI\Component\Input\Container\Wizard;
  */
 interface Storage
 {
-    public function set(mixed $data) : void;
-    public function get() : mixed;
+    public function set($data) : void;
+    public function get();
 }
