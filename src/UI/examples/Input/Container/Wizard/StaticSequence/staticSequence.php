@@ -94,7 +94,7 @@ function staticSequence()
     ];
 
     //build wizard
-    $wizard = $f->input()->container()->wizard()->staticsequence(
+    $wizard = $f->input()->container()->wizard()->staticSequence(
         $storage,
         $steps,
         $url,
@@ -117,8 +117,13 @@ function staticSequence()
     if ($request->getMethod() == "POST") {
         $wizard = $wizard->withRequest($request);
     }
-    if ($wizard->isFinished()) {
-        $out = 'Yay - done it!';
+
+    $data = $wizard->getData();
+    if (!is_null($data)) {
+        $out = '<b>Yay - done it!</b>'
+        . $r->render($f->listing()->characteristicValue()->text(
+            array_map('strval', $data)
+        ));
     } else {
         $out = $r->render($wizard);
     }

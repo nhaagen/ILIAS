@@ -13,5 +13,4 @@ interface Wizard extends Form\Standard
 {
     public function getTitle() : string;
     public function getDescription() : string;
-    public function isFinished() : bool;
 }

@@ -6,7 +6,7 @@ class WizardFactoryTest extends AbstractFactoryTest
         "dynamic" => [
             "context" => false
         ],
-        "staticsequence" => [
+        "staticSequence" => [
             "context" => false
         ]
     ];

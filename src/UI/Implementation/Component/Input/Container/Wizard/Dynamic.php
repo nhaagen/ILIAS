@@ -52,7 +52,7 @@ class Dynamic extends Wizard implements W\Dynamic
         $clone = clone $this;
         $clone->input_group = $step->withInput($post_data);
         
-        $nu_data = $clone->getData();
+        $nu_data = $clone->getFormData();
         if ($nu_data) {
             $clone->storeData($nu_data);
         }

@@ -6,8 +6,8 @@ use ILIAS\UI\Implementation\Component\Input\Field\Factory as FieldFactory;
 use ILIAS\Refinery\Factory as RefineryFactory;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\UI\Implementation\Component\SignalGenerator;
+use ILIAS\HTTP\Wrapper\ArrayBasedRequestWrapper;
 
-//use Psr\Http\Message\ServerRequestInterface;
 /**
  * Test the wizard
  */
@@ -18,6 +18,8 @@ class DynamicWizardTest extends ILIAS_UI_TestBase
         $data_factory = new DataFactory();
         $language = $this->createMock(ilLanguage::class);
         $refinery_factory = new RefineryFactory($data_factory, $language);
+        $name_source = new WizardImpl\WizardInputNameSource();
+
         $field_factory = new FieldFactory(
             new SignalGenerator(),
             $data_factory,
@@ -27,7 +29,9 @@ class DynamicWizardTest extends ILIAS_UI_TestBase
 
         return new WizardImpl\Factory(
             $refinery_factory,
+            new ArrayBasedRequestWrapper([]),
             $field_factory,
+            $name_source,
             $data_factory,
             $language
         );
@@ -83,7 +87,7 @@ class DynamicWizardTest extends ILIAS_UI_TestBase
 
     public function testBaseAttributes() : void
     {
-        $this->assertEquals($this->title, $this->wizard->getTitle());
+        $this->assertEquals($this->label, $this->wizard->getTitle());
         $this->assertEquals($this->description, $this->wizard->getDescription());
         $this->assertInstanceOf(WizardImpl\StepBuilder::class, $this->wizard->getStepBuilder());
     }

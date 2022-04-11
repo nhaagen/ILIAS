@@ -29,7 +29,9 @@ interface Factory
      *   rivals:
      *      StaticSequence: >
      *          The Static Sequence uses a fixed set of fixed steps;
-     *
+     * rules:
+     *   usage:
+     *     1: ...
      * ---
      * @return \ILIAS\UI\Component\Input\Container\Wizard\Dynamic
      */
@@ -69,7 +71,7 @@ interface Factory
      * ---
      * @return \ILIAS\UI\Component\Input\Container\Wizard\StaticSequence
      */
-    public function staticsequence(
+    public function staticSequence(
         Storage $storage,
         array $steps, // Step[]
         string $post_url, //'string' is a legacy from form

@@ -64,7 +64,7 @@ class StaticSequence extends Wizard implements W\StaticSequence
             ->withNameFrom($this->getNameSource())
             ->withInput($post_data);
     
-        $nu_data = $clone->getData();
+        $nu_data = $clone->getFormData();
         if ($nu_data) {
             $nu_step_nr = $current_step_from_get + 1;
             $clone = $clone->withCurrentStep($nu_step_nr);

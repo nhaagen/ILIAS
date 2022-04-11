@@ -81,8 +81,10 @@ function dynamic()
 
     // run wizard
     $wizard = $wizard->withRequest($request);
-    if ($wizard->isFinished()) {
-        $out = 'Yay - great counting!';
+    $data = $wizard->getData();
+    if (!is_null($data)) {
+        $out = 'Yay - great counting! <br />'
+            . print_r($data, true);
     } else {
         $out = $r->render($wizard);
     }

@@ -257,10 +257,11 @@ class InitUIFramework
         $c["ui.factory.input.container.wizard"] = function ($c) {
             $data_factory = new ILIAS\Data\Factory();
             $name_source = new ILIAS\UI\Implementation\Component\Input\Container\Wizard\WizardInputNameSource();
+            $query_wrapper = $c['http']->wrapper()->query();
 
             return new ILIAS\UI\Implementation\Component\Input\Container\Wizard\Factory(
                 $c["refinery"],
-                $c['http']->wrapper()->query(),
+                $query_wrapper,
                 $c["ui.factory.input.field"],
                 $name_source,
                 $data_factory,

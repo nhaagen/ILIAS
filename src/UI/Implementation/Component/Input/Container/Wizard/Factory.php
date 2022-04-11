@@ -74,7 +74,7 @@ class Factory implements W\Factory
     /**
      * @inheritdoc
      */
-    public function staticsequence(
+    public function staticSequence(
         W\Storage $storage,
         array $steps,
         string $post_url,

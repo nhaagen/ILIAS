@@ -61,7 +61,7 @@ abstract class Wizard extends Form\Standard implements W\Wizard
         return $this->name_source->withReset();
     }
 
-    public function isFinished() : bool
+    protected function isFinished() : bool
     {
         $data = $this->getStoredData();
         return $this->getStepBuilder()->isComplete($data);
@@ -70,5 +70,18 @@ abstract class Wizard extends Form\Standard implements W\Wizard
     public function getStepFactory() : W\StepFactory
     {
         return $this->step_factory;
+    }
+    
+    public function getFormData()
+    {
+        return parent::getData();
+    }
+
+    public function getData()
+    {
+        if ($this->isFinished()) {
+            return $this->storage->get();
+        }
+        return null;
     }
 }
