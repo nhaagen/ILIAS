@@ -19,6 +19,7 @@ class DynamicWizardTest extends ILIAS_UI_TestBase
         $language = $this->createMock(ilLanguage::class);
         $refinery_factory = new RefineryFactory($data_factory, $language);
         $name_source = new WizardImpl\WizardInputNameSource();
+        $query_wrapper = $this->dic['http']->wrapper()->query();
 
         $field_factory = new FieldFactory(
             new SignalGenerator(),
@@ -29,7 +30,7 @@ class DynamicWizardTest extends ILIAS_UI_TestBase
 
         return new WizardImpl\Factory(
             $refinery_factory,
-            new ArrayBasedRequestWrapper([]),
+            $query_wrapper,
             $field_factory,
             $name_source,
             $data_factory,
@@ -39,6 +40,7 @@ class DynamicWizardTest extends ILIAS_UI_TestBase
 
     public function setUp() : void
     {
+        parent::setUp();
         $this->storage = new class() implements Wizard\Storage {
             protected $data = [];
             public function set(mixed $data) : void
