@@ -17,29 +17,6 @@ class ilObjLearningSequenceSettingsGUI
 
     const CMD_OLD_INTRO = "viewlegacyi";
     const CMD_OLD_EXTRO = "viewlegacye";
-    
-
-    private $rte_allowed_tags = [
-        'br',
-        'em',
-        'h1',
-        'h2',
-        'h3',
-        'li',
-        'ol',
-        'p',
-        'strong',
-        'u',
-        'ul',
-        'a'
-    ];
-
-    private $img_allowed_suffixes = [
-        'png',
-        'jpg',
-        'jpeg',
-        'gif'
-    ];
 
     public function __construct(
         ilObjLearningSequence $obj,

@@ -67,7 +67,10 @@ class ilLSLaunchlinksBuilder
 
     protected function getLink(string $cmd) : string
     {
-        return $this->ctrl->getLinkTargetByClass('ilObjLearningSequenceLearnerGUI', $cmd);
+        return $this->ctrl->getLinkTargetByClass(
+            ['ilObjLearningSequenceGUI', 'ilObjLearningSequenceLearnerGUI'],
+            $cmd
+        );
     }
 
     public function getLinks() : array
@@ -127,11 +130,7 @@ class ilLSLaunchlinksBuilder
         $buttons = [];
         foreach ($this->getLinks() as $idx => $entry) {
             list($label, $link) = $entry;
-            if ($idx === 0) {
-                $buttons[] = $this->ui_factory->button()->primary($label, $link);
-            } else {
-                $buttons[] = $this->ui_factory->button()->standard($label, $link);
-            }
+            $buttons[] = $this->ui_factory->button()->standard($label, $link);
         }
         return $buttons;
     }

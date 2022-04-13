@@ -226,6 +226,7 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
             $next_class === 'ilobjlearningsequencelearnergui'
             && $cmd === 'view'
         );
+        $in_editor = false;
 
         $tpl->setPermanentLink("lso", $this->ref_id);
 
@@ -285,14 +286,13 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
                 $gui_class = 'ilObjLearningSequenceEditIntroGUI';
                 // no break
             case "ilobjlearningsequenceeditextrogui":
-
+                $in_editor = true;
                 if (!isset($which_page)) {
                     $which_page = $this->object::CP_EXTRO;
                     $which_tab = self::TAB_EDIT_EXTRO;
 
                     $gui_class = 'ilObjLearningSequenceEditExtroGUI';
                 }
-
                 $this->addSubTabsForContent($which_tab);
                 
                 $page_id = $this->object->getContentPageId($which_page);
@@ -304,9 +304,10 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
                     $this->object::CP_TYPE,
                     $page_id
                 );
+                
                 $this->ctrl->setCmd($cmd);
                 $out = $this->ctrl->forwardCommand($gui);
-                
+
                 //editor's guis will write to template, but not return
                 //e.g. see ilPCTabsGUI::insert
                 if (!is_null($out)) {
@@ -395,7 +396,7 @@ class ilObjLearningSequenceGUI extends ilContainerGUI
                 throw new ilException("ilObjLearningSequenceGUI: Can't forward to next class $next_class");
         }
 
-        if (!$in_player) {
+        if (!$in_player && !$in_editor) {
             $this->addHeaderAction();
         }
     }

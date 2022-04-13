@@ -10,10 +10,10 @@ class ilObjLearningSequenceLearnerGUI
     const CMD_UNSUBSCRIBE = 'unsubscribe';
     const CMD_VIEW = 'view';
     const CMD_START = 'start';
-
     const PARAM_LSO_NEXT_ITEM = 'lsoni';
     const LSO_CMD_NEXT = 'lson';
     const LSO_CMD_PREV = 'lsop';
+
     protected ilCtrl $ctrl;
     protected ilLanguage $lng;
     protected ilGlobalTemplateInterface $tpl;
@@ -164,7 +164,7 @@ class ilObjLearningSequenceLearnerGUI
         }
 
         if ($cmd === self::CMD_EXTRO) {
-            if ($this->intro === '') {
+            if ($this->extro === '') {
                 $contents[] = $this->ui_factory->legacy($this->settings->getExtro());
                 $img = $this->settings->getExtroImage();
                 if ($img) {

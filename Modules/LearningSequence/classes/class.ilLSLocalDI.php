@@ -112,7 +112,7 @@ class ilLSLocalDI extends Container
 
         $this["player.urlbuilder"] = function ($c) use ($dic, $data_factory) : LSUrlBuilder {
             $player_base_url = $dic['ilCtrl']->getLinkTargetByClass(
-                'ilObjLearningSequenceLearnerGUI',
+                ['ilObjLearningSequenceGUI', 'ilObjLearningSequenceLearnerGUI'],
                 \ilObjLearningSequenceLearnerGUI::CMD_VIEW,
                 '',
                 false,

@@ -4187,7 +4187,7 @@
 <!-- (LSO) Curriculum -->
 <xsl:template match="Curriculum">
 	<xsl:if test="$mode = 'edit'">
-		<div class="copg-new-content-placeholder">
+		<div class="copg-content-placeholder-lso-curriculum">
 			<img class="icon pemed medium" src="./templates/default/images/icon_lso.svg" alt="curriculum" />
 			<div>Curriculum</div>
 		</div>
@@ -4202,8 +4202,8 @@
 <!-- (LSO) Launcher -->
 <xsl:template match="Launcher">
 	<xsl:if test="$mode = 'edit'">
-		<div class="copg-new-content-placeholder">
-			<button class="btn btn-primary">Start LSO</button>
+		<div class="copg-content-placeholder-lso-startbutton">
+			<button class="btn btn-standard">Start Learning Sequence</button>
 		</div>
 	</xsl:if>
 	<xsl:if test="$mode != 'edit'">
