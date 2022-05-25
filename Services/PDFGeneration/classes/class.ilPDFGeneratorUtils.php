@@ -172,7 +172,6 @@ class ilPDFGeneratorUtils
     public static function getRendererDefaultConfig(string $service, string $purpose, string $renderer)
     {
         $class_instance = self::getRendererInstance($renderer);
-
         return $class_instance->getDefaultConfig($service, $purpose);
     }
 
