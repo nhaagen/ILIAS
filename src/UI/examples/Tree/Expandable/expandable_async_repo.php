@@ -8,29 +8,37 @@ global $DIC;
 $refinery = $DIC->refinery();
 $request_wrapper = $DIC->http()->wrapper()->query();
 
-if ($request_wrapper->has('async_ref') && $request_wrapper->retrieve('async_ref', $refinery->kindlyTo()->bool())) {
+if ($request_wrapper->has('async_ref')) {
     $ref = $request_wrapper->retrieve('async_ref', $refinery->kindlyTo()->int());
-    expandable_async_repo($ref);
+    expandable_async_repo((int)$ref);
     exit();
 }
 
 function expandable_async_repo($ref = null)
 {
     global $DIC;
-    $ilTree = $DIC['tree'];
+    $data = [];
 
     if (is_null($ref)) {
         $do_async = false;
         $ref = 1;
-        $data = array(
-            $ilTree->getNodeData(1)
-        );
+        $data[] = [
+            'ref_id' => "1",
+            'type'  => 'root',
+            'title'  => 'Ilias'
+        ];
     } else {
         $do_async = true;
-        $data = $ilTree->getChilds($ref);
-        if (count($data) === 0) {
-            return;
-        }
+        $data[] = [
+            'ref_id' => (string) ($ref + 10),
+            'type'  => 'cat',
+            'title'  => 'entry'
+        ];
+        $data[] = [
+            'ref_id' => "23",
+            'type'  => 'tst',
+            'title'  => 'another'
+        ];
     }
 
     $recursion = new class () implements \ILIAS\UI\Component\Tree\TreeRecursion {
@@ -50,13 +58,12 @@ function expandable_async_repo($ref = null)
 
             $icon = $environment['icon_factory']->standard($record["type"], '');
             $url = $this->getAsyncURL($environment, $ref_id);
-
             $node = $factory->simple($label, $icon)
                 ->withAsyncURL($url);
 
             //find these under ILIAS->Administration in the example tree
             if ((int) $ref_id > 9 && (int) $ref_id < 20) {
-                $label = $environment['modal']->getShowSignal()->getId();
+                $label = $label . ' - ' . $environment['modal']->getShowSignal()->getId();
                 $node = $factory->simple($label)
                     ->withAsyncURL($url)
                     ->withOnClick($environment['modal']->getShowSignal());
