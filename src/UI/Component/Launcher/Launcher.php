@@ -24,12 +24,13 @@ use ILIAS\UI\Component\Component;
 use ILIAS\UI\Component\Chart\ProgressMeter;
 use ILIAS\UI\Component\Symbol\Icon;
 use ILIAS\UI\Component\Input\Container\Form\Form;
+use ILIAS\UI\Component\Input\Field\Group;
 
 interface Launcher extends Component, Form
 {
-    public function withDescription(string $description) : self;
+    public function withDescription(string $description): self;
 
-    public function withInputs(Field $fields) : self;
+    public function withInputs(Group $fields): self;
 
     /**
      * @param Icon | ProgressMeter $status
@@ -41,7 +42,7 @@ interface Launcher extends Component, Form
     /**
      * @inheritdoc
      *
-     * If not Inputs have been configured, the method will always return true.
+     * If no Inputs have been configured, the method will always return true.
      */
     public function getData();
 }

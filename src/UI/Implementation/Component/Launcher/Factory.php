@@ -20,23 +20,18 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Implementation\Component\Launcher;
 
+use ILIAS\Data\Link;
 use ILIAS\UI\Component\Launcher;
+use ILIAS\UI\Implementation\Component\Input;
 
 class Factory implements Launcher\Factory
 {
     /**
      * @inheritdoc
      */
-    public function inline(): Launcher\Inline
+    public function inline(Link $target): Launcher\Inline
     {
-        throw new \ILIAS\UI\NotImplementedException();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function modal(): Launcher\Modal
-    {
-        throw new \ILIAS\UI\NotImplementedException();
+        $name_source = new Input\FormInputNameSource();
+        return new Inline($name_source, $target);
     }
 }

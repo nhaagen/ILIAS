@@ -50,7 +50,8 @@ class InitUIFramework
                 $c["ui.factory.menu"],
                 $c["ui.factory.symbol"],
                 $c["ui.factory.toast"],
-                $c["ui.factory.legacy"]
+                $c["ui.factory.legacy"],
+                $c["ui.factory.launcher"]
             );
         };
         $c["ui.upload_limit_resolver"] = function ($c) {
@@ -284,6 +285,10 @@ class InitUIFramework
 
         $c["ui.pathresolver"] = function ($c): ILIAS\UI\Implementation\Render\ImagePathResolver {
             return new ilImagePathResolver();
+        };
+
+        $c["ui.factory.launcher"] = function ($c): ILIAS\UI\Implementation\Component\Launcher\Factory {
+            return new ILIAS\UI\Implementation\Component\Launcher\Factory();
         };
     }
 }
