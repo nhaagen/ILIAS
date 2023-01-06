@@ -921,19 +921,23 @@ interface Factory
      *     the user is redirected to the target. Otherwise, a message is being displayed.
      *     If the user cannot launch the object at all (precondition, unavailability etc.),
      *     the primary button is disabled with unavailable action.
-     *     The label of the Primary Button may change, e.g. in relation to the statusu
+     *     The label of the Primary Button may change, e.g. in relation to the status
      *     of the progress.
      *   rivals:
      *     Item: >
      *       Other than an item, the Launcher's focus is on an action rather than
      *       the representation of an entity.
+     *     Link: >
+     *       Link's primary function is navigation; operating a Link must not
+     *       change the systems's status, while a launcher may well sign up a user
+     *       to a LearningSequence, e.g.
      * rules:
      *   usage:
      *     1: The Launcher MUST contain a primary button.
      *     2: If the user cannot launch the process, the Primary Button MUST be disabled.
      *     3: >
      *       The Launcher SHOULD NOT be used to collect larger sets of information (e.g. a
-     *       full user registration) - that would be a process in itself. 
+     *       full user registration) - that would be a process in itself.
      *     4: >
      *       The launcher SHOULD support the users' intent to make a quick choice if it is
      *       the desired object/process/workflow to launch or not. Just relevant information

@@ -21,27 +21,27 @@ declare(strict_types=1);
 namespace ILIAS\UI\Component\Launcher;
 
 use ILIAS\UI\Component\Component;
-use ILIAS\UI\Component\Chart\ProgressMeter;
-use ILIAS\UI\Component\Symbol\Icon;
+use ILIAS\UI\Component\Chart\ProgressMeter\ProgressMeter;
+use ILIAS\UI\Component\Symbol\Icon\Icon;
 use ILIAS\UI\Component\Input\Container\Form\Form;
+use ILIAS\UI\Component\Input\Field\Group;
+use ILIAS\UI\Component\MessageBox;
 
-interface Launcher extends Component, Form
+interface Launcher extends Component
 {
-    public function withDescription(string $description) : self;
+    public const ALLOWED_STATUS_COMPONENTS = [
+        Icon::class,
+        ProgressMeter::class
+    ];
 
-    public function withInputs(Field $fields) : self;
+    public function withDescription(string $description): self;
+
+    public function withInputs(Group $fields, \Closure $evaluation, MessageBox\MessageBox $instruction = null): self;
 
     /**
      * @param Icon | ProgressMeter $status
      */
-    public function withStatus(Component $status): self;
+    public function withStatus(Component $status, MessageBox\MessageBox $status_message = null): self;
 
     public function withButtonLabel(string $label, bool $launchable = true): self;
-
-    /**
-     * @inheritdoc
-     *
-     * If not Inputs have been configured, the method will always return true.
-     */
-    public function getData();
 }
