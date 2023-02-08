@@ -1,0 +1,33 @@
+@use "../../../010-settings/" as settings;
+@use "../../../010-settings/legacy-settings/legacy-settings_symbol" as legacy-setting-symbol;
+@use "../../../050-layout/basics/" as layout-basics;
+
+.c-launcher__status {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: layout-basics.$il-margin-xlarge-vertical;
+}
+
+.c-launcher__status__message {
+    flex-grow: 1;
+    order: 2;
+    > * {
+        margin-bottom: 0;
+    }
+}
+
+.c-launcher__status__icon {
+    margin-right: layout-basics.$il-margin-small-horizontal;
+    flex-basis: auto;
+    order: 1;
+    &:empty {
+        display: none;
+    }
+}
+
+.c-launcher__status__icon {
+    .il-chart-progressmeter-viewbox {
+        height: legacy-setting-symbol.$il-icon-size-large;
+        width: legacy-setting-symbol.$il-icon-size-large;
+    }
+}

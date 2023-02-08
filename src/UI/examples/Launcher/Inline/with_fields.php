@@ -14,6 +14,7 @@ function with_fields()
     $data_factory = new \ILIAS\Data\Factory();
     $request = $DIC->http()->request();
     $ctrl = $DIC['ilCtrl'];
+    $spacer = $ui_factory->divider()->horizontal();
 
     $url = $data_factory->uri(
         ($_SERVER['REQUEST_SCHEME'] ?? "http") . '://'
@@ -22,8 +23,8 @@ function with_fields()
         . str_replace('launcher_redirect=', 'x=', $_SERVER['REQUEST_URI'])
     );
 
-    $target = $data_factory->link('label', $url);
-    $icon = $ui_factory->symbol()->icon()->standard('coms', '', 'large');
+    $target = $data_factory->link('Join Group', $url);
+    $icon = $ui_factory->symbol()->icon()->standard('auth', 'authentification needed', 'large');
     $group = $ui_factory->input()->field()->group(
         [
             $ui_factory->input()->field()->password('pwd', 'Password')
@@ -39,7 +40,7 @@ function with_fields()
 
     $launcher = $ui_factory->launcher()
         ->inline($target)
-        ->withDescription('a launcher with fields')
+        ->withDescription('<p>Before you can join this group, you have to enter the correct password</p>')
         ->withStatus($icon)
         ->withInputs($group, $evaluation, $instruction)
         ->withRequest($request);
@@ -55,9 +56,15 @@ function with_fields()
             $ctrl->redirectToURL((string)$target . '&launcher_redirect=' . $result->value()[0][0]);
         }
     };
-    $launcher2 = $launcher
+
+    $target = $data_factory->link('Begin Exam', $url);
+    $icon = $ui_factory->symbol()->icon()->standard('ps', 'authentification needed', 'large');
+    $status_message =  $ui_factory->messageBox()->failure("You will be asked for your personal passcode when you start the test.");
+    $launcher2 = $ui_factory->launcher()
+        ->inline($target)
         ->withInputs($group, $evaluation)
-        ->withDescription('2nd');
+        ->withStatus($icon, $status_message)
+        ->withDescription('');
 
     $evaluation = function (\ILIAS\Data\Result $result, URI $target) use ($ctrl) {
         if ($result->isOK() && $result->value()[0][1]) {
@@ -65,9 +72,11 @@ function with_fields()
         }
     };
 
-    $launcher3 = $launcher
+    $target = $data_factory->link('Take Survey', $url);
+    $launcher3 = $ui_factory->launcher()
+        ->inline($target)
         ->withInputs($group, $evaluation)
-        ->withDescription('3rd');
+        ->withDescription("<p>Befor you can take the survey, you have to agree to our terms and conditions.</p>");
 
     $result = "not submitted or wrong pass";
     if (array_key_exists('launcher_redirect', $request->getQueryParams())
@@ -75,5 +84,11 @@ function with_fields()
     ) {
         $result = "<b>sucessfully redirected ($v)</b>";
     }
-    return $result . "<hr/>" . $renderer->render([$launcher, $launcher2,$launcher3]);
+    return $result . "<hr/>" . $renderer->render([
+        $launcher,
+        $spacer,
+        $launcher2,
+        $spacer,
+        $launcher3
+    ]);
 }
