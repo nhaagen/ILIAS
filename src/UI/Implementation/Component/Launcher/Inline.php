@@ -48,7 +48,6 @@ class Inline implements C\Launcher\Inline
     protected ?MessageBox\MessageBox $instruction = null;
     protected ?MessageBox\MessageBox $status_message = null;
     protected ?ServerRequestInterface $request = null;
-    protected \Closure $status; //class?!
 
     public function __construct(
         Form\Factory $form_factory,
@@ -57,7 +56,6 @@ class Inline implements C\Launcher\Inline
         $this->form_factory = $form_factory;
         $this->target = $target;
         $this->label = $target->getLabel();
-        $this->evaluation = fn () => true;
     }
 
     public function getTarget(): Link

@@ -24,9 +24,6 @@ use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
 use ILIAS\UI\Renderer as RendererInterface;
 use ILIAS\UI\Component;
 
-//use ILIAS\UI\Implementation\Render\ResourceRegistry;
-//use ILIAS\UI\Implementation\Render\Template;
-
 class Renderer extends AbstractComponentRenderer
 {
     public function render(Component\Component $component, RendererInterface $default_renderer): string
