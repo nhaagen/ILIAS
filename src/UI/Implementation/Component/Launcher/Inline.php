@@ -33,23 +33,22 @@ class Inline implements C\Launcher\Inline
 {
     use ComponentHelper;
 
-    public const TOKENPARAM = 'launchertoken';
-
     protected Form\Factory $form_factory;
     protected Link $target;
+    protected string $label;
     protected string $description = '';
     protected ?string $error_note = null;
     /**
-     * @var null | Icon | ProgressMeeter
+     * @var null | Icon | ProgressMeter
      */
-    protected $status = null;
-    protected ?string $label = null;
+    protected $status_icon = null;
     protected bool $launchable = true;
     protected ?Form\Form $form = null;
     protected \Closure $evaluation;
     protected ?MessageBox\MessageBox $instruction = null;
     protected ?MessageBox\MessageBox $status_message = null;
     protected ?ServerRequestInterface $request = null;
+    protected \Closure $status; //class?!
 
     public function __construct(
         Form\Factory $form_factory,
@@ -57,6 +56,7 @@ class Inline implements C\Launcher\Inline
     ) {
         $this->form_factory = $form_factory;
         $this->target = $target;
+        $this->label = $target->getLabel();
         $this->evaluation = fn () => true;
     }
 
@@ -77,23 +77,78 @@ class Inline implements C\Launcher\Inline
         return $this->description;
     }
 
-    protected function getToken(): string
+    /**
+     * @param Icon | ProgressMeter $status
+     */
+    public function withStatusIcon(?C\Component $status_icon): self
     {
-        return (string)crc32($this->getDescription()); //TODO: NOT description
+        if (!is_null($status_icon)) {
+            $check = array($status_icon);
+            $this->checkArgListElements("status_icon", $check, self::ALLOWED_STATUS_COMPONENTS);
+        }
+        $clone = clone $this;
+        $clone->status_icon = $status_icon;
+        return $clone;
+    }
+
+    public function getStatusIcon(): ?C\Component
+    {
+        return $this->status_icon;
+    }
+
+    public function withStatusMessage(?MessageBox\MessageBox $status_message): self
+    {
+        $clone = clone $this;
+        $clone->status_message = $status_message;
+        return $clone;
+    }
+    public function getStatusMessage(): ?MessageBox\MessageBox
+    {
+        return $this->status_message;
+    }
+
+    public function withButtonLabel(string $label, bool $launchable = true): self
+    {
+        $clone = clone $this;
+        $clone->label = $label;
+        $clone->launchable = $launchable;
+        return $clone;
+    }
+
+    public function getButtonLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function isLaunchable(): bool
+    {
+        return $this->launchable;
     }
 
     public function withInputs(Group $fields, \Closure $evaluation, MessageBox\MessageBox $instruction = null): self
     {
         $clone = clone $this;
-        $target = $clone->getTarget()->getURL()
-            ->withParameter(self::TOKENPARAM, $clone->getToken());
-        $clone->form = $this->form_factory->standard(
-            (string) $target,
-            [$fields]
-        );
+        $clone->form = $this->form_factory->standard((string)$clone->getTarget()->getURL(), [$fields]);
         $clone->evaluation = $evaluation;
         $clone->instruction = $instruction;
         return $clone;
+    }
+
+    public function withRequest(ServerRequestInterface $request): self
+    {
+        $clone = clone $this;
+        $clone->request = $request;
+        return $clone;
+    }
+
+    public function getResult(): ?Result
+    {
+        if ($this->request && $this->request->getMethod() == "POST") {
+            $form = $this->form->withRequest($this->request);
+            $result = $form->getInputGroup()->getContent();
+            return $result;
+        }
+        return null;
     }
 
     public function getForm(): ?Form\Form
@@ -108,68 +163,5 @@ class Inline implements C\Launcher\Inline
     public function getInstruction(): ?MessageBox\MessageBox
     {
         return $this->instruction;
-    }
-
-    /**
-     * @param Icon | ProgressMeter $status
-     */
-    public function withStatus(C\Component $status, MessageBox\MessageBox $status_message = null): self
-    {
-        $check =  array($status);
-        $this->checkArgListElements("status", $check, self::ALLOWED_STATUS_COMPONENTS);
-
-        $clone = clone $this;
-        $clone->status = $status;
-        $clone->status_message = $status_message;
-        return $clone;
-    }
-    public function getStatus(): ?C\Component
-    {
-        return $this->status;
-    }
-
-    public function getStatusMessage(): ?MessageBox\MessageBox
-    {
-        return $this->status_message;
-    }
-
-    public function withButtonLabel(string $label, bool $launchable = true): self
-    {
-        $clone = clone $this;
-        $clone->label = $label;
-        $clone->launchable = $launchable;
-        return $clone;
-    }
-
-    public function getButtonLable(): ?string
-    {
-        return $this->label;
-    }
-
-    public function isLaunchable(): bool
-    {
-        return $this->launchable;
-    }
-
-    public function withRequest(ServerRequestInterface $request)
-    {
-        $clone = clone $this;
-        $clone->request = $request;
-        return $clone;
-    }
-
-    public function getResult(): ?Result
-    {
-        if (
-            $this->request
-            && $this->request->getMethod() == "POST"
-            && array_key_exists(self::TOKENPARAM, $this->request->getQueryParams())
-            && $this->request->getQueryParams()[self::TOKENPARAM] === $this->getToken()
-        ) {
-            $form = $this->form->withRequest($this->request);
-            $result = $form->getInputGroup()->getContent();
-            return $result;
-        }
-        return null;
     }
 }

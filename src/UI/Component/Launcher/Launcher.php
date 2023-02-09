@@ -35,14 +35,12 @@ interface Launcher extends Component
     ];
 
     public function withDescription(string $description): self;
-
     public function withInputs(Group $fields, \Closure $evaluation, MessageBox\MessageBox $instruction = null): self;
 
     /**
      * @param Icon | ProgressMeter $status
      */
-    public function withStatus(Component $status, MessageBox\MessageBox $status_message = null): self;
-    //public function withStatus(MessageBox\MessageBox $status_message, Component $status = null): self;
-
+    public function withStatusIcon(?Component $status_icon): self;
+    public function withStatusMessage(?MessageBox\MessageBox $status_message): self;
     public function withButtonLabel(string $label, bool $launchable = true): self;
 }

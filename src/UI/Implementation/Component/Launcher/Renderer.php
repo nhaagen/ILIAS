@@ -39,25 +39,20 @@ class Renderer extends AbstractComponentRenderer
 
     public function renderInline(Component\Component $component, RendererInterface $default_renderer): string
     {
+        if ($result = $component->getResult()) {
+            $f = $component->getEvaluation();
+            $f($result, $component);
+        }
+
         $tpl = $this->getTemplate("tpl.launcher_inline.html", true, true);
         $ui_factory = $this->getUIFactory();
 
         $target = $component->getTarget()->getURL();
-        $label = $component->getButtonLable() ? $component->getButtonLable() : $component->getTarget()->getLabel();
+        $label = $component->getButtonLabel();
         $launchable = $component->isLaunchable();
+
         $start_button = $ui_factory->button()
             ->primary($label, (string) $target);
-
-        if (!$launchable) {
-            $start_button =$start_button->withUnavailableAction();
-        }
-
-        if ($status = $component->getStatus()) {
-            $tpl->setVariable("STATUS", $default_renderer->render($status));
-        }
-        if ($status_message = $component->getStatusMessage()) {
-            $tpl->setVariable("STATUS_MESSAGE", $default_renderer->render($status_message));
-        }
 
         if ($form = $component->getForm()) {
             $modal_contents = ($instruction = $component->getInstruction()) ? [$instruction] : [];
@@ -65,13 +60,19 @@ class Renderer extends AbstractComponentRenderer
             $modal = $ui_factory->modal()->roundtrip($label, $modal_contents);
             $tpl->setVariable("FORM", $default_renderer->render($modal));
             $start_button = $start_button->withOnClick($modal->getShowSignal());
-
-            if ($result = $component->getResult()) {
-                $f = $component->getEvaluation();
-                $f($result, $component);
-            }
         }
 
+        if (!$launchable) {
+            $start_button =$start_button->withUnavailableAction();
+        }
+
+        if ($status_icon = $component->getStatusIcon()) {
+            $tpl->setVariable("STATUS_ICON", $default_renderer->render($status_icon));
+        }
+
+        if ($status_message = $component->getStatusMessage()) {
+            $tpl->setVariable("STATUS_MESSAGE", $default_renderer->render($status_message));
+        }
         $tpl->setVariable("DESCRIPTION", $component->getDescription());
         $tpl->setVariable("BUTTON", $default_renderer->render($start_button));
 

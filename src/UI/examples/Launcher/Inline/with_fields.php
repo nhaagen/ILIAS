@@ -16,6 +16,7 @@ function with_fields()
     $data_factory = new \ILIAS\Data\Factory();
     $request = $DIC->http()->request();
     $ctrl = $DIC['ilCtrl'];
+    $spacer = $ui_factory->divider()->horizontal();
 
     $url = $data_factory->uri(
         ($_SERVER['REQUEST_SCHEME'] ?? "http") . '://'
@@ -25,61 +26,77 @@ function with_fields()
     );
     $url = $url->withParameter('launcher_redirect', '');
 
-    $target = $data_factory->link('label', $url);
-    $icon = $ui_factory->symbol()->icon()->standard('coms', '', 'large');
-    $group = $ui_factory->input()->field()->group(
-        [
-            $ui_factory->input()->field()->password('pwd', 'Password')
-        ]
-    );
-    $instruction = $ui_factory->messageBox()->info('Fill the form; use password "ilias" to pass');
+    //A Launcher with a checkbox-form
+    $description = '<p>Before you can join this group, you will have to accept the terms and conditions</p>';
+    $instruction = $ui_factory->messageBox()->info('Accept the conditions.');
+    $group = $ui_factory->input()->field()->group([
+            $ui_factory->input()->field()->checkbox('Understood', 'ok')
+    ]);
+    $evaluation = function (Result $result, Launcher &$launcher) use ($ctrl, $ui_factory) {
+        if ($result->isOK() && $result->value()[0][0]) {
+            $ctrl->redirectToURL(
+                (string)$launcher->getTarget()->getURL()->withParameter('launcher_redirect', 'terms accepted (' . $launcher->getButtonLabel() . ')')
+            );
+        }
+        $launcher = $launcher->withStatusMessage($ui_factory->messageBox()->failure('You must accept the conditions.'));
+    };
 
-    $evaluation = function (Result $result, Launcher &$launcher) use ($ctrl) {
+    $target = $data_factory->link('Join Group', $url->withParameter('launcher_id', 'l1'));
+    $launcher = $ui_factory->launcher()
+        ->inline($target)
+        ->withDescription($description)
+        ->withInputs($group, $evaluation, $instruction);
+
+    if (array_key_exists('launcher_id', $request->getQueryParams()) && $request->getQueryParams()['launcher_id'] === 'l1') {
+        $launcher = $launcher->withRequest($request);
+    }
+
+
+    //A Launcher with icon
+    $icon = $ui_factory->symbol()->icon()->standard('auth', 'authentification needed', 'large');
+    $description = '<p>Before you can take the survey, you have to agree to our terms and conditions.</p>';
+    $target = $data_factory->link('Take Survey', $url->withParameter('launcher_id', 'l2'));
+    $launcher2 = $ui_factory->launcher()
+        ->inline($target)
+        ->withStatusIcon($icon)
+        ->withButtonLabel('Take Survey')
+        ->withDescription($description)
+        ->withInputs($group, $evaluation);
+
+    if (array_key_exists('launcher_id', $request->getQueryParams()) && $request->getQueryParams()['launcher_id'] === 'l2') {
+        $launcher2 = $launcher2->withRequest($request);
+    }
+
+
+    //A Launcher with password field
+    $icon = $ui_factory->symbol()->icon()->standard('ps', 'authentification needed', 'large');
+    $status_message =  $ui_factory->messageBox()->info("You will be asked for your personal passcode when you start the test.");
+    $instruction = $ui_factory->messageBox()->info('Fill the form; use password "ilias" to pass');
+    $group = $ui_factory->input()->field()->group([
+            $ui_factory->input()->field()->password('pwd', 'Password')
+    ]);
+    $evaluation = function (Result $result, Launcher &$launcher) use ($ctrl, $ui_factory) {
         if ($result->isOK() && $result->value()[0][0]->toString() === 'ilias') {
             $ctrl->redirectToURL(
                 (string)$launcher->getTarget()->getURL()->withParameter('launcher_redirect', 'password protected')
             );
         }
-        $launcher = $launcher->withDescription('nope. wrong pass.'); //TODO: STATUS
+        $launcher = $launcher->withStatusMessage($ui_factory->messageBox()->failure('nope. wrong pass.'));
     };
 
-    $launcher = $ui_factory->launcher()
+    $target = $data_factory->link('Begin Exam', $url->withParameter('launcher_id', 'l3'));
+    $launcher3 = $ui_factory->launcher()
         ->inline($target)
-        ->withDescription('a launcher with fields')
-        ->withStatus($icon)
+        ->withDescription('')
         ->withInputs($group, $evaluation, $instruction)
-        ->withRequest($request);
+        ->withStatusIcon($icon)
+        ->withStatusMessage($status_message);
 
-    $group = $ui_factory->input()->field()->group(
-        [
-            $ui_factory->input()->field()->text('Username', 'username'),
-            $ui_factory->input()->field()->checkbox('Understood', 'ok')
-        ]
-    );
+    if (array_key_exists('launcher_id', $request->getQueryParams()) && $request->getQueryParams()['launcher_id'] === 'l3') {
+        $launcher3 = $launcher3->withRequest($request);
+    }
 
-    $evaluation = function (Result $result, Launcher &$launcher) use ($ctrl) {
-        if ($result->isOK() && $result->value()[0][1]) {
-            $ctrl->redirectToURL(
-                (string)$launcher->getTarget()->getURL()->withParameter('launcher_redirect', 'username ' . $result->value()[0][0])
-            );
-        }
-    };
 
-    $launcher2 = $launcher
-        ->withDescription('2nd')
-        ->withInputs($group, $evaluation);
-
-    $evaluation = function (Result $result, Launcher &$launcher) use ($ctrl) {
-        if ($result->isOK() && $result->value()[0][1]) {
-            $ctrl->redirectToURL(
-                (string)$launcher->getTarget()->getURL()->withParameter('launcher_redirect', 'THIRD LAUNCHER')
-            );
-        }
-    };
-
-    $launcher3 = $launcher
-        ->withDescription('3rd')
-        ->withInputs($group, $evaluation);
 
     $result = "not submitted or wrong pass";
     if (array_key_exists('launcher_redirect', $request->getQueryParams())
@@ -87,13 +104,12 @@ function with_fields()
     ) {
         $result = "<b>sucessfully redirected ($v)</b>";
     }
-    return
-        $result
-        . "<hr/>"
-        . $renderer->render(
-            [
-            $launcher,
-            $launcher2,
-            $launcher3]
-        );
+
+    return $result . "<hr/>" . $renderer->render([
+        $launcher,
+        $spacer,
+        $launcher2,
+        $spacer,
+        $launcher3
+    ]);
 }
