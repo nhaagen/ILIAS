@@ -1323,4 +1323,31 @@ interface Factory
      * @return  \ILIAS\UI\Component\Symbol\Glyph\Glyph
      */
     public function collapseHorizontal(string $action = null): Glyph;
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *      The Launch Glyph indicates a process to start, e.g. subscribing to a
+     *      Course or triggering a SCORM Module.
+     *   composition: >
+     *      The Launch Glyph uses a rocket.
+     *   effect: >
+     *      Clicking the Launch Glyph will immediately start or continue the process; this
+     *      may manifest as a Modal to open or the redirection to the appropriate Page.
+     * context:
+     *    -  The Launch Glyph appears in the Launcher's Bulky Button.
+     *
+     * rules:
+     *   accessibility:
+     *       1: >
+     *          The aria-label MUST be 'launch'.
+     *   usage:
+     *       1: The LAUNCH Glyph MUST NOT be used for mere navigation; focus is on
+     *         a process to start, which means altering a user's relation to some object.
+     * ---
+     * @param   string|null $action
+     * @return  \ILIAS\UI\Component\Symbol\Glyph\Glyph
+     */
+    public function launch(string $action = null): Glyph;
 }

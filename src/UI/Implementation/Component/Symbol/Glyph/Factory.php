@@ -392,4 +392,9 @@ class Factory implements G\Factory
     {
         return new Glyph(G\Glyph::COLLAPSE_HORIZONTAL, "collapse/back", $action);
     }
+
+    public function launch(string $action = null): G\Glyph
+    {
+        return new Glyph(G\Glyph::LAUNCH, "launch", $action);
+    }
 }

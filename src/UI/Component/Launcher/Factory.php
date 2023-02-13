@@ -31,7 +31,7 @@ interface Factory
      *     The Inline Launcher is meant to be used nested within Components (e.g. Cards or Panels).
      *     It provides description and status information at a glance.
      *   effect: >
-     *     The Form will be shown in an Interruptive Modal when clicking the Primary Button.
+     *     The Form will be shown in an Interruptive Modal when clicking the Button.
      *     On Submitting the modal, either a message is being displayed (in case of error)
      *     or the process/object is launched.
      * ---

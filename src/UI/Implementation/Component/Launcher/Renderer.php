@@ -48,8 +48,8 @@ class Renderer extends AbstractComponentRenderer
         $label = $component->getButtonLabel();
         $launchable = $component->isLaunchable();
 
-        $start_button = $ui_factory->button()
-            ->primary($label, (string) $target);
+        $launch_glyph = $ui_factory->symbol()->glyph()->launch();
+        $start_button = $ui_factory->button()->bulky($launch_glyph, $label, (string) $target);
 
         if ($form = $component->getForm()) {
             $modal_contents = ($instruction = $component->getInstruction()) ? [$instruction] : [];
