@@ -10315,10 +10315,6 @@ input[type=checkbox]:focus:focus-visible {
   flex-basis: auto;
   order: 1;
 }
-.c-launcher__status__icon:empty {
-  display: none;
-}
-
 .c-launcher__status__icon .il-chart-progressmeter-viewbox {
   height: 45px;
   width: 45px;

@@ -1,4 +1,3 @@
-@use "../../../010-settings/" as settings;
 @use "../../../010-settings/legacy-settings/legacy-settings_symbol" as legacy-setting-symbol;
 @use "../../../050-layout/basics/" as layout-basics;
 
@@ -9,23 +8,17 @@
 }
 
 .c-launcher__status__message {
-    flex-grow: 1;
-    order: 2;
+    flex-grow: 1; // so column takes all remaining space
+    order: 2; // status message is first in DOM for screen readers
     > * {
-        margin-bottom: 0;
+        margin-bottom: 0; // removing margin from MessageBox, relying on __status margin instead
     }
 }
 
 .c-launcher__status__icon {
     margin-right: layout-basics.$il-margin-small-horizontal;
-    flex-basis: auto;
-    order: 1;
-    &:empty {
-        display: none;
-    }
-}
-
-.c-launcher__status__icon {
+    flex-basis: auto; // so column is only as wide as icon
+    order: 1; // status icon is second in DOM for screen readers
     .il-chart-progressmeter-viewbox {
         height: legacy-setting-symbol.$il-icon-size-large;
         width: legacy-setting-symbol.$il-icon-size-large;
