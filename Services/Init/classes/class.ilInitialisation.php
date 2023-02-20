@@ -1530,6 +1530,8 @@ class ilInitialisation
             "Services/Help/classes/class.ilHelpGUI.php"
         );
 
+        $DIC["help.text_retriever"] = new ILIAS\UI\Help\TextRetriever\Echoing();
+
         self::initGlobal(
             "ilToolbar",
             "ilToolbarGUI",
