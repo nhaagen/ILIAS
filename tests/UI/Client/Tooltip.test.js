@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import Tooltip from "../../../src/UI/templates/js/Core/src/core.tooltip.js";
+import Tooltip from "../../../src/UI/templates/js/Core/src/core.Tooltip.js";
 
 describe("tooltip class exists", function() {
     it("Tooltip", function() {
@@ -10,7 +10,8 @@ describe("tooltip class exists", function() {
 
 describe("tooltip initializes", function() {
     var tt_text = "this is a tooltip";
-    var addEventListener = [];
+    var addEventListenerElement = [];
+    var addEventListenerContainer = [];
     var getAttribute = []
     var getElementById = []
 
@@ -21,15 +22,22 @@ describe("tooltip initializes", function() {
         }
     };
 
+    var container = {
+        addEventListener: function(ev, handler) {
+            addEventListenerContainer.push({e : ev, h: handler});
+        },
+    };
+
     var element = {
         addEventListener: function(ev, handler) {
-            addEventListener.push({e : ev, h: handler});
+            addEventListenerElement.push({e : ev, h: handler});
         },
         getAttribute: function(which) {
             getAttribute.push(which);
             return "attribute-" + which;
         },
-        ownerDocument: document
+        ownerDocument: document,
+        parentElement: container
     };
 
     var tooltip = {
@@ -43,11 +51,15 @@ describe("tooltip initializes", function() {
     });
 
     it("binds events on element", function() {
-        expect(addEventListener).to.deep.include({e: "mouseenter", h: object.showTooltip});
-        expect(addEventListener).to.deep.include({e: "touchstart", h: object.showTooltip});
-        expect(addEventListener).to.deep.include({e: "focus", h: object.showTooltip});
-        expect(addEventListener).to.deep.include({e: "mouseleave", h: object.hideTooltip});
-        expect(addEventListener).to.deep.include({e: "blur", h: object.hideTooltip});
+        expect(addEventListenerElement).to.deep.include({e: "focus", h: object.showTooltip});
+        expect(addEventListenerElement).to.deep.include({e: "blur", h: object.hideTooltip});
+    });
+
+
+    it("binds events on container", function() {
+        expect(addEventListenerContainer).to.deep.include({e: "mouseenter", h: object.showTooltip});
+        expect(addEventListenerContainer).to.deep.include({e: "touchstart", h: object.showTooltip});
+        expect(addEventListenerContainer).to.deep.include({e: "mouseleave", h: object.hideTooltip});
     });
 });
 
@@ -66,13 +78,19 @@ describe("tooltip show works", function() {
         }
     };
 
+    var container = {
+        addEventListener: function(ev, handler) {
+        },
+    };
+
     var element = {
         addEventListener: function(ev, handler) {
         },
         getAttribute: function(which) {
             return "attribute-" + which;
         },
-        ownerDocument: document
+        ownerDocument: document,
+        parentElement: container
     };
 
     var tooltip = {
@@ -125,13 +143,19 @@ describe("tooltip hide works", function() {
         }
     };
 
+    var container = {
+        addEventListener: function(ev, handler) {
+        },
+    };
+
     var element = {
         addEventListener: function(ev, handler) {
         },
         getAttribute: function(which) {
             return "attribute-" + which;
         },
-        ownerDocument: document
+        ownerDocument: document,
+        parentElement: container
     };
 
     var tooltip = {

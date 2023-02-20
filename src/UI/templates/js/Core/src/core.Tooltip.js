@@ -1,5 +1,6 @@
 class Tooltip {
     constructor(element) {
+        this.container = element.parentElement;
         this.element = element;
         this.document = element.ownerDocument;
 
@@ -19,14 +20,7 @@ class Tooltip {
         this.onPointerDown = this.onPointerDown.bind(this);
 
         this.bindElementEvents();
-    }
-
-    bindElementEvents() {
-        this.element.addEventListener("mouseenter", this.showTooltip);
-        this.element.addEventListener("touchstart", this.showTooltip);
-        this.element.addEventListener("focus", this.showTooltip);
-        this.element.addEventListener("mouseleave", this.hideTooltip);
-        this.element.addEventListener("blur", this.hideTooltip);
+        this.bindContainerEvents();
     }
 
     showTooltip() {
@@ -37,6 +31,17 @@ class Tooltip {
     hideTooltip() {
         this.tooltip.classList.remove("tooltip-visible");
         this.unbindDocumentEvents(); 
+    }
+
+    bindElementEvents() {
+        this.element.addEventListener("focus", this.showTooltip);
+        this.element.addEventListener("blur", this.hideTooltip);
+    }
+
+    bindContainerEvents() {
+        this.container.addEventListener("mouseenter", this.showTooltip);
+        this.container.addEventListener("touchstart", this.showTooltip);
+        this.container.addEventListener("mouseleave", this.hideTooltip);
     }
 
     bindDocumentEvents() {
