@@ -76,6 +76,7 @@ interface Glyph extends Symbol, Clickable
     public const LISTINDENT = "listindent";
     public const LISTOUTDENT = "listoutdent";
     public const FILTER = "filter";
+    public const SORTATION = "sortation";
 
     /**
      * Get the type of the glyph.
