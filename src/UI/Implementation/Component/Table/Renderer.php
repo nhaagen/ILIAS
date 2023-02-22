@@ -254,6 +254,7 @@ class Renderer extends AbstractComponentRenderer
             $tpl->setCurrentBlock('header_cell');
             $tpl->setVariable('COL_INDEX', (string) $col->getIndex());
             $tpl->setVariable('COL_TITLE', $col->getTitle());
+            $tpl->setVariable('COL_TYPE', strtolower($col->getType()));
             $tpl->parseCurrentBlock();
         }
 
@@ -345,7 +346,7 @@ class Renderer extends AbstractComponentRenderer
                 $cell_tpl->touchBlock('highlighted');
             }
             $cell_tpl->setCurrentBlock('cell');
-            $cell_tpl->setVariable('COL_TYPE', $column->getType());
+            $cell_tpl->setVariable('COL_TYPE', strtolower($column->getType()));
             $cell_tpl->setVariable('COL_INDEX', $column->getIndex());
             $cell_tpl->setVariable('CELL_CONTENT', $component->getCellContent($col_id));
             $cell_tpl->parseCurrentBlock();
