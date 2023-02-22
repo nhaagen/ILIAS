@@ -13425,6 +13425,10 @@ th.c-table-data__cell:after {
   resize: horizontal;
 }
 
+td.c-table-data__cell--email {
+  text-align: right;
+}
+
 .c-table-data__cell--number .c-table-data__header__resize-wrapper,
 .c-table-data__cell--status .c-table-data__header__resize-wrapper {
   width: 110px;
@@ -13446,8 +13450,12 @@ td.c-table-data__cell--number {
   resize: horizontal;
 }
 
-td.c-table-data__cell--email {
-  text-align: right;
+td.c-table-data__cell--highlighted {
+  background-color: #f9f9f9;
+}
+
+.c-table-data__row:hover td.c-table-data__cell--highlighted {
+  background-color: #dedede;
 }
 
 .il-toast-container {
