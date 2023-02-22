@@ -341,6 +341,9 @@ class Renderer extends AbstractComponentRenderer
         $cols = $component->getColumns();
 
         foreach ($cols as $col_id => $column) {
+            if ($column->isHighlighted()) {
+                $cell_tpl->touchBlock('highlighted');
+            }
             $cell_tpl->setCurrentBlock('cell');
             $cell_tpl->setVariable('COL_TYPE', $column->getType());
             $cell_tpl->setVariable('COL_INDEX', $column->getIndex());
