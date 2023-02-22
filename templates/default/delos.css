@@ -13329,13 +13329,14 @@ div.alert ul > li:before {
     }
 }
 */
+.c-table-data__table {
+  border: 1px solid #757575;
+}
+
 .c-table-data__cell {
   background-color: white;
   padding: 6px 12px;
-}
-
-.c-table-data__row {
-  border-bottom: 1px solid #757575;
+  border: 1px solid #dddddd;
 }
 
 .c-table-data__row:hover td.c-table-data__cell {
@@ -13343,6 +13344,7 @@ div.alert ul > li:before {
 }
 
 th.c-table-data__cell {
+  padding: 0;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -13350,13 +13352,24 @@ th.c-table-data__cell {
 }
 
 .c-table-data__header__resize-wrapper {
-  vertical-align: bottom;
-  overflow: auto;
-  width: 100%;
+  padding: 12px 12px;
   height: 100%;
   margin: 0px;
-  padding: 0px;
-  display: inline-block;
+  display: block;
+  vertical-align: bottom;
+  max-height: 85px;
+  overflow: hidden;
+}
+.c-table-data__header__resize-wrapper:after {
+  content: "";
+  bottom: 0;
+  left: 0;
+  display: block;
+  position: absolute;
+  height: 18px;
+  width: calc(100% - 10px);
+  background: linear-gradient(360deg, white, transparent);
+  pointer-events: none;
 }
 
 .c-table-data__rowselection {
@@ -13391,15 +13404,24 @@ th.c-table-data__cell {
   resize: horizontal;
 }
 
-.c-table-data__cell--date .c-table-data__header__resize-wrapper,
 .c-table-data__cell--number .c-table-data__header__resize-wrapper {
+  width: 110px;
+  resize: horizontal;
+}
+
+td.c-table-data__cell--number {
+  text-align: right;
+}
+
+.c-table-data__cell--date .c-table-data__header__resize-wrapper {
   min-width: 110px;
   resize: horizontal;
 }
 
-.c-table-data__cell--statusicon,
-.c-table-data__cell--boolean {
+.c-table-data__cell--statusicon .c-table-data__header__resize-wrapper,
+.c-table-data__cell--boolean .c-table-data__header__resize-wrapper {
   min-width: 40px;
+  resize: horizontal;
 }
 
 td.c-table-data__cell--email {
