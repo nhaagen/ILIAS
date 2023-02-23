@@ -45,11 +45,11 @@ function with_actions()
     $columns = [
         'f1' => $f->table()->column()->text("Field 1"),
 
-        'f0' => $f->table()->column()->text("empty"),
-
         'f2' => $f->table()->column()->text("Field 2")
             ->withIsOptional(true)
             ->withIsInitiallyVisible(false),
+
+        'f0' => $f->table()->column()->status("empty"),
 
         'f3' => $f->table()->column()->number("Field 3")
             ->withDecimals(2)
