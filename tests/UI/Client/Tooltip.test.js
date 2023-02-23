@@ -126,17 +126,18 @@ describe("tooltip show works", function() {
     }); 
 });
 
+describe("tooltip repositioning works", function() {
+    
+});
 
 describe("tooltip hide works", function() {
     var tt_text = "this is a tooltip";
-    var removeEventListener = [];
-    var classListRemove = [];
+    var classListAdd = [];
 
     var document = {
         addEventListener: function(ev, handler) {
         },
         removeEventListener: function(ev, handler) {
-            removeEventListener.push({e: ev, h: handler});
         },
         getElementById: function(which) {
             return tooltip;
@@ -161,7 +162,7 @@ describe("tooltip hide works", function() {
     var tooltip = {
         classList: {
             remove: function(which) {
-                classListRemove.push(which);
+                classListAdd.push(which);
             }
         }
     };
