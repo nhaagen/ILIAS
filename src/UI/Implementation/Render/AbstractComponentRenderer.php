@@ -40,6 +40,8 @@ use LogicException;
  */
 abstract class AbstractComponentRenderer implements ComponentRenderer, HelpTextRetriever
 {
+    private static array $component_storage;
+
     final public function __construct(
         private Factory $ui_factory,
         private TemplateFactory $tpl_factory,
@@ -301,7 +303,7 @@ abstract class AbstractComponentRenderer implements ComponentRenderer, HelpTextR
 
     public function getHelpText(Help\Purpose $purpose, Help\Topic ...$topics): array
     {
-        return $this->help_text_retriever($purpose, ...$topics);
+        return $this->help_text_retriever->getHelpText($purpose, ...$topics);
     }
 
     /*

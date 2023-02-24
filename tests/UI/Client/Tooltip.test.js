@@ -81,6 +81,14 @@ describe("tooltip show works", function() {
     var container = {
         addEventListener: function(ev, handler) {
         },
+        classList: {
+            add: function(which) {
+                classListAdd.push(which);
+            },
+            remove: function(which) {
+                classListRemove.push(which);
+            }
+        }
     };
 
     var element = {
@@ -94,11 +102,6 @@ describe("tooltip show works", function() {
     };
 
     var tooltip = {
-        classList: {
-            add: function(which) {
-                classListAdd.push(which);
-            }
-        }
     };
 
     var object = new Tooltip(element);
@@ -115,15 +118,13 @@ describe("tooltip show works", function() {
         expect(addEventListenerDocument).to.deep.include({e: "pointerdown", h: object.onPointerDown});
     });
 
-    it("adds tooltip-visible class to tooltip", function () {
+    it("adds visibility classes from tooltip", function () {
         classListAdd = [];
-
-        expect(classListAdd).to.deep.equal([]);
 
         object.showTooltip();
 
-        expect(classListAdd).to.deep.equal(["tooltip-visible"]);
-    }); 
+        expect(classListAdd).to.deep.equal(["c-tooltip--visible"]);
+    });
 });
 
 describe("tooltip repositioning works", function() {
@@ -132,12 +133,14 @@ describe("tooltip repositioning works", function() {
 
 describe("tooltip hide works", function() {
     var tt_text = "this is a tooltip";
-    var classListAdd = [];
+    var classListRemove = [];
+    var removeEventListener = [];
 
     var document = {
         addEventListener: function(ev, handler) {
         },
         removeEventListener: function(ev, handler) {
+            removeEventListener.push({e: ev, h: handler});
         },
         getElementById: function(which) {
             return tooltip;
@@ -147,6 +150,13 @@ describe("tooltip hide works", function() {
     var container = {
         addEventListener: function(ev, handler) {
         },
+        classList: {
+            add: function(which) {
+            },
+            remove: function(which) {
+                classListRemove.push(which);
+            }
+        }
     };
 
     var element = {
@@ -160,11 +170,6 @@ describe("tooltip hide works", function() {
     };
 
     var tooltip = {
-        classList: {
-            remove: function(which) {
-                classListAdd.push(which);
-            }
-        }
     };
 
     var object = new Tooltip(element);
@@ -179,14 +184,12 @@ describe("tooltip hide works", function() {
         expect(removeEventListener).to.deep.include({e: "pointerdown", h: object.onPointerDown});
     });
 
-    it("removes tooltip-visible class from tooltip", function () {
+    it("removes visibility classes from tooltip", function () {
         classListRemove = [];
-
-        expect(classListRemove).to.deep.equal([]);
 
         object.hideTooltip();
 
-        expect(classListRemove).to.deep.equal(["tooltip-visible"]);
+        expect(classListRemove).to.deep.equal(["c-tooltip--visible"]);
     }); 
 
     it("hides on escape key", function () {

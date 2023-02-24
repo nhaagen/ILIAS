@@ -24,13 +24,13 @@ class Tooltip {
     }
 
     showTooltip() {
-        this.tooltip.classList.add("tooltip-visible");
-        this.bindDocumentEvents(); 
+        this.container.classList.add("c-tooltip--visible");
+        this.bindDocumentEvents();
     }
 
     hideTooltip() {
-        this.tooltip.classList.remove("tooltip-visible");
-        this.unbindDocumentEvents(); 
+        this.container.classList.remove("c-tooltip--visible");
+        this.unbindDocumentEvents();
     }
 
     bindElementEvents() {

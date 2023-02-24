@@ -536,12 +536,14 @@ class ButtonTest extends ILIAS_UI_TestBase
 
         $css_classes = self::$canonical_css_classes[$factory_method];
         $expected =
-            "<div class=\"t-tooltip__container\">".
-                 "<button class=\"$css_classes\" data-action=\"$ln\" id=\"id_1\" aria-describedby=\"id_2\">" .
+            "<div class=\"c-tooltip__container\">" .
+                 "<button class=\"$css_classes\" aria-describedby=\"id_2\" data-action=\"$ln\" id=\"id_1\" >" .
                     "label" .
-                "</button>".
-                "<p id=\"id_2\" role=\"tooltip\" class=\"t-tooltip--hidden\">".
-                "</p>".
+                "</button>" .
+                "<div id=\"id_2\" role=\"tooltip\" class=\"c-tooltip--hidden\">" .
+                    "<p>tooltip: a</p>" .
+                    "<p>tooltip: b</p>" .
+                "</div>" .
             "</div>";
 
         $html = $this->normalizeHTML($r->render($button));

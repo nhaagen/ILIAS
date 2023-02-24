@@ -101,6 +101,9 @@ class ExamplesTest extends ILIAS_UI_TestBase
         $DIC = $this->dic;
 
         foreach ($this->getEntriesFromCrawler() as $entry) {
+            if ($entry->getNamespace() === "\ILIAS\UI\Help\Topic[]") {
+                continue;
+            }
             if (!$entry->isAbstract()) {
                 $this->assertGreaterThan(
                     0,

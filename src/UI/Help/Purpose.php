@@ -62,4 +62,9 @@ final class Purpose
     {
         return $this->purpose === self::PURPOSE_TOOLTIP;
     }
+
+    public static function Tooltip(): self
+    {
+        return new self(self::PURPOSE_TOOLTIP);
+    }
 }

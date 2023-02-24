@@ -131,6 +131,11 @@ class Renderer extends AbstractComponentRenderer
             }
         }
 
+        $tooltip_embedding = $this->getTooltipRenderer()->maybeGetTooltipEmbedding(...$component->getHelpTopics());
+        if ($tooltip_embedding) {
+            $component = $component->withAdditionalOnLoadCode($tooltip_embedding[1]);
+        }
+
         $this->maybeRenderId($component, $tpl);
 
         if ($component instanceof Component\Button\Tag) {
@@ -141,10 +146,16 @@ class Renderer extends AbstractComponentRenderer
             $this->additionalRenderBulky($component, $default_renderer, $tpl);
         }
 
-        return $this->getTooltipRenderer()->maybeEmbedInTooltipContainer(
-            $tpl->get(),
-            ...$component->getHelpTopics()
-        );
+        if (!$tooltip_embedding) {
+            return $tpl->get();
+        }
+
+        $tooltip_id = $this->createId();
+        $tpl->setCurrentBlock("with_aria_describedby");
+        $tpl->setVariable("ARIA_DESCRIBED_BY", $tooltip_id);
+        $tpl->parseCurrentBlock();
+
+        return $tooltip_embedding[0]($tooltip_id, $tpl->get());
     }
 
     /**
