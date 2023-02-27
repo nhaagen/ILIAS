@@ -248,6 +248,19 @@ class Renderer extends AbstractComponentRenderer
             $tpl->setVariable("ARIA_LABEL", $aria_label);
             $tpl->parseCurrentBlock();
         }
+
+        $tooltip_embedding = $this->getTooltipRenderer()->maybeGetTooltipEmbedding(...$component->getHelpTopics());
+        if ($tooltip_embedding) {
+            $component = $component->withAdditionalOnLoadCode($tooltip_embedding[1]);
+            $tooltip_id = $this->createId();
+            $tpl->setCurrentBlock("with_aria_describedby");
+            $tpl->setVariable("ARIA_DESCRIBED_BY", $tooltip_id);
+            $tpl->parseCurrentBlock();
+
+            $this->maybeRenderId($component, $tpl);
+            return $tooltip_embedding[0]($tooltip_id, $tpl->get());
+        }
+
         $this->maybeRenderId($component, $tpl);
         return $tpl->get();
     }
