@@ -41,6 +41,7 @@ class Tooltip {
         this.container = element.parentElement;
         this.element = element;
         this.document = element.ownerDocument;
+        this.window = this.document.defaultView || this.document.parentWindow;
 
         var tooltip_id = this.element.getAttribute("aria-describedby");
         if (tooltip_id == null) {
@@ -64,11 +65,15 @@ class Tooltip {
     showTooltip() {
         this.container.classList.add("c-tooltip--visible");
         this.bindDocumentEvents();
+
+        this.checkVerticalBounds(); 
     }
 
     hideTooltip() {
         this.container.classList.remove("c-tooltip--visible");
         this.unbindDocumentEvents();
+
+        this.container.classList.remove("c-tooltip--top");
     }
 
     bindElementEvents() {
@@ -105,6 +110,14 @@ class Tooltip {
         else {
             this.hideTooltip();
             this.element.blur();
+        }
+    }
+
+    checkVerticalBounds() {
+        var ttRect = this.tooltip.getBoundingClientRect();
+
+        if (ttRect.bottom > this.window.innerHeight) {
+            this.container.classList.add("c-tooltip--top");
         }
     }
 }

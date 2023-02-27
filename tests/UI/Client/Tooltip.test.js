@@ -9,17 +9,19 @@ describe("tooltip class exists", function() {
 });
 
 describe("tooltip initializes", function() {
-    var tt_text = "this is a tooltip";
     var addEventListenerElement = [];
     var addEventListenerContainer = [];
-    var getAttribute = []
-    var getElementById = []
+    var getAttribute = [];
+    var getElementById = [];
+
+    var window = {};
 
     var document = {
         getElementById: function(which) {
             getElementById.push(which);
             return tooltip;
-        }
+        },
+        parentWindow: window
     };
 
     var container = {
@@ -44,6 +46,7 @@ describe("tooltip initializes", function() {
     };
 
     var object = new Tooltip(element);
+    object.checkVerticalBounds = function() {};
 
     it("searches tooltip element", function() {
         expect(getAttribute).to.include("aria-describedby");
@@ -65,9 +68,10 @@ describe("tooltip initializes", function() {
 
 
 describe("tooltip show works", function() {
-    var tt_text = "this is a tooltip";
     var addEventListenerDocument = [];
     var classListAdd = [];
+
+    var window = {};
 
     var document = {
         addEventListener: function(ev, handler) {
@@ -75,7 +79,8 @@ describe("tooltip show works", function() {
         },
         getElementById: function(which) {
             return tooltip;
-        }
+        },
+        parentWindow: window
     };
 
     var container = {
@@ -105,6 +110,7 @@ describe("tooltip show works", function() {
     };
 
     var object = new Tooltip(element);
+    object.checkVerticalBounds = function() {};
 
     it("binds events on document", function () {
         classListAdd = [];
@@ -132,9 +138,10 @@ describe("tooltip repositioning works", function() {
 });
 
 describe("tooltip hide works", function() {
-    var tt_text = "this is a tooltip";
     var classListRemove = [];
     var removeEventListener = [];
+
+    var window = {};
 
     var document = {
         addEventListener: function(ev, handler) {
@@ -144,7 +151,8 @@ describe("tooltip hide works", function() {
         },
         getElementById: function(which) {
             return tooltip;
-        }
+        },
+        parentWindow: window
     };
 
     var container = {
@@ -173,6 +181,7 @@ describe("tooltip hide works", function() {
     };
 
     var object = new Tooltip(element);
+    object.checkVerticalBounds = function() {};
 
     it("unbinds events on document when tooltip hides", function () {
         expect(removeEventListener).not.to.deep.include({e: "keydown", h: object.onKeyDown});
@@ -189,7 +198,7 @@ describe("tooltip hide works", function() {
 
         object.hideTooltip();
 
-        expect(classListRemove).to.deep.equal(["c-tooltip--visible"]);
+        expect(classListRemove).to.deep.equal(["c-tooltip--visible", "c-tooltip--top"]);
     }); 
 
     it("hides on escape key", function () {
@@ -283,5 +292,85 @@ describe("tooltip hide works", function() {
         expect(hideTooltipCalled).to.equal(false);
         expect(preventDefaultCalled).to.equal(true);
         object.hideTooltip = keep;
+    });
+});
+
+describe("tooltip is on top if there is not enough space below", function() {
+    var classListAdd = [];
+    var classListRemove = [];
+
+    var window = {};
+
+    var document = {
+        addEventListener: function(ev, handler) {
+        },
+        removeEventListener: function(ev, handler) {
+        },
+        getElementById: function(which) {
+            return tooltip;
+        },
+        parentWindow: window
+    };
+
+    var container = {
+        addEventListener: function(ev, handler) {
+        },
+        classList: {
+            add: function(which) {
+                classListAdd.push(which);
+            },
+            remove: function(which) {
+                classListRemove.push(which);
+            }
+        }
+    };
+
+    var element = {
+        addEventListener: function(ev, handler) {
+        },
+        getAttribute: function(which) {
+            return "attribute-" + which;
+        },
+        ownerDocument: document,
+        parentElement: container
+    };
+
+    var clientRect = null;
+    var tooltip = {
+        getBoundingClientRect: function () {
+            return clientRect;
+        }
+    };
+
+
+    it("does not add top-class if there is enough space", function () {
+        clientRect = {bottom: 90};
+        window.innerHeight = 100;
+
+        classListAdd = [];
+        var object = new Tooltip(element);
+        object.showTooltip();
+
+        expect(classListAdd).to.deep.equal(["c-tooltip--visible"]);
+    });
+
+    it("does add top-class if there is not enough space", function () {
+        clientRect = {bottom: 110};
+        window.innerHeight = 100;
+
+        classListAdd = [];
+        var object = new Tooltip(element);
+        object.showTooltip();
+
+        expect(classListAdd).to.deep.equal(["c-tooltip--visible", "c-tooltip--top"]);
+    });
+
+    it("removes top-class when it hides", function() {
+        var object = new Tooltip(element);
+
+        classListRemove = [];
+        object.hideTooltip();
+
+        expect(classListRemove).to.deep.equal(["c-tooltip--visible", "c-tooltip--top"]);
     });
 });
