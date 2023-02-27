@@ -5,7 +5,7 @@ declare(strict_types=1);
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\isItem;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\isParent;
 use ILIAS\GlobalScreen\Scope\MainMenu\Factory\isInterchangeableItem;
-use ILIAS\UI\Component\JavaScriptBindable;
+use ILIAS\UI\Component\Link\Link;
 
 /******************************************************************************
  *
@@ -33,7 +33,7 @@ trait ilMMCloseOnClick
             return $item->addComponentDecorator(static function (
                 ILIAS\UI\Component\Component $c
             ): ILIAS\UI\Component\Component {
-                if ($c instanceof JavaScriptBindable) {
+                if (! $c instanceof Link) {
                     return $c->withAdditionalOnLoadCode(fn ($id) => "$('#$id').click(function() { 
                         il.UI.maincontrols.mainbar.disengageAll();
                         il.UI.maincontrols.mainbar.clearStates();

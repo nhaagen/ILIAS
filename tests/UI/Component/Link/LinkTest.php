@@ -124,7 +124,7 @@ class LinkTest extends ILIAS_UI_TestBase
 
         $expected_html = ''
             . '<div class="c-tooltip__container">'
-            . '<a href="http://www.ilias.de" aria-describedby="id_1">label</a>'
+            . '<a href="http://www.ilias.de" id="id_2" aria-describedby="id_1">label</a>'
             . '<div id="id_1" role="tooltip" class="c-tooltip--hidden"><p>tooltip: a</p></div>'
             . '</div>';
 
