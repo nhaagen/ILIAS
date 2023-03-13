@@ -732,8 +732,11 @@ assessment#:#examid_in_test_pass#:#Display Test ID
 assessment#:#examid_in_test_pass_desc#:#A Test ID is displayed in the test. A new, unique ID is generated for every test attempt.
 assessment#:#examid_in_test_res#:#Display ILIAS Test ID
 assessment#:#examid_in_test_res_desc#:#The ILIAS Test ID will be included in the test results.
+assessment#:#exp_all_test_runs#:#All test runs
+assessment#:#exp_best_pass#:#Scored test run
 assessment#:#exp_eval_data#:#Export evaluation data as
 assessment#:#exp_file_created#:#Export file created.
+assessment#:#exp_scored_test_run#:#Scored test run
 assessment#:#exp_type_certificate#:#Certificate (PDF)
 assessment#:#exp_type_excel#:#Microsoft Excel
 assessment#:#exp_type_spss#:#Comma Separated Value (CSV)
@@ -1441,7 +1444,7 @@ assessment#:#tst_header_participant#:#Your Answer:
 assessment#:#tst_header_solution#:#Best Solution:
 assessment#:#tst_heading_scoring#:#Scoring
 assessment#:#tst_hide_pagecontents#:#Hide page content
-assessment#:#tst_hide_pagecontents_desc#:#ILIAS content placed before and after the actual question text via the "Edit Page" button will not be displayed in the result views and print output.													  
+assessment#:#tst_hide_pagecontents_desc#:#ILIAS content placed before and after the actual question text via the "Edit Page" button will not be displayed in the result views and print output.
 assessment#:#tst_hide_side_list#:#Hide List of Questions
 assessment#:#tst_highscore_achieved_ts#:#Date
 assessment#:#tst_highscore_achieved_ts_description#:#A column containing the test date will be included in the ranking.
@@ -1639,6 +1642,8 @@ assessment#:#tst_pass_overview_header_lo_initial_per_objective#:#Initial Test Re
 assessment#:#tst_pass_overview_header_lo_qualifying_all_objectives#:#Qualifying Test Results<br />for the Learning Objectives within the Course %s
 assessment#:#tst_pass_overview_header_lo_qualifying_per_objective#:#Qualifying Test Results<br />for the Learning Objectives %s within the Course %s
 assessment#:#tst_pass_scoring#:#Scoring Multiple Passes
+assessment#:#tst_pass_scoring_best#:#Best Test Pass
+assessment#:#tst_pass_scoring_last#:#Last Test Pass
 assessment#:#tst_pass_waiting_enabled#:#Force Waiting Time between Passes
 assessment#:#tst_pass_waiting_info#:#With this option additional passes can not be started before the defined time is lapsed relating to the last finished pass.
 assessment#:#tst_pass_waiting_time#:#Waiting Time
@@ -1795,7 +1800,7 @@ assessment#:#tst_results_back_overview#:#Back to Results Overview
 assessment#:#tst_results_details_options#:#Further Options
 assessment#:#tst_results_gamification#:#Gamification
 assessment#:#tst_results_grading_opt_show_details#:#Show detailed test results
-assessment#:#tst_results_grading_opt_show_details_desc#:#In addition to the summary test result, a "Detailed Results" action is provided. The "Detailed test results" table shows the titles of the questions and the points achieved for each run. The content of the table can be further supplemented in the "Further options" section.													
+assessment#:#tst_results_grading_opt_show_details_desc#:#In addition to the summary test result, a "Detailed Results" action is provided. The "Detailed test results" table shows the titles of the questions and the points achieved for each run. The content of the table can be further supplemented in the "Further options" section.
 assessment#:#tst_results_grading_opt_show_mark#:#Show Resulting Mark
 assessment#:#tst_results_grading_opt_show_mark_desc#:#The resulting mark will be appended to the summary test result. Participants can access their test results within the ‘Results’-tab.
 assessment#:#tst_results_grading_opt_show_status#:#Show ‘Passed’ / ‘Failed’ Status
@@ -2040,6 +2045,7 @@ auth#:#auth_oidc_settings_custom_session_duration_option#:#Duration of Own Sessi
 auth#:#auth_oidc_settings_custom_session_duration_type#:#Session Duration Settings
 auth#:#auth_oidc_settings_default_role#:#Role Assignment
 auth#:#auth_oidc_settings_default_role_info#:#Please select a global role for the ILIAS user accounts that will be created for users who have authenticated themselves using OpenID Connect.
+auth#:#auth_oidc_settings_discovery_error#:#Retrieving the Discovery URL failed with: %s
 auth#:#auth_oidc_settings_discovery_url#:#Discovery URL of the provider
 auth#:#auth_oidc_settings_img#:#Image
 auth#:#auth_oidc_settings_img_file_info#:#Upload an image that you would like to have shown on the login page. The image will link automatically to the OpenID Connect login script.
@@ -2818,7 +2824,7 @@ chatroom#:#banned#:#You have been banned from this chat room
 chatroom#:#bans#:#Bans
 chatroom#:#chat_address#:#Address
 chatroom#:#chat_anonymous_not_allowed#:#Please login to use the chat.
-chatroom#:#chat_auth_token_info#:#Please define unique strings used by ILIAS for authentication purposes when sending requests to the chat server. You can automatically create these strings by clicking the corresponding button. Please note that the chat server is able to communicate with multiple ILIAS clients, but each client id has to be <b>unique</b>.
+chatroom#:#chat_auth_token_info#:#Please define unique strings used by ILIAS for authentication purposes when sending requests to the chat server. You can automatically create these strings by clicking the corresponding button. Please note that the chat server is able to communicate with multiple ILIAS clients, but each client name has to be <b>unique</b>.
 chatroom#:#chat_ban#:#Ban
 chatroom#:#chat_broadcast_typing#:#Broadcast Typing
 chatroom#:#chat_broadcast_typing_info#:#If enabled, your typing will be broadcasted to other participants of a conversation or chat room.
@@ -3410,8 +3416,8 @@ common#:#access_users#:#Logged in Users
 common#:#accesscount_registered_users#:#Read by number of distinct ILIAS users
 common#:#accessibility_control_concept#:#Accessibility
 common#:#account#:#My Account
-common#:#account_expires_body#:#Your account is limited, it will expire at:
-common#:#account_expires_subject#:#Your account expires
+common#:#account_expires_body#:#your account %s on %s will expire at %s. After this date, access to ILIAS with this account will no longer be possible. To save your personal documents and certificates, please download them in good time.
+common#:#account_expires_subject#:#Your ILIAS account will expire soon!
 common#:#action#:#Action
 common#:#action_aborted#:#Action aborted
 common#:#actions#:#Actions
@@ -3758,7 +3764,6 @@ common#:#copy_all#:#Copy all
 common#:#copy_n_of_suffix#:#- Copy (%1$s)
 common#:#copy_of#:#Copy of
 common#:#copy_of_suffix#:#- Copy
-common#:#copy_perma_link#:#Copy Permanent Link
 common#:#copy_selected_items#:#Copy
 common#:#count#:#Count
 common#:#country#:#Country
@@ -4546,7 +4551,7 @@ common#:#max_previews_per_object_info#:#Defines the maximum number of preview im
 common#:#mcst#:#Mediacast
 common#:#mcst_add#:#Add Mediacast
 common#:#mcst_new#:#New Mediacast
-common#:#mem_add_to_wl#:#Add to Waiting List
+common#:#mem_add_to_wl#:#Join Waiting List
 common#:#mem_alert_no_places#:#There are no free places available.
 common#:#mem_cron_min_members#:#Course/Group: Minimum Members Check
 common#:#mem_cron_min_members_info#:#The administrators will be notified if the minimum number is not met.
@@ -4921,7 +4926,7 @@ common#:#obj_mobs#:#Media Objects and Pools
 common#:#obj_mobs_desc#:#Settings for media objects and media pools.
 common#:#obj_not_found#:#Object Not Found
 common#:#obj_nota#:#Notifications
-common#:#obj_nota_desc#:#Notification Administration
+common#:#obj_nota_desc#:#Notifications Administration
 common#:#obj_nots#:#Notes
 common#:#obj_nots_desc#:#Notes settings
 common#:#obj_nwss#:#News and Web Feeds
@@ -6102,7 +6107,6 @@ content#:#cont_active_to#:#Activation End
 content#:#cont_add_area#:#Add Area
 content#:#cont_add_cell#:#Add Column
 content#:#cont_add_change_comment#:#Add change comment
-content#:#cont_add_definition#:#Add Definition
 content#:#cont_add_elements#:#Click on a plus symbol to add a new element.
 content#:#cont_add_file#:#Add File
 content#:#cont_add_images#:#Add Images
@@ -6385,7 +6389,6 @@ content#:#cont_ed_width#:#Width
 content#:#cont_edit_base_image#:#Edit Background Image
 content#:#cont_edit_comp#:#Editing
 content#:#cont_edit_definition#:#Edit Definition
-content#:#cont_edit_definitions#:#Edit Definitions
 content#:#cont_edit_file_list_properties#:#Edit File List Properties
 content#:#cont_edit_language_version#:#Edit Version
 content#:#cont_edit_lrs_settings#:#Edit Settings
@@ -8305,6 +8308,7 @@ dateplaner#:#cal_type_remote#:#Web Calendar
 dateplaner#:#cal_type_rl#:#Calendar Location
 dateplaner#:#cal_type_sess#:#Session Calendar
 dateplaner#:#cal_type_system#:#Public Calendar
+dateplaner#:#cal_type_tals#:#Talks
 dateplaner#:#cal_unshare#:#Cancel Sharing
 dateplaner#:#cal_unshare_cal#:#Stop Sharing
 dateplaner#:#cal_unshared_selected_usr#:#Stopped sharing the calendar with the selected users.
@@ -8985,6 +8989,8 @@ etal#:#talt_add#:#Add Template
 etal#:#talt_edit#:#General
 etal#:#talt_etal#:#Employee Talk
 etal#:#talt_new#:#New Talk Template
+etal#:#will_update_series_info_lock#:#Lock the editing of all appointments in this series
+etal#:#will_update_series_info_title#:#Changes to the title will be made to all appointments in this series.
 exc#:#exc_add_assignment#:#Add Assignment
 exc#:#exc_add_criteria#:#Add Criteria
 exc#:#exc_add_criteria_catalogue#:#Add Catalogue
@@ -9457,8 +9463,10 @@ export#:#export_select_resources#:#Select Resources
 export#:#no_file#:#No file
 file#:#action_download#:#Enable Direct Download
 file#:#action_show#:#Redirect User to the Info Page
+file#:#add_icon#:#Add Icon
 file#:#amount_of_downloads#:#Downloads
 file#:#amount_of_downloads_since#:#%d times since %s
+file#:#de_activate_icon#:#(De-)Activate
 file#:#file_copy#:#Copy File
 file#:#file_download#:#Download File
 file#:#file_import#:#Import File
@@ -9476,9 +9484,31 @@ file#:#file_suffix_overall_white#:#Overal Suffix Whitelist
 file#:#file_suffix_overall_white_info#:#Resulting overall list of accepted file suffixes.
 file#:#file_upload_info_file_with_critical_extension#:#At least one uploaded file contains a critical or unknown file ending. The file ending will be changed to .sec for every download. If necessary, contact your administrator. Filename(s): %s
 file#:#file_uploaded_by#:#Version uploaded by
+file#:#form_icon_creation#:#Create Icon
+file#:#form_icon_updating#:#Update Icon
 file#:#general_upload_error_occured#:#An unexpected error occured during upload.
 file#:#generate_sanitize_report#:#Report about inaccessible files
+file#:#input_active#:#Active
+file#:#input_desc_active#:#Activate this icon.
+file#:#input_desc_icon#:#Image which shall be shown as an icon for files with the specified suffixes.
+file#:#input_desc_suffixes#:#List of comma-separated suffixes (characters and numbers only without preceding period).
+file#:#input_icon#:#Icon
+file#:#input_suffixes#:#Suffixes
 file#:#migrated#:#Status
+file#:#msg_confirm_entry_deletion#:#Are you sure you want to delete the following entry?:
+file#:#msg_error_active_suffixes_blacklisted#:#One of the selected file extensions is on the global blacklist and cannot be used at the moment.
+file#:#msg_error_active_suffixes_conflict#:#Error: there must not be multiple activated icons for the same suffix. Please deactivate either this icon or the other activated icon whose suffixes overlap with the suffixes of this icon.
+file#:#msg_error_active_suffixes_not_whitelisted#:#The selected file extension is not on the global whitelist, the files are renamed to .sec. during download.
+file#:#msg_error_duplicate_suffix_entries#:#Error: the comma separated list of suffixes contains duplicate entries.
+file#:#msg_error_icon_deletion#:#Error: icon deletion failed.
+file#:#msg_error_suffixes_with_forbidden_characters#:#Error: forbidden characters. Only alphabetic characters, numbers, whitespaces and commas are allowed.
+file#:#msg_icon_missing_from_db#:#Icon missing from database.
+file#:#msg_icon_missing_from_irss#:#Icon missing from resource storage.
+file#:#msg_success_icon_activated#:#Icon successfully activated.
+file#:#msg_success_icon_created#:#Icon successfully created.
+file#:#msg_success_icon_deactivated#:#Icon successfully deactivated.
+file#:#msg_success_icon_deletion#:#Icon successfully deleted.
+file#:#msg_success_icon_updated#:#Icon successfully updated.
 file#:#msg_unzip_success#:#Archive has been successfully unziped.
 file#:#not_yet_migrated#:#This file object has not yet been migrated and no new versions can be created. Please contact the administrators of the platform.
 file#:#on_click_action#:#Action on Click on Title
@@ -9487,6 +9517,8 @@ file#:#resource_id#:#Resource ID
 file#:#show_amount_of_downloads#:#Show number of downloads
 file#:#show_amount_of_downloads_info#:#When active, the number of downloads will be visible on the info-page of a file object.
 file#:#storage_id#:#Storage ID
+file#:#suffix_specific_icons#:#Suffix-specific Icons
+file#:#suffixes#:#Suffixes
 file#:#upload_info#:#File
 file#:#upload_info_desc#:#Manage Uploads and Versions in Tab "Versions"
 file#:#version_uploaded#:#Version uploaded
@@ -9783,23 +9815,50 @@ forum#:#topic_close#:#Closed
 forum#:#topics_please_select_one_action#:#Please select an action.
 forum#:#user_decides_notification#:#Members have to manually activate notifications
 glo#:#glo_add_from_other#:#Collect Terms
+glo#:#glo_answered_correctly#:#I got it right
+glo#:#glo_answered_not_correctly#:#I was wrong
+glo#:#glo_box#:#Box
+glo#:#glo_box_completed#:#You have completed the box.
+glo#:#glo_box_last_presented#:#Box Last Presented
+glo#:#glo_boxes#:#Boxes
+glo#:#glo_boxes_really_reset#:#Do you really want to reset all boxes? All flashcards will be moved to the first box.
+glo#:#glo_boxes_reset#:#The boxes have been reset successfully.
 glo#:#glo_col_ordering_info#:#Order the titles of the metadata fields. They are presented as column headers in the table presentation of the glossary.
 glo#:#glo_collection#:#Collection Glossary
 glo#:#glo_collection_info#:#The glossary collects additional terms of other glossaries.
 glo#:#glo_content_assembly#:#Content Assembly
 glo#:#glo_copy#:#Copy Glossary
 glo#:#glo_copy_terms#:#Copy Terms
+glo#:#glo_days_ago#:#%s days ago
+glo#:#glo_def_vs_term#:#Definition vs. Term
+glo#:#glo_def_vs_term_info#:#Show a definition first, the learner has to guess the term.
+glo#:#glo_flashcard_training#:#Flashcard Training
+glo#:#glo_flashcard_training_info#:#Offers a presentation as flashcards allowing the user to train the terms/definitions one by one.
+glo#:#glo_flashcards#:#Flashcards
+glo#:#glo_flashcards_from_today_confirmation#:#The box contains %s flashcards already presented today. Do you want to include only the remaining %s flashcards or all %s flashcards?
+glo#:#glo_flashcards_from_today_only_info#:#The box contains only flashcards already presented today. Please confirm that these %s flashcards will be shown to you again.
+glo#:#glo_flashcards_intro#:#Your goal is to correctly remember each flashcard four times in a row.<br />To begin with, all of the flashcards are in box 1.<br />Flagging a flashcard as "I got it right" will advance it to the next box.<br />Flagging a flashcard as "I was wrong" will return the card to the first box.<br />To start, select a box. This will reveal the flashcards.
+glo#:#glo_introduction#:#Introduction
 glo#:#glo_link_glo_in_glo#:#Should all glossary terms of the target glossary be linked in the current glossary now?
+glo#:#glo_mode#:#Mode
 glo#:#glo_page_type_gdf#:#Term Definition
 glo#:#glo_please_select_other_glo#:#Please select another glossary.
+glo#:#glo_quit_box#:#Quit Box
 glo#:#glo_reference#:#Reference
 glo#:#glo_reference_terms#:#Reference Terms
 glo#:#glo_referenced_term#:#Referenced Term
+glo#:#glo_reset_all_boxes#:#Reset All Boxes
 glo#:#glo_select_source_glo#:#Please select a source glossary.
 glo#:#glo_select_terms#:#Select Terms
 glo#:#glo_selected_terms_have_been_copied#:#The selected terms have been copied to the clipboard. Please open the target glossary and click "Paste".
+glo#:#glo_show_definition#:#Show Definition
+glo#:#glo_show_term#:#Show Term
 glo#:#glo_term#:#Glossary Term
 glo#:#glo_term_reference#:#Term Reference
+glo#:#glo_term_vs_def#:#Term vs. Definition
+glo#:#glo_term_vs_def_info#:#Show a term first, the learner has to guess the definition.
+glo#:#glo_use_all_flashcards#:#Use All Flashcards (%s)
+glo#:#glo_use_remaining_flashcards#:#Use Remaining Flashcards (%s)
 grp#:#crs_add_grouping#:#Add Membership Limitation
 grp#:#crs_grouping_delete_sure#:#Are you sure you want to delete this membership limitation ?
 grp#:#crs_grouping_deleted#:#Deleted membership limitation.
@@ -12181,17 +12240,21 @@ noti#:#noti_activate_notification#:#Activate Notification
 noti#:#noti_deactivate_notification#:#Deactivate Notification
 noti#:#noti_notification_activated#:#Notification Activated
 noti#:#noti_notification_deactivated#:#Notification Deactivated
-notification_adm#:#enable_osd#:#Enable On-Screen Notifications
-notification_adm#:#enable_osd_desc#:#If enabled, users are notified by a popup about new notifications.
-notification_adm#:#notification_settings#:#Notifciation Settings
-notification_adm#:#osd_delay#:#Presentation Delay
-notification_adm#:#osd_delay_desc#:#Delay of the visible presentation in milliseconds.
-notification_adm#:#osd_interval#:#Refreshinterval
-notification_adm#:#osd_interval_desc#:#Polling interval for checking of new notifications in seconds. A lower number will notify the user more quickly but increases the number of requests the web server must handle.
-notification_adm#:#osd_vanish#:#Presentation Time
-notification_adm#:#osd_vanish_desc#:#Visible time of a notification on the screen in seconds.
-notification_adm#:#play_sound#:#Play a Sound
-notification_adm#:#play_sound_desc#:#Play a sound when receiving a new notficiation.
+notifications_adm#:#enable_osd#:#Enable On-Screen Notifications
+notifications_adm#:#enable_osd_desc#:#If enabled, users are notified by a popup about new notifications.
+notifications_adm#:#notification_settings#:#Notification Settings
+notifications_adm#:#osd_delay#:#Presentation Delay
+notifications_adm#:#osd_delay_desc#:#Delay of the visible presentation in milliseconds.
+notifications_adm#:#osd_error_presentation_time_too_small#:#The Presentation Time has to be at least than 1000 miliseconds.
+notifications_adm#:#osd_error_refresh_interval_smaller_than_delay_and_vanish_combined#:#The Refresh Interval has to be greater than the Presentation Time and the Presentation Delay combined.
+notifications_adm#:#osd_error_refresh_interval_too_small#:#The Refresh Interval has to be at least than 3000 miliseconds.
+notifications_adm#:#osd_interval#:#Refreshinterval
+notifications_adm#:#osd_interval_desc#:#Polling interval for checking of new notifications in miliseconds. A lower number will notify the user more quickly but increases the number of requests the web server must handle.
+notifications_adm#:#osd_play_sound#:#Play a Sound
+notifications_adm#:#osd_play_sound_desc#:#Play a sound when receiving a new notficiation.
+notifications_adm#:#osd_settings#:#On-Screen Notifications
+notifications_adm#:#osd_vanish#:#Presentation Time
+notifications_adm#:#osd_vanish_desc#:#Visible time of a notification on the screen in miliseconds.
 obj#:#cont_filter_empty#:#Please use the filter to see any objects.
 obj#:#cont_skll_published#:#All assignments have been published.
 obj#:#cont_skll_published_some_not#:#All given assignments have been published. Some users lacked competence assignments, thus no assignments could be published for them.
@@ -12230,7 +12293,7 @@ obj#:#obj_show_header_actions#:#Show Header Actions
 obj#:#obj_show_title_and_icon#:#Show Title and Icon
 obj#:#obj_target_location#:#Target Location
 obj#:#obj_tile_image#:#Tile Image
-obj#:#obj_tile_image_info#:#This image will be used as a thumbnail-style image (called a tile) to represent this object in the container (e.g. the category, folder group etc.) in which it is located. The tile is only used if the parent container sets its ‘Item Presentation’ (oder 'Content Display Options' - siehe oben) to ‘Tiles’ (rather than ‘List’). To avoid performance issues, only upload files with a resolution of 72dpi and a width of less than 1000 px.
+obj#:#obj_tile_image_info#:#This image will be used as a thumbnail-style image (called a tile) to represent this object in the container (e.g. the category, folder group etc.) in which it is located. The tile is only used if the parent container sets its ‘Item Presentation’ (or 'Content Display Options' - see above) to ‘Tiles’ (rather than ‘List’). To avoid performance issues, only upload files with a resolution of 72dpi and a width of less than 1000 px.
 obj#:#obj_tool_booking#:#Resources
 obj#:#obj_tool_booking_info#:#Use the booking pools to book resources.
 obj#:#obj_tool_ext_mail_subject_prefix#:#Mail Subject Prefix
@@ -12614,6 +12677,8 @@ prg#:#msg_update_individual_plan_failed#:#Update  of individual plan failed
 prg#:#no_srctype_or_id#:#Id and type may not be empty.
 prg#:#not_a_valid_cat_id#:#%s is not a valid ref-id of a category.
 prg#:#obj_prg_select#:#-- Please select a study programme --
+prg#:#optgrp_label_restart#:#Restart
+prg#:#optgrp_label_validity#:#Expiry
 prg#:#orgu#:#Organisational Unit
 prg#:#percentage#:#%
 prg#:#prg_access_by_orgu#:#Access Control by Organisation Unit Positions

@@ -483,7 +483,7 @@ class ilInfoScreenGUI
                 if (ilECSServerSettings::getInstance()->activeServerExists()) {
                     $this->addProperty(
                         $lng->txt("object_id"),
-                        $a_obj->getId()
+                        (string) $a_obj->getId()
                     );
                 }
 
@@ -945,6 +945,14 @@ class ilInfoScreenGUI
     public function saveProgress(bool $redirect = true): void
     {
         $ilUser = $this->user;
+
+        // ensure a read event
+        ilLearningProgress::_tracProgress(
+            $ilUser->getId(),
+            $this->getContextObjId(),
+            $this->getContextRefId(),
+            ilObject::_lookupType($this->getContextObjId())
+        );
 
         $lp_marks = new ilLPMarks($this->getContextObjId(), $ilUser->getId());
         $lp_marks->setCompleted((bool) $this->request->getLPEdit());

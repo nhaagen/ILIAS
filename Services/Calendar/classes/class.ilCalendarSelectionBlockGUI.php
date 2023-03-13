@@ -365,7 +365,7 @@ class ilCalendarSelectionBlockGUI extends ilBlockGUI
         $obj_type = ilObject::_lookupType($a_set['obj_id']);
         if (
             ($a_set['type'] == ilCalendarCategory::TYPE_OBJ) &&
-            $a_set['ref_id']
+            ($a_set['ref_id'] ?? false)
         ) {
             if (!$this->ref_id) {
                 $this->ctrl->setParameterByClass('ilcalendarpresentationgui', 'backpd', 1);
@@ -392,6 +392,12 @@ class ilCalendarSelectionBlockGUI extends ilBlockGUI
                         ],
                         ''
                     );
+                    break;
+
+                case 'tals':
+                    $this->ctrl->setParameterByClass("ilcalendarpresentationgui", 'category_id', $a_set['id']);
+                    $link = $this->ctrl->getLinkTargetByClass("ilcalendarpresentationgui", '');
+                    $this->ctrl->setParameterByClass("ilcalendarpresentationgui", 'category_id', $this->category_id);
                     break;
 
                 default:

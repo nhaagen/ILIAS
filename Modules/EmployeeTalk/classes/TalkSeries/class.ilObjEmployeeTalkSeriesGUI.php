@@ -71,6 +71,7 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
             $this->userId = $wrapper->retrieve('usr_id', $this->container->refinery()->kindlyTo()->int());
         }
 
+        $this->omitLocator();
         $this->container->ui()->mainTemplate()->setTitle($this->container->language()->txt('mst_my_staff'));
     }
 
@@ -327,27 +328,35 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
 
         $firstTalk = $talks[0];
         $talk_title = $firstTalk->getTitle();
-        $talk_ref_id = $firstTalk->getRefId();
         $superior = new ilObjUser($firstTalk->getOwner());
         $employee = new ilObjUser($firstTalk->getData()->getEmployee());
         $superiorName = $superior->getFullname();
 
-        $dates = [];
-        $add_time = $firstTalk->getData()->isAllDay() ? 0 : 1;
-        foreach ($talks as $talk) {
-            $data = $talk->getData();
-            $startDate = $data->getStartDate()->get(
-                IL_CAL_FKT_DATE,
-                ilCalendarUtil::getUserDateFormat($add_time, true),
-                $employee->getTimeZone()
-            );
+        $dates = array_map(
+            fn (ilObjEmployeeTalk $t) => $t->getData()->getStartDate(),
+            $talks
+        );
+        usort($dates, function (ilDateTime $a, ilDateTime $b) {
+            $a = $a->getUnixTime();
+            $b = $b->getUnixTime();
+            if ($a === $b) {
+                return 0;
+            }
+            return $a < $b ? -1 : 1;
+        });
 
-            $dates[] = strval($startDate);
-        }
+        $add_time = $firstTalk->getData()->isAllDay() ? 0 : 1;
+        $format = ilCalendarUtil::getUserDateFormat($add_time, true);
+        $timezone = $employee->getTimeZone();
+        $dates = array_map(function (ilDateTime $d) use ($add_time, $format, $timezone) {
+            return $d->get(IL_CAL_FKT_DATE, $format, $timezone);
+        }, $dates);
 
         $message = new EmployeeTalkEmailNotification(
-            $talk_ref_id,
+            $firstTalk->getRefId(),
             $talk_title,
+            $firstTalk->getDescription(),
+            $firstTalk->getData()->getLocation(),
             'notification_talks_subject',
             'notification_talks_created',
             $superiorName,
@@ -513,6 +522,29 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
         $template->cloneMetaData($talk);
         $talk->update();
 
+        // assign talk series type to adv md records of the template
+        foreach (ilAdvancedMDRecord::_getSelectedRecordsByObject(
+            $template->getType(),
+            $template->getId(),
+            'etal',
+            false
+        ) as $rec) {
+            if (!$rec->isAssignedObjectType($talk->getType(), 'etal')) {
+                $rec->appendAssignedObjectType(
+                    $talk->getType(),
+                    'etal',
+                    true
+                );
+                $rec->update();
+            }
+        }
+
+        ilAdvancedMDRecord::saveObjRecSelection(
+            $talk->getId(),
+            'etal',
+            ilAdvancedMDRecord::getObjRecSelection($template->getId(), 'etal')
+        );
+
         ilAdvancedMDValues::_cloneValues(
             0,
             $template->getId(),
@@ -602,6 +634,14 @@ final class ilObjEmployeeTalkSeriesGUI extends ilContainerGUI
          * @var \ILIAS\DI\Container $container
          */
         $container = $GLOBALS['DIC'];
+        if (!ilObject::_exists((int) $refId, true)) {
+            $container["tpl"]->setOnScreenMessage(
+                'failure',
+                $container->language()->txt("permission_denied"),
+                true
+            );
+            $container->ctrl()->redirectByClass(ilDashboardGUI::class, "");
+        }
         $container->ctrl()->setParameterByClass(strtolower(self::class), 'ref_id', $refId);
         $container->ctrl()->redirectByClass([
             strtolower(ilDashboardGUI::class),

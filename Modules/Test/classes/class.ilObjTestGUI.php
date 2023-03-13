@@ -660,7 +660,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface
                     $ilDB,
                     $ilUser,
                     $randomGroup,
-                    $this->ref_id
+                    $this->ref_id,
+                    $DIC->rbac()
                 );
 
                 $gui->initQuestion($this->fetchAuthoringQuestionIdParameter(), $this->object->getId());
@@ -1047,6 +1048,10 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface
     */
     protected function importFileObject(int $parent_id = null, bool $catch_errors = true): void
     {
+        if (!$this->checkPermissionBool("create", "", $_REQUEST["new_type"])) {
+            $this->error->raiseError($this->lng->txt("no_create_permission"));
+        }
+
         $form = $this->initImportForm($this->testrequest->raw("new_type"));
         if ($form->checkInput()) {
             $this->ctrl->setParameter($this, "new_type", $this->type);
@@ -1829,6 +1834,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface
     public function removeQuestionsObject()
     {
         $this->getTabsManager()->getQuestionsSubTabs();
+        $this->getTabsManager()->activateSubTab(ilTestTabsManager::SUBTAB_ID_QST_LIST_VIEW);
 
         $checked_questions = $this->testrequest->raw('q_id');
 

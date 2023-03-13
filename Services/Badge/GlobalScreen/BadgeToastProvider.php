@@ -27,7 +27,7 @@ use ILIAS\Notifications\ilNotificationOSDHandler;
 
 class BadgeToastProvider extends AbstractToastProvider
 {
-    public const NOTIFICATION_TYPE = 'badge_received';
+    final public const NOTIFICATION_TYPE = 'badge_received';
 
     public function getToasts(): array
     {
@@ -44,13 +44,12 @@ class BadgeToastProvider extends AbstractToastProvider
             true,
             0,
             self::NOTIFICATION_TYPE
-        ) as $invitation) {
-            $toast = $this->toast_factory->standard(
-                $invitation->getObject()->title,
+        ) as $badge_issued_info) {
+            $toast = $this->getDefaultToast(
+                $badge_issued_info->getObject()->title,
                 $this->dic->ui()->factory()->symbol()->icon()->standard(Standard::BDGA, 'badge')
-            )->withDescription($invitation->getObject()->shortDescription);
-            foreach ($invitation->getObject()->links as $link) {
-
+            )->withDescription($badge_issued_info->getObject()->shortDescription);
+            foreach ($badge_issued_info->getObject()->links as $link) {
                 $toast = $toast->withAdditionalLink(
                     $this->dic->ui()->factory()->link()->standard(
                         $link->getTitle(),

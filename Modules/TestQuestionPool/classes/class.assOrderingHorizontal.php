@@ -30,6 +30,8 @@ require_once './Modules/Test/classes/inc.AssessmentConstants.php';
  */
 class assOrderingHorizontal extends assQuestion implements ilObjQuestionScoringAdjustable, iQuestionCondition
 {
+    protected const HAS_SPECIFIC_FEEDBACK = false;
+
     protected $ordertext;
     protected $textsize;
     protected $separator = "::";
@@ -464,9 +466,9 @@ class assOrderingHorizontal extends assQuestion implements ilObjQuestionScoringA
     /**
      * {@inheritdoc}
      */
-    public function setExportDetailsXLS(ilAssExcelFormatHelper $worksheet, int $startrow, int $active_id, int $pass): int
+    public function setExportDetailsXLS(ilAssExcelFormatHelper $worksheet, int $startrow, int $col, int $active_id, int $pass): int
     {
-        parent::setExportDetailsXLS($worksheet, $startrow, $active_id, $pass);
+        parent::setExportDetailsXLS($worksheet, $startrow, $col, $active_id, $pass);
 
         $solutionvalue = "";
         $solutions = $this->getSolutionValues($active_id, $pass);
@@ -474,7 +476,7 @@ class assOrderingHorizontal extends assQuestion implements ilObjQuestionScoringA
             $solutionvalue = str_replace("{::}", " ", $solutions[0]["value1"]);
         }
         $i = 1;
-        $worksheet->setCell($startrow + $i, 0, $solutionvalue);
+        $worksheet->setCell($startrow + $i, $col, $solutionvalue);
         $i++;
 
         return $startrow + $i + 1;

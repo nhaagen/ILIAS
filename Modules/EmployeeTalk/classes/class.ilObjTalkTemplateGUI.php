@@ -84,11 +84,14 @@ final class ilObjTalkTemplateGUI extends ilContainerGUI
             ilAdvancedMDRecordGUI::MODE_EDITOR,
             $this->object->getType(),
             $this->object->getId(),
-            'etal'
+            'etal',
+            0,
+            false
         );
         $md->setPropertyForm($form);
         $md->parse();
 
+        // this is necessary to disable the md fields
         foreach ($form->getInputItemsRecursive() as $item) {
             if ($item instanceof ilCombinationInputGUI) {
                 $item->__call('setValue', ['']);
@@ -209,7 +212,14 @@ final class ilObjTalkTemplateGUI extends ilContainerGUI
 
     private function initMetaDataForm(ilPropertyFormGUI $form): ilAdvancedMDRecordGUI
     {
-        $md = new ilAdvancedMDRecordGUI(ilAdvancedMDRecordGUI::MODE_REC_SELECTION, $this->object->getType(), $this->object->getId(), "etal");
+        $md = new ilAdvancedMDRecordGUI(
+            ilAdvancedMDRecordGUI::MODE_REC_SELECTION,
+            $this->object->getType(),
+            $this->object->getId(),
+            "etal",
+            0,
+            false
+        );
         $md->setRefId($this->object->getRefId());
         $md->setPropertyForm($form);
         return $md;
@@ -221,6 +231,14 @@ final class ilObjTalkTemplateGUI extends ilContainerGUI
          * @var \ILIAS\DI\Container $container
          */
         $container = $GLOBALS['DIC'];
+        if (!ilObject::_exists((int) $refId, true)) {
+            $container["tpl"]->setOnScreenMessage(
+                'failure',
+                $container->language()->txt("permission_denied"),
+                true
+            );
+            $container->ctrl()->redirectByClass(ilDashboardGUI::class, "");
+        }
         $container->ctrl()->setParameterByClass(strtolower(self::class), 'ref_id', $refId);
         $container->ctrl()->redirectByClass([
             strtolower(ilAdministrationGUI::class),

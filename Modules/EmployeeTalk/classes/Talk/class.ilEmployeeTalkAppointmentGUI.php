@@ -305,27 +305,35 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
 
         $firstTalk = $talks[0];
         $talk_title = $firstTalk->getTitle();
-        $talk_ref_id = $firstTalk->getRefId();
         $superior = new ilObjUser($firstTalk->getOwner());
         $employee = new ilObjUser($firstTalk->getData()->getEmployee());
         $superiorName = $superior->getFullname();
 
-        $dates = [];
-        $add_time = $firstTalk->getData()->isAllDay() ? 0 : 1;
-        foreach ($talks as $talk) {
-            $data = $talk->getData();
-            $startDate = $data->getStartDate()->get(
-                IL_CAL_FKT_DATE,
-                ilCalendarUtil::getUserDateFormat($add_time, true),
-                $employee->getTimeZone()
-            );
+        $dates = array_map(
+            fn (ilObjEmployeeTalk $t) => $t->getData()->getStartDate(),
+            $talks
+        );
+        usort($dates, function (ilDateTime $a, ilDateTime $b) {
+            $a = $a->getUnixTime();
+            $b = $b->getUnixTime();
+            if ($a === $b) {
+                return 0;
+            }
+            return $a < $b ? -1 : 1;
+        });
 
-            $dates[] = $startDate;
-        }
+        $add_time = $firstTalk->getData()->isAllDay() ? 0 : 1;
+        $format = ilCalendarUtil::getUserDateFormat($add_time, true);
+        $timezone = $employee->getTimeZone();
+        $dates = array_map(function (ilDateTime $d) use ($add_time, $format, $timezone) {
+            return $d->get(IL_CAL_FKT_DATE, $format, $timezone);
+        }, $dates);
 
         $message = new EmployeeTalkEmailNotification(
-            $talk_ref_id,
+            $firstTalk->getRefId(),
             $talk_title,
+            $firstTalk->getDescription(),
+            $firstTalk->getData()->getLocation(),
             'notification_talks_subject_update',
             'notification_talks_updated',
             $superiorName,
@@ -493,6 +501,7 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
         $talkSession->setTitle($this->talk->getTitle());
         $talkSession->setDescription($this->talk->getLongDescription());
         $talkSession->setType(ilObjEmployeeTalk::TYPE);
+        $talkSession->setOwner($series->getOwner());
         $talkSession->create();
 
         $talkSession->createReference();
@@ -530,6 +539,9 @@ final class ilEmployeeTalkAppointmentGUI implements ControlFlowCommandHandler
             }
             $cloneObject->setData($cloneData);
             $cloneObject->update();
+
+            $cloneObject->setOwner($series->getOwner());
+            $cloneObject->updateOwner();
 
             $talks[] = $cloneObject;
         }

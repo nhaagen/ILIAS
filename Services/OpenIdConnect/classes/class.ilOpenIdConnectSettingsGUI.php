@@ -294,6 +294,7 @@ class ilOpenIdConnectSettingsGUI
             $this->lng->txt('auth_oidc_settings_logout_scope_local'),
             (string) ilOpenIdConnectSettings::LOGOUT_SCOPE_LOCAL
         );
+        $ilias_scope->setInfo($this->lng->txt('auth_oidc_settings_logout_scope_local_info'));
         $logout_scope->addOption($ilias_scope);
 
         $form->addItem($logout_scope);
@@ -394,13 +395,20 @@ class ilOpenIdConnectSettingsGUI
                     $discoveryURL = null;
                     break;
             }
-            $invalid_scopes = !is_null($discoveryURL) ? $this->settings->validateScopes($discoveryURL, (array) $scopes) : [];
+            $validation_result = !is_null($discoveryURL) ? $this->settings->validateScopes($discoveryURL, (array) $scopes) : [];
 
-            if (!empty($invalid_scopes)) {
-                $this->mainTemplate->setOnScreenMessage(
-                    'failure',
-                    sprintf($this->lng->txt('auth_oidc_settings_invalid_scopes'), implode(",", $invalid_scopes))
-                );
+            if (!empty($validation_result)) {
+                if (ilOpenIdConnectSettings::VALIDATION_ISSUE_INVALID_SCOPE === $validation_result[0]) {
+                    $this->mainTemplate->setOnScreenMessage(
+                        'failure',
+                        sprintf($this->lng->txt('auth_oidc_settings_invalid_scopes'), implode(",", $validation_result[1]))
+                    );
+                } else {
+                    $this->mainTemplate->setOnScreenMessage(
+                        'failure',
+                        sprintf($this->lng->txt('auth_oidc_settings_discovery_error'), $validation_result[1])
+                    );
+                }
                 $form->setValuesByPost();
                 $this->settings($form);
                 return;

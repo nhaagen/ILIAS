@@ -61,12 +61,25 @@ final class EmployeeTalkEmailNotificationService
         $notif->setRefId($this->message->getTalkRefId());
         $notif->setObjId(0);
         $notif->setIntroductionLangId($this->message->getMessageLangKey());
-        $notif->setGotoLangId('url');
 
         $notif->addAdditionalInfo(
             'obj_etal',
             $this->message->getTalkName()
         );
+
+        if ($this->message->getTalkDescription()) {
+            $notif->addAdditionalInfo(
+                'description',
+                $this->message->getTalkDescription()
+            );
+        }
+
+        if ($this->message->getTalkLocation()) {
+            $notif->addAdditionalInfo(
+                'location',
+                $this->message->getTalkLocation()
+            );
+        }
 
         $notif->addAdditionalInfo(
             'superior',
