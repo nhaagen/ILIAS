@@ -56,6 +56,7 @@ class Data extends Table implements T\Data, JSBindable
     protected Order $order;
     protected ?array $filter = null;
     protected ?array $additional_parameters = null;
+    protected $view_controls;
 
     public function __construct(
         SignalGeneratorInterface $signal_generator,
@@ -67,9 +68,13 @@ class Data extends Table implements T\Data, JSBindable
         parent::__construct($title);
         $this->multi_action_signal = $signal_generator->create();
         $this->selection_signal = $signal_generator->create();
+        $this->data_factory = $data_factory;
+        $this->data_retrieval = $data_retrieval;
         $this->setEnumeratedColumns($columns);
         $this->initializeVisibleColumns();
         $this->initializeViewDefaults();
+
+        $this->initializeViewControls();
     }
 
     protected function setEnumeratedColumns(array $columns): void
@@ -139,6 +144,7 @@ class Data extends Table implements T\Data, JSBindable
     {
         $clone = clone $this;
         $clone->request = $request;
+        $clone->view_controls = $this->getViewControls()->withRequest($request);
         return $clone;
     }
     public function getRequest(): ?ServerRequestInterface
@@ -201,13 +207,57 @@ class Data extends Table implements T\Data, JSBindable
         return $this->additional_parameters;
     }
 
-    /**
-     * @return ViewControl[]
-     */
-    public function getViewControls(): array
+    public function getViewControls(): \ILIAS\UI\Component\Input\Container\ViewControl\ViewControl
     {
-        //NYI
-        return [];
+        return $this->view_controls;
+    }
+
+    public function withViewControls($view_controls): self
+    {
+        $clone = clone $this;
+        $clone->view_controls = $view_controls;
+        return $clone;
+    }
+
+    public function initializeViewControls()
+    {
+        global $DIC;
+        $f = $DIC['ui.factory'];
+
+        $vcs = [
+            $f->input()->viewControl()->pagination('pagination_offset', 'pagination_limit', ...$this->getRange()->unpack()),
+        ];
+
+        $sortable_visible_cols = array_filter(
+            $this->getVisibleColumns(),
+            fn ($c) => $c->isSortable()
+        );
+        $sort_options = [];
+        foreach ($sortable_visible_cols as $id => $col) {
+            $sort_options[$id . ':ASC'] = $col->getTitle() . ' (asc)';
+            $sort_options[$id . ':DESC'] = $col->getTitle() . ' (desc)';
+        }
+        $vcs[] = $f->input()->viewControl()->sortation(
+            $sort_options
+            //$value = $component->getValue()->join('', fn ($ret, $key, $value) => $key . ':' . $value);
+        );
+
+        $optional_cols = array_filter(
+            $this->getColumns(),
+            fn ($col, $col_id) => $col->isOptional(),
+            ARRAY_FILTER_USE_BOTH
+        );
+        $cols = [];
+        foreach ($optional_cols as $id => $col) {
+            $cols[$id] = $col->getTitle();
+        }
+        $vcs[] = $f->input()->viewControl()->fieldSelection(
+            $cols,
+            'shown columns',
+            'apply'
+            //$this->getSelectedOptionalColumns
+        );
+        $this->view_controls = $f->input()->container()->viewControl()->standard($vcs);
     }
 
     public function getActionSignal(): Signal

@@ -238,13 +238,10 @@ class Renderer extends AbstractComponentRenderer
         $additional_parameters = null;
 
         if ($request = $component->getRequest()) {
-            $params = [];
-            parse_str($request->getUri()->getQuery(), $params);
-            if (array_key_exists('tsort_f', $params) && array_key_exists('tsort_d', $params)
-                && array_key_exists($params['tsort_f'], $component->getVisibleColumns())
-            ) {
-                $order = $df->order($params['tsort_f'], $params['tsort_d']);
-            }
+            $data = $component->getViewControls()->getData();
+            $range = $data['form_input_0'];
+            $order = $data['form_input_1'];
+            $selected_optional = $data['form_input_2'];
         }
         //END TODO: Viewcontrols, Filter
 
@@ -291,8 +288,9 @@ class Renderer extends AbstractComponentRenderer
                 $uri = (string)$this->getDataFactory()->uri(
                     $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI']
                 )
-                ->withParameter('tsort_f', $col_id)
-                ->withParameter('tsort_d', $param_sort_direction);
+                //->withParameter('tsort_f', $col_id)
+                //->withParameter('tsort_d', $param_sort_direction);
+                ->withParameter('form_input_1', $col_id . ':' . $param_sort_direction); // get name from sortation-control!
 
                 $col_title = $default_renderer->render(
                     $this->getUIFactory()->button()->shy($col_title, $uri)

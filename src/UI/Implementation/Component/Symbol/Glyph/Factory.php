@@ -392,4 +392,12 @@ class Factory implements G\Factory
     {
         return new Glyph(G\Glyph::COLLAPSE_HORIZONTAL, "collapse/back", $action);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function sortation(string $action = null): G\Glyph
+    {
+        return new Glyph(G\Glyph::SORTATION, "sortation", $action);
+    }
 }

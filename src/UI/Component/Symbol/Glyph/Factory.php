@@ -1323,4 +1323,28 @@ interface Factory
      * @return  \ILIAS\UI\Component\Symbol\Glyph\Glyph
      */
     public function collapseHorizontal(string $action = null): Glyph;
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *       The Sortation Glyph
+     *
+     *   composition: >
+     *       XX
+     *   effect: >
+     *       XX
+     *
+     * context:
+     *    -  XX
+     *
+     * rules:
+     *   accessibility:
+     *       1: >
+     *          The aria-label MUST be 'sortation'.
+     * ---
+     * @param   string|null $action
+     * @return  \ILIAS\UI\Component\Symbol\Glyph\Glyph
+     */
+    public function sortation(string $action = null): Glyph;
 }
