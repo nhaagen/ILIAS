@@ -177,10 +177,12 @@ $il-table-presentation-details-viewcontrols-btn-bg: white;
 
 }
 
-//
-// Table Header
-//
+// viewcontrols
+.c-table-data > .viewcontrols {
+    margin-bottom: $il-margin-xxlarge-vertical;
+}
 
+// table header
 th.c-table-data__cell {
     padding: 0; // most of the header cells get padding from the resize wrapper
     // sticky header
