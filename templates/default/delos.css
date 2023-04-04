@@ -8440,6 +8440,36 @@ table.mceToolbar tbody, table.mceToolbar tr, table.mceToolbar td {
 }
 
 /* Responsive container system from Bootstrap 5 has been removed */
+.l-bar__container,
+.l-bar__group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.l-bar__container {
+  margin-bottom: -9px;
+}
+.l-bar__container.l-bar__container--space-between {
+  justify-content: space-between;
+}
+
+.l-bar__group {
+  margin-right: 15px;
+}
+.l-bar__group:last-child {
+  margin-right: 0;
+}
+
+.l-bar__element {
+  margin-right: 3px;
+  margin-bottom: 9px;
+}
+.l-bar__element:last-child {
+  margin-right: 0;
+}
+
 html, body {
   height: 100%;
   overflow: hidden;
@@ -12353,23 +12383,24 @@ div.alert ul > li:before {
   flex-shrink: 1;
   order: 1;
 }
-.panel-flex .il-viewcontrol-sortation {
+.panel-flex .panel-heading > .il-viewcontrol-sortation {
   flex-shrink: 1;
   order: 2;
   margin-right: 9px;
   margin-left: auto;
 }
-.panel-flex .panel-heading .dropdown {
+.panel-flex .panel-heading > .dropdown {
   flex-shrink: 1;
   order: 3;
 }
-.panel-flex .il-viewcontrol-pagination, .panel-flex .il-viewcontrol-section {
+.panel-flex .panel-heading > .il-viewcontrol-pagination,
+.panel-flex .panel-heading > .il-viewcontrol-section {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 100%;
   order: 4;
   background-color: #f9f9f9;
-  text-align: center;
+  justify-content: center;
   padding-top: 9px;
 }
 
@@ -13437,6 +13468,16 @@ div.alert ul > li:before {
   background-color: #f0f0f0;
 }
 
+.c-table-data > .viewcontrols {
+  margin-bottom: 9px;
+}
+.c-table-data > .viewcontrols .il-viewcontrol-fieldselection .dropdown-menu {
+  padding: 6px 12px;
+}
+.c-table-data > .viewcontrols .il-viewcontrol-fieldselection .dropdown-menu .btn {
+  margin-top: 6px;
+}
+
 th.c-table-data__cell {
   padding: 0;
   position: -webkit-sticky;
@@ -13656,33 +13697,43 @@ td.c-table-data__cell--highlighted {
   display: none;
 }
 
-.il-viewcontrol-sortation .dropdown-toggle .caret {
+.il-viewcontrol-pagination {
+  display: flex;
+  align-items: center;
+}
+.il-viewcontrol-pagination > * + * {
+  margin-left: 3px;
+}
+
+.il-viewcontrol-sortation .dropdown-toggle .caret,
+.il-viewcontrol-pagination__num-of-items .dropdown-toggle .caret,
+.il-viewcontrol-fieldselection .dropdown-toggle .caret {
+  display: inline;
   border: none;
   vertical-align: initial;
-  width: 8px;
-  height: 8px;
 }
+
 .il-viewcontrol-sortation .dropdown-toggle .caret:before {
   content: "⇵";
 }
 
-.il-viewcontrol-pagination .dropdown {
-  display: inline;
+.il-viewcontrol-pagination__num-of-items .dropdown-toggle .caret:before {
+  font-family: il-icons;
+  font-size: 0.8rem;
+  content: "\e900";
 }
 
-.il-viewcontrol-pagination .btn {
-  vertical-align: top;
+.il-viewcontrol-fieldselection .dropdown-toggle .caret:before {
+  font-family: "Glyphicons Halflings";
+  font-size: 0.8rem;
+  content: "\e105";
 }
+
 .il-viewcontrol-pagination .btn.engaged {
   background-color: white;
   padding: 0px 6px 0px 6px;
   border: 1px solid #4c6586;
   font-weight: 400;
-}
-
-.il-viewcontrol-pagination .dropdown-toggle {
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 .ilBlockContent .il-viewcontrol-section .btn.btn-default {

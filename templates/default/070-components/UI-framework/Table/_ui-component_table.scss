@@ -179,8 +179,15 @@ $il-table-presentation-details-viewcontrols-btn-bg: white;
 
 // viewcontrols
 .c-table-data > .viewcontrols {
-    margin-bottom: $il-margin-xxlarge-vertical;
+    margin-bottom: $il-margin-xlarge-vertical;
+    .il-viewcontrol-fieldselection .dropdown-menu {
+        padding: $il-padding-large-vertical $il-padding-large-horizontal;
+        .btn {
+            margin-top: $il-margin-large-vertical;
+        }
+    }
 }
+
 
 // table header
 th.c-table-data__cell {
