@@ -28,7 +28,9 @@ function base()
 
     $details = $f->listing()->property()
         ->withProperty('detail: ', '7')
-        ->withProperty('detail2', 'unlabled detail', false)
+        ->withProperty('detail2', 'unlabled detail', false);
+
+    $details2 = $f->listing()->property()
         ->withProperty('another detail: ', 'anothervalue');
 
     $status = [
@@ -48,7 +50,7 @@ function base()
     ->withBlockingAvailabilityConditions('there are blocking conditions!')
     ->withPersonalStatus($status)
     ->withAvailability($availability)
-    ->withDetails($details)
+    ->withDetails([$details, $details2])
     ->withPrioritizedReactions($prio_reactions)
     ->withReactions($reactions)
     ->withActions($actions)
