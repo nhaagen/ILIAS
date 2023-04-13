@@ -80,9 +80,9 @@ function base()
     ];
 
     $entity = $entity
-    ->withPersonalStatus($status)
-    ->withDetails($details)
-    ->withReactions($reactions)
+      ->withPersonalStatus($status)
+      ->withDetails($details)
+      ->withReactions($reactions)
     ;
 
     /*
