@@ -941,7 +941,7 @@ interface Factory
      * background: ./docu/UI-Repository-Item_proposal.md
      *
      * context:
-     *   Use Entities in Entity Listings as an item of many.
+     *   - Use Entities in Entity Listings as an item of many.
      *
      * rules:
      *   usage:
