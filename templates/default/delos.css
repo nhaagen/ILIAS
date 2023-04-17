@@ -9692,8 +9692,20 @@ ul.dropdown-menu > li > .btn:hover, ul.dropdown-menu > li > .btn:focus {
   justify-content: end;
   grid-area: actions;
 }
+.c-entity.__actions .dropdown {
+  height: max-content;
+}
 .c-entity.__secondary-identifier {
   grid-area: second-id;
+}
+.c-entity.__secondary-identifier.--string, .c-entity.__secondary-identifier.--shy, .c-entity.__secondary-identifier.--shylink {
+  width: 10rem;
+}
+.c-entity.__secondary-identifier.--symbol {
+  min-width: 3rem;
+}
+.c-entity.__secondary-identifier.--image {
+  width: 15rem;
 }
 .c-entity.__primary-identifier {
   grid-area: prim-id;
