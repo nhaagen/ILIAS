@@ -53,6 +53,8 @@ class Renderer extends AbstractComponentRenderer
     ): array {
         $f = $this->getUIFactory();
         $contents = [];
+
+
         foreach ($component->getContents() as $entry) {
             if ($entry instanceof ISlate\Slate && !$entry instanceof ISlate\Notification) {
                 $trigger_signal = $entry->getToggleSignal();
@@ -92,10 +94,15 @@ class Renderer extends AbstractComponentRenderer
 
         foreach ($contents as $content) {
             $content_html = $default_renderer->render($content);
-            if ($content instanceof Component\Button\Button || $content instanceof Component\Link\Link || is_array($content)) {
+            if ($content instanceof Component\Button\Button
+                || $content instanceof Component\Link\Link
+                || $content instanceof Component\Divider\Horizontal
+                || is_array($content)
+            ) {
                 $tpl->setCurrentBlock("list_content_component");
                 $tpl->setVariable("LIST_COMPONENT_CONTENT", $content_html);
             } else {
+
                 $tpl->setCurrentBlock("none_list_content_component");
                 $tpl->setVariable("NONE_LIST_COMPONENT_CONTENT", $content_html);
             }
