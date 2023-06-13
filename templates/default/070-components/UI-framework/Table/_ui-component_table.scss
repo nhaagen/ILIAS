@@ -16,34 +16,7 @@ $il-table-presentation-details-viewcontrols-btn-color: $il-main-color;
 $il-table-presentation-details-viewcontrols-btn-bg: white;
 
 .il-table-presentation-viewcontrols {
-    background-color: $il-table-presentation-details-viewcontrols-bg-color;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    > div {
-        padding: $il-padding-large-vertical;
-    }
-
-    .btn-default:not(.disabled):not(.engaged)  {
-        //Using Mixin for buttons
-        @include btstrp3.button-variant($il-table-presentation-details-viewcontrols-btn-color, $il-table-presentation-details-viewcontrols-btn-bg, $il-btn-standard-border);
-    }
-
-    .btn-default.engaged  {
-        //Using Mixin for buttons
-        @include btstrp3.button-variant($il-btn-standard-color, $il-btn-standard-bg, $il-btn-standard-border);
-    }
-
-    .il-viewcontrol-pagination {
-        order: 1;
-    }
-    .il-viewcontrol-mode {
-        order: 2;
-    }
-    .il-viewcontrol-sortatio {
-        order: 3;
-    }
+    margin-bottom: $il-margin-large-vertical;
 }
 
 .il-table-presentation-row {
