@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -17,6 +15,8 @@ declare(strict_types=1);
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=1);
 
 require_once(__DIR__ . "/../../../../libs/composer/vendor/autoload.php");
 require_once(__DIR__ . "/../../Base.php");
@@ -138,7 +138,7 @@ class PanelSecondaryListingTest extends ILIAS_UI_TestBase
 
     //RENDER
 
-    public function test_render_with_actions(): void
+    public function testPanelSecondaryListingRenderWithActions(): void
     {
         $actions = $this->getUIFactory()->dropdown()->standard(array(
             $this->getUIFactory()->button()->shy("ILIAS", "https://www.ilias.de"),
@@ -151,26 +151,26 @@ class PanelSecondaryListingTest extends ILIAS_UI_TestBase
 
         $expected_html = <<<EOT
 <div class="panel panel-secondary panel-flex">
-	<div class="panel-heading ilHeader">
-		<h2>Title</h2>
-		<div class="dropdown"><button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="id_3" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="id_3_menu"> <span class="caret"></span></button>
-			<ul id="id_3_menu" class="dropdown-menu">
-				<li><button class="btn btn-link" data-action="https://www.ilias.de" id="id_1">ILIAS</button></li>
-				<li><button class="btn btn-link" data-action="https://www.github.com" id="id_2">Github</button></li>
-			</ul>
-		</div>
-	</div>
-	<div class="panel-body">
-	</div>
+    <div class="panel-heading ilHeader">
+        <h2>Title</h2>
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="id_3" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="id_3_menu"><span class="caret"></span></button>
+            <ul id="id_3_menu" class="dropdown-menu">
+                <li><button class="btn btn-link" data-action="https://www.ilias.de" id="id_1">ILIAS</button></li>
+                <li><button class="btn btn-link" data-action="https://www.github.com" id="id_2">Github</button></li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body"></div>
 </div>
 EOT;
-        $this->assertHTMLEquals(
-            $this->cleanHTML($expected_html),
-            $this->cleanHTML($html)
+        $this->assertEquals(
+            $this->brutallyTrimHTML($expected_html),
+            $this->brutallyTrimHTML($html)
         );
     }
 
-    public function test_render_with_sortation(): void
+    public function testPanelSecondaryListingRenderWithSortation(): void
     {
         $sort_options = array(
             'a' => 'A',
@@ -184,31 +184,33 @@ EOT;
 
         $expected_html = <<<EOT
 <div class="panel panel-secondary panel-flex">
-	<div class="panel-heading ilHeader">
-		<h2>Title</h2>
-		<div class="il-viewcontrol-sortation" id="id_1">
-			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="id_4" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="id_4_menu">
-					<span class="caret"></span>
-				</button>
-				<ul id="id_4_menu" class="dropdown-menu">
-					<li><button class="btn btn-link" data-action="?sortation=a" id="id_2">A</button></li>
-					<li><button class="btn btn-link" data-action="?sortation=b" id="id_3">B</button></li>
-				</ul>
-			</div>
-		</div>	
-	</div>
-	<div class="panel-body">
-	</div>
+    <div class="panel-heading ilHeader">
+        <h2>Title</h2>
+    </div>
+    <div class="panel-viewcontrols l-bar__container">
+        <div class="il-viewcontrol-sortation l-bar__element" id="id_1">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="id_4" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="id_4_menu">
+                    <span class="caret"></span>
+                </button>
+                <ul id="id_4_menu" class="dropdown-menu">
+                    <li><button class="btn btn-link" data-action="?sortation=a" id="id_2">A</button></li>
+                    <li><button class="btn btn-link" data-action="?sortation=b" id="id_3">B</button></li>
+                </ul>
+            </div>
+        </div>  
+    </div>  
+    <div class="panel-body">
+    </div>
 </div>
 EOT;
-        $this->assertHTMLEquals(
-            $this->cleanHTML($expected_html),
-            $this->cleanHTML($html)
+        $this->assertEquals(
+            $this->brutallyTrimHTML($expected_html),
+            $this->brutallyTrimHTML($html)
         );
     }
 
-    public function test_render_with_pagination(): void
+    public function testPanelSecondaryListingRenderWithPagination(): void
     {
         $pagination = $this->getUIFactory()->viewControl()->pagination()
             ->withTargetURL('http://ilias.de', 'page')
@@ -223,37 +225,30 @@ EOT;
 
         $expected_html = <<<EOT
 <div class="panel panel-secondary panel-flex">
-	<div class="panel-heading ilHeader">
-		<h2>Title</h2>
-		<div class="il-viewcontrol-pagination">
-			<span class="browse previous">
-				<a tabindex="0" class="glyph" href="http://ilias.de?page=0" aria-label="back">
-					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-				</a>
-			</span>
-			<button class="btn btn-link" data-action="http://ilias.de?page=0" id="id_1">1</button>
-			<button class="btn btn-link engaged" aria-pressed="true" data-action="http://ilias.de?page=1" id="id_2">2</button>
-			<button class="btn btn-link" data-action="http://ilias.de?page=2" id="id_3">3</button>
-			<button class="btn btn-link" data-action="http://ilias.de?page=3" id="id_4">4</button>
-			<button class="btn btn-link" data-action="http://ilias.de?page=4" id="id_5">5</button>
-			<span class="browse next">
-				<a tabindex="0" class="glyph" href="http://ilias.de?page=2" aria-label="next">
-					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-				</a>
-			</span>
-		</div>
-	</div>
-	<div class="panel-body">
-	</div>
+    <div class="panel-heading ilHeader">
+        <h2>Title</h2>
+    </div>
+    <div class="panel-viewcontrols l-bar__container">
+        <div class="il-viewcontrol-pagination l-bar__element">
+            <span class="btn btn-ctrl browse previous"><a tabindex="0" class="glyph" href="http://ilias.de?page=0" aria-label="back"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a></span>
+            <button class="btn btn-link" data-action="http://ilias.de?page=0" id="id_1">1</button>
+            <button class="btn btn-link engaged" aria-pressed="true" data-action="http://ilias.de?page=1" id="id_2">2</button>
+            <button class="btn btn-link" data-action="http://ilias.de?page=2" id="id_3">3</button>
+            <button class="btn btn-link" data-action="http://ilias.de?page=3" id="id_4">4</button>
+            <button class="btn btn-link" data-action="http://ilias.de?page=4" id="id_5">5</button>
+            <span class="btn btn-ctrl browse next"><a tabindex="0" class="glyph" href="http://ilias.de?page=2" aria-label="next"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a></span>
+        </div>
+    </div>
+    <div class="panel-body"></div>
 </div>
 EOT;
-        $this->assertHTMLEquals(
-            $this->cleanHTML($expected_html),
-            $this->cleanHTML($html)
+        $this->assertEquals(
+            $this->brutallyTrimHTML($expected_html),
+            $this->brutallyTrimHTML($html)
         );
     }
 
-    public function test_render_with_section(): void
+    public function testPanelSecondaryListingRenderWithSection(): void
     {
         $back = $this->getUIFactory()->button()->standard("previous", "http://www.ilias.de");
         $next = $this->getUIFactory()->button()->standard("next", "http://www.github.com");
@@ -267,30 +262,25 @@ EOT;
 
         $expected_html = <<<EOT
 <div class="panel panel-secondary panel-flex">
-	<div class="panel-heading ilHeader">
-		<h2>Title</h2>
-		<div class="il-viewcontrol-section">
-			<a class="btn btn-default " href="http://www.ilias.de" aria-label="previous" data-action="http://www.ilias.de" id="id_1">
-				<span class="glyphicon glyphicon-chevron-left"></span>
-			</a>
-			<button class="btn btn-default" data-action="">
-				current
-			</button>
-			<a class="btn btn-default " href="http://www.github.com" aria-label="next" data-action="http://www.github.com" id="id_2">
-				<span class="glyphicon glyphicon-chevron-right"></span>
-			</a>
-		</div>
-	</div>
-	<div class="panel-body">
-	</div>
+    <div class="panel-heading ilHeader">
+    <h2>Title</h2></div>
+    <div class="panel-viewcontrols l-bar__container">
+        <div class="il-viewcontrol-section l-bar__element">
+        <a class="btn btn-ctrl" href="http://www.ilias.de" aria-label="previous" data-action="http://www.ilias.de" id="id_1"><span class="glyphicon glyphicon-chevron-left"></span></a>
+        <button class="btn btn-default" data-action="">current</button>
+        <a class="btn btn-ctrl " href="http://www.github.com" aria-label="next" data-action="http://www.github.com" id="id_2"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+    </div>
+    <div class="panel-body"></div>
 </div>
+
 EOT;
-        $this->assertHTMLEquals(
-            $this->cleanHTML($expected_html),
-            $this->cleanHTML($html)
+        $this->assertEquals(
+            $this->brutallyTrimHTML($expected_html),
+            $this->brutallyTrimHTML($html)
         );
     }
-    public function test_render_with_footer(): void
+    public function testPanelSecondaryListingRenderWithFooter(): void
     {
         $footer_shy_button = $this->getUIFactory()->button()->shy("Action", "");
         $secondary_panel = $this->getUIFactory()->panelSecondary()->listing("", array())->withFooter($footer_shy_button);
@@ -310,7 +300,7 @@ EOT;
         );
     }
 
-    public function test_render_with_no_header_but_content(): void
+    public function testPanelSecondaryListingRenderWithNoHeaderButContent(): void
     {
         $group = new I\Component\Item\Group(
             "Subtitle 1",

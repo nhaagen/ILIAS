@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -17,6 +15,8 @@ declare(strict_types=1);
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=1);
 
 require_once("libs/composer/vendor/autoload.php");
 require_once(__DIR__ . "/../../Base.php");
@@ -51,7 +51,7 @@ class SortationTest extends ILIAS_UI_TestBase
         $this->assertInstanceOf("ILIAS\\UI\\Component\\Signal", $sortation->getSelectSignal());
     }
 
-    public function testAttributes(): void
+    public function testViewControlSortationAttributes(): void
     {
         $f = $this->getFactory();
         $s = $f->sortation($this->options);
@@ -70,7 +70,7 @@ class SortationTest extends ILIAS_UI_TestBase
         $this->assertEquals($signal, $s->withOnSort($signal)->getTriggeredSignals()[0]->getSignal());
     }
 
-    public function testRendering(): void
+    public function testViewControlSortationRender(): void
     {
         $f = $this->getFactory();
         $r = $this->getDefaultRenderer();
@@ -80,7 +80,7 @@ class SortationTest extends ILIAS_UI_TestBase
         $this->assertEquals($this->getSortationExpectedHTML(true), $html);
     }
 
-    public function testRenderingWithJsBinding(): void
+    public function testViewControlSortationWithJsBindingRender(): void
     {
         $f = $this->getFactory();
         $r = $this->getDefaultRenderer();
@@ -108,14 +108,20 @@ class SortationTest extends ILIAS_UI_TestBase
             $dropdown_id = "id_5";
         }
 
-        $dropdown_menu_id = $dropdown_id."_menu";
+        $dropdown_menu_id = $dropdown_id . "_menu";
 
         $expected = <<<EOT
-<div class="il-viewcontrol-sortation" $id><div class="dropdown"><button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="$dropdown_id" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="$dropdown_menu_id" > <span class="caret"></span></button><ul id="$dropdown_menu_id" class="dropdown-menu">
-	<li><button class="btn btn-link" data-action="?sortation=internal_rating" id="$button1_id">Best</button></li>
-	<li><button class="btn btn-link" data-action="?sortation=date_desc" id="$button2_id">Most Recent</button></li>
-	<li><button class="btn btn-link" data-action="?sortation=date_asc" id="$button3_id">Oldest</button></li></ul></div>
+<div class="il-viewcontrol-sortation l-bar__element" $id>
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="$dropdown_id" aria-label="actions" aria-haspopup="true" aria-expanded="false" aria-controls="id_5_menu"><span class="caret"></span></button>
+        <ul id="id_5_menu" class="dropdown-menu">
+            <li><button class="btn btn-link" data-action="?sortation=internal_rating" id="$button1_id">Best</button></li>
+            <li><button class="btn btn-link" data-action="?sortation=date_desc" id="$button2_id">Most Recent</button></li>
+            <li><button class="btn btn-link" data-action="?sortation=date_asc" id="$button3_id">Oldest</button></li>
+        </ul>
+    </div>
 </div>
+
 EOT;
         return $this->brutallyTrimHTML($expected);
     }
