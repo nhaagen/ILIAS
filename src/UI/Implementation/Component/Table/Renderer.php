@@ -65,7 +65,6 @@ class Renderer extends AbstractComponentRenderer
     ): string {
         $tpl = $this->getTemplate("tpl.presentationtable.html", true, true);
         $tpl->setVariable("TITLE", $component->getTitle());
-        $vcs = $component->getViewControls();
         $expcollapsebtns = [];
         if ($sig_ta = $component->getExpandCollapseAllSignal()) {
             $sig_ta_expand = clone $sig_ta;
@@ -83,18 +82,11 @@ class Renderer extends AbstractComponentRenderer
             );
         }
 
-        $tpl->touchBlock("viewcontrols");
+        $tpl->setVariable("EXPANDCOLLAPSEALL", $default_renderer->render($expcollapsebtns));
+
+        $vcs = $component->getViewControls();
         if ($vcs) {
-            foreach ($vcs as $vc) {
-                $tpl->setCurrentBlock("vc");
-                $tpl->setVariable("VC", $default_renderer->render($vc));
-                $tpl->parseCurrentBlock();
-            }
-        }
-        if ($expcollapsebtns) {
-            $tpl->setCurrentBlock("expandcollapsebtns");
-            $tpl->setVariable("EXPANDCOLLAPSEALL", $default_renderer->render($expcollapsebtns));
-            $tpl->parseCurrentBlock();
+            $tpl->setVariable("VC", $default_renderer->render($vcs));
         }
 
         $id = $this->bindJavaScript($component);
