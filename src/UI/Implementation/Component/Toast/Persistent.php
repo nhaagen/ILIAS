@@ -20,33 +20,15 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Implementation\Component\Toast;
 
+use ILIAS\UI\Component\Button\Shy;
+use ILIAS\UI\Component\Link\Link;
+use ILIAS\UI\Component\Signal;
 use ILIAS\UI\Component\Symbol\Icon\Icon;
+use ILIAS\UI\Implementation\Component\ComponentHelper;
+use ILIAS\UI\Component\Toast as ComponentInterface;
+use ILIAS\UI\Implementation\Component\JavaScriptBindable;
 use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
 
-class Factory implements \ILIAS\UI\Component\Toast\Factory
+class Persistent extends Toast implements ComponentInterface\Persistent
 {
-    protected SignalGeneratorInterface $signal_generator;
-
-    public function __construct(SignalGeneratorInterface $signal_generator)
-    {
-        $this->signal_generator = $signal_generator;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function standard($title, Icon $icon): Standard
-    {
-        return new Standard($title, $icon, $this->signal_generator);
-    }
-
-    public function persistent($title, Icon $icon): Persistent
-    {
-        return new Persistent($title, $icon, $this->signal_generator);
-    }
-
-    public function container(): Container
-    {
-        return new Container();
-    }
 }

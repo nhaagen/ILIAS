@@ -29,7 +29,7 @@ use ILIAS\UI\Component\Toast as ComponentInterface;
 use ILIAS\UI\Implementation\Component\JavaScriptBindable;
 use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
 
-class Toast implements ComponentInterface\Toast
+abstract class Toast implements ComponentInterface\Toast
 {
     use ComponentHelper;
     use JavaScriptBindable;

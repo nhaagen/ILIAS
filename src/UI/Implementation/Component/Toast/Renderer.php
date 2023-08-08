@@ -37,9 +37,13 @@ class Renderer extends AbstractComponentRenderer
     {
         $this->checkComponent($component);
 
-        if ($component instanceof Component\Toast\Toast) {
-            return $this->renderToast($component, $default_renderer);
+        if ($component instanceof Component\Toast\Standard) {
+            return $this->renderStandardToast($component, $default_renderer);
         }
+        if ($component instanceof Component\Toast\Persistent) {
+            return $this->renderPersistentToast($component, $default_renderer);
+        }
+
         if ($component instanceof Component\Toast\Container) {
             return $this->renderContainer($component, $default_renderer);
         }
@@ -47,10 +51,26 @@ class Renderer extends AbstractComponentRenderer
         throw new LogicException("Cannot render: " . get_class($component));
     }
 
-    protected function renderToast(Component\Toast\Toast $component, RendererInterface $default_renderer): string
+    protected function renderStandardToast(Component\Toast\Toast $component, RendererInterface $default_renderer): string
     {
         $tpl = $this->getTemplate("tpl.toast.html", true, true);
+        return $this->renderToast($component, $default_renderer, $tpl);
+    }
+    protected function renderPersistentToast(Component\Toast\Toast $component, RendererInterface $default_renderer): string
+    {
+        $tpl = $this->getTemplate("tpl.persistent_toast.html", true, true);
 
+        $close_btn = $this->getUIFactory()->button()->standard("Goto ILIAS", "http://www.ilias.de");
+        $tpl->setVariable("CLOSE_BUTTON", $default_renderer->render($close_btn));
+
+        return $this->renderToast($component, $default_renderer, $tpl);
+    }
+
+    protected function renderToast(
+        Component\Toast\Toast $component,
+        RendererInterface $default_renderer,
+        $tpl
+    ): string {
         $title = $component->getTitle();
         if ($title instanceof Shy || $title instanceof Link) {
             $title = $default_renderer->render($title);
@@ -82,7 +102,7 @@ class Renderer extends AbstractComponentRenderer
         $tpl->setVariable("ICON", $default_renderer->render($component->getIcon()));
         $tpl->setVariable("CLOSE", $default_renderer->render($this->getUIFactory()->button()->close()));
 
-        $component = $component->withAdditionalOnLoadCode(fn ($id) => "
+        $component = $component->withAdditionalOnLoadCode(fn($id) => "
                 il.UI.toast.setToastSettings($id);
                 il.UI.toast.showToast($id);
             ");
@@ -113,7 +133,8 @@ class Renderer extends AbstractComponentRenderer
     protected function getComponentInterfaceName(): array
     {
         return [
-            Component\Toast\Toast::class,
+            Component\Toast\Standard::class,
+            Component\Toast\Persistent::class,
             Component\Toast\Container::class
         ];
     }

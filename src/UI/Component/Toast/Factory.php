@@ -54,9 +54,40 @@ interface Factory
      * @param string|\ILIAS\UI\Component\Button\Shy|\ILIAS\UI\Component\Link\Link $title Title of the item
      * @param \ILIAS\UI\Component\Symbol\Icon\Icon $icon lead icon
      *
-     * @return  \ILIAS\UI\Component\Toast\Toast
+     * @return  \ILIAS\UI\Component\Toast\Standard
      */
-    public function standard($title, Icon $icon): Toast;
+    public function standard($title, Icon $icon): Standard;
+
+    /**
+     * ---
+     * description:
+     *   purpose:
+     *     Standard Toasts display a normal toast inside a toast container.
+     *   composition:
+     *     Standard Toasts contain a title, a close button and an icon, which indicates the service or module
+     *     triggering the Toast. They might contain a description and an action, which is triggered
+     *     when user interact with the Toast. Further the Toast might contain a number of ILIAS Link components, which
+     *     will be presented below the description.
+     *   effect:
+     *     If the item has an action set, a click interaction of the user with the Toast will trigger this
+     *     action (The response of this interaction will not be displayed).
+     * context:
+     *   - The Toast should only be used inside a toast container.
+     * rules:
+     *   style:
+     *     1: The description of the Toast MUST not render any non-textual context (e.g. HTML).
+     *   ordering:
+     *     1: A new Toast SHOULD be ordered below all existing Toasts of its surrounding toast container.
+     *   responsiveness:
+     *     1: The Toast SHOULD always have the same size on full display and be independent from the display size.
+     * ---
+     *
+     * @param string|\ILIAS\UI\Component\Button\Shy|\ILIAS\UI\Component\Link\Link $title Title of the item
+     * @param \ILIAS\UI\Component\Symbol\Icon\Icon $icon lead icon
+     *
+     * @return  \ILIAS\UI\Component\Toast\Persistent
+     */
+    public function persistent($title, Icon $icon): Persistent;
 
     /**
      * ---
