@@ -230,7 +230,7 @@ class ilObjTestSettingsScoringResultsGUI extends ilTestSettingsGUI
         }
 
         if (
-            $this->test_object->getScoreReporting() == ilObjTest::SCORE_REPORTING_DATE
+            $this->test_object->getScoreReporting() == ilObjTestSettingsResultSummary::SCORE_REPORTING_DATE
             && $this->test_object->getReportingDate() > time()
         ) {
             return false;
