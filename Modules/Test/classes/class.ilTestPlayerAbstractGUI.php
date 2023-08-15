@@ -39,10 +39,12 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
     public const PRESENTATION_MODE_VIEW = 'view';
     public const PRESENTATION_MODE_EDIT = 'edit';
 
-    public const FIXED_SHUFFLER_SEED_MIN_LENGTH = 8;
-
     public bool $maxProcessingTimeReached;
     public bool $endingTimeReached;
+    public $ref_id;
+    public $saveResult;
+    public $sequence;
+    public $cmdCtrl;
 
     protected ilTestPasswordChecker $passwordChecker;
     protected ilTestProcessLocker $processLocker;
@@ -2220,7 +2222,7 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
             $question_gui->object->setObligationsToBeConsidered($this->object->areObligationsEnabled());
             $question_gui->populateJavascriptFilesRequiredForWorkForm($tpl);
             $question_gui->object->setOutputType(OUTPUT_JAVASCRIPT);
-            $question_gui->object->setShuffler($this->buildQuestionAnswerShuffler(
+            $question_gui->object->setShuffler($this->shuffler->getAnswerShuffleFor(
                 $question_id,
                 $this->test_session->getActiveId(),
                 $this->test_session->getPass()
