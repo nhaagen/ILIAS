@@ -135,26 +135,19 @@ class ilObjStudyProgrammeAutoMembershipsGUI
         if ($profile_not_public) {
             $this->tpl->setOnScreenMessage("info", $this->lng->txt('prg_profile_not_public'));
         }
-        $collected_modals = [];
 
         $modal = $this->getModal();
         $modal_replace_signal = $modal->getReplaceSignal();
         $this->getToolbar($modal->getShowSignal(), $modal_replace_signal);
-
-        $collected_modals[] = $modal;
 
         $data = [];
         foreach ($this->getObject()->getAutomaticMembershipSources() as $ams) {
             $title = $this->getTitleRepresentation($ams);
             $usr = $this->getUserRepresentation($ams->getLastEditorId());
 
-            $modal = $this->getModal($ams->getSourceType(), $ams->getSourceId(), true);
-            $collected_modals[] = $modal;
-
             $src_id = $ams->getSourceType() . '-' . $ams->getSourceId();
             $actions = $this->getItemAction(
                 $src_id,
-                $modal->getShowSignal(),
                 $ams->isEnabled()
             );
 
@@ -168,7 +161,7 @@ class ilObjStudyProgrammeAutoMembershipsGUI
         $table = new ilStudyProgrammeAutoMembershipsTableGUI($this, "view", "");
         $table->setData($data);
         $this->tpl->setContent(
-            $this->ui_renderer->render($collected_modals)
+            $this->ui_renderer->render($modal)
             . $table->getHTML()
         );
     }
@@ -195,16 +188,6 @@ class ilObjStudyProgrammeAutoMembershipsGUI
         if (in_array($src_type, self::$switch_to_ref_id)) {
             $refs = ilObject::_getAllReferences((int) $src_id);
             $src_id = (int) array_shift($refs);
-        }
-
-        if (
-            array_key_exists(self::F_SOURCE_TYPE, $post) &&
-            array_key_exists(self::F_SOURCE_ID, $post)
-        ) {
-            $this->getObject()->deleteAutomaticMembershipSource(
-                (string) $post[self::F_SOURCE_TYPE],
-                (int) $post[self::F_SOURCE_ID]
-            );
         }
 
         $this->getObject()->storeAutomaticMembershipSource($src_type, (int) $src_id);
@@ -586,13 +569,9 @@ class ilObjStudyProgrammeAutoMembershipsGUI
 
     protected function getItemAction(
         string $src_id,
-        Signal $signal,
         bool $is_enabled
     ): Dropdown\Standard {
         $items = [];
-
-        $items[] = $this->ui_factory->button()->shy($this->txt('edit'), '')
-            ->withOnClick($signal);
 
         $this->ctrl->setParameter($this, self::CHECKBOX_SOURCE_IDS, $src_id);
 
