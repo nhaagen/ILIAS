@@ -41,10 +41,7 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
 
     public bool $maxProcessingTimeReached;
     public bool $endingTimeReached;
-    public $ref_id;
-    public $saveResult;
-    public $sequence;
-    public $cmdCtrl;
+    public int $ref_id;
 
     protected ilTestPasswordChecker $passwordChecker;
     protected ilTestProcessLocker $processLocker;
@@ -983,7 +980,7 @@ abstract class ilTestPlayerAbstractGUI extends ilTestServiceGUI
             $questionNavigationGUI->setDiscardSolutionButtonEnabled(true);
             // fau: testNav - set answere status in question header
             $questionGui->getQuestionHeaderBlockBuilder()->setQuestionAnswered(true);
-            // fau.
+        // fau.
         } elseif ($this->object->isPostponingEnabled()) {
             $questionNavigationGUI->setSkipQuestionLinkTarget(
                 $this->ctrl->getLinkTarget($this, ilTestPlayerCommands::SKIP_QUESTION)
