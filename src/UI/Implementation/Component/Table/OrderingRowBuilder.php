@@ -18,8 +18,24 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\UI\Component\Table;
+namespace ILIAS\UI\Implementation\Component\Table;
 
-interface DataRow extends Row
+use ILIAS\UI\Component\Table as T;
+
+class OrderingRowBuilder extends RowBuilder implements T\OrderingRowBuilder
 {
+    /**
+     * @param array<string, mixed> $record
+     */
+    public function buildRow(string $id, array $record): T\OrderingRow
+    {
+        return new OrderingRow(
+            $this->row_actions !== [],
+            $this->table_has_multiactions,
+            $this->columns,
+            $this->row_actions,
+            $id,
+            $record
+        );
+    }
 }

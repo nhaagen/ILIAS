@@ -18,8 +18,23 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\UI\Component\Table;
+namespace ILIAS\UI\Implementation\Component\Table;
 
-interface DataRow extends Row
+use ILIAS\UI\Component\Table as T;
+
+class OrderingRow extends Row implements T\OrderingRow
 {
+    protected int $position;
+
+    public function withPosition(int $position): self
+    {
+        $clone = clone $this;
+        $clone->position = $position;
+        return $clone;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
 }

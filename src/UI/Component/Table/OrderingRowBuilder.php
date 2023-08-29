@@ -20,6 +20,10 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Table;
 
-interface DataRow extends Row
+interface OrderingRowBuilder
 {
+    /**
+     * @param array<string, mixed> $record
+     */
+    public function buildRow(string $id, array $record): OrderingRow;
 }

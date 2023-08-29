@@ -17057,6 +17057,7 @@ ui#:#label_pagination_offset#:#Pagination Offset
 ui#:#label_sortation#:#Sortation
 ui#:#presentation_table_collapse#:#collapse all
 ui#:#presentation_table_expand#:#expand all
+ui#:#table_posinput_col_title#:#Position
 ui#:#ui_chars_max#:#Maximum:
 ui#:#ui_chars_min#:#Minimum:
 ui#:#ui_chars_remaining#:#Characters remaining:

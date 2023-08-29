@@ -20,6 +20,12 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Table;
 
-interface DataRow extends Row
+use  ILIAS\UI\Component\Table\Column\Column;
+use  ILIAS\UI\Component\Table\Action\Action;
+
+interface OrderingRow extends Row
 {
+    public function withPosition(int $idx): self;
+
+    public function getPosition(): int;
 }
