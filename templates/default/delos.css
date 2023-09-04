@@ -1,4 +1,7 @@
 @charset "UTF-8";
+/*
+* Dependencies
+*/
 /*!
  * Datetimepicker for Bootstrap 3
  * version : 4.17.37
@@ -681,8 +684,9 @@ table.mceToolbar tbody, table.mceToolbar tr, table.mceToolbar td {
 }
 
 /*
-* Dependencies
-*/ /* print less */
+* Normalize
+*/
+/* print less */
 @media print {
   * {
     /* see bug 0022342 */
@@ -890,9 +894,6 @@ th {
   padding: 0;
 }
 
-/*
-* Normalize
-*/
 .row {
   --bs-gutter-x: 30px;
   --bs-gutter-y: 0;
@@ -2601,8 +2602,9 @@ code {
   }
 }
 /*
-* Elements
+* Components
 */
+/* UI Framework */
 .c-tooltip__container {
   position: relative;
   display: inline-block;
@@ -9742,6 +9744,7 @@ td.c-table-data__cell--highlighted {
   width: 5rem;
 }
 
+/* Component parts from old delos.scss */
 div#agreement {
   width: 100%;
   height: 375px;
@@ -10462,6 +10465,7 @@ div.il_info {
   text-align: left;
 }
 
+/* Adapted from Bootstrap 3 */
 .fade {
   opacity: 0;
   -webkit-transition: opacity 0.15s linear;
@@ -11087,6 +11091,7 @@ tbody.collapse.in {
   clip: auto;
 }
 
+/* Legacy Modules & Services */
 /* Modules/Bibliographic */
 span.bibl_text_inline_Emph {
   font-style: italic;
@@ -13258,6 +13263,25 @@ div.ilc_Page.readonly textarea[disabled] {
 
 #tst_pass_details_overview tr {
   scroll-margin-top: 30px;
+}
+
+.il-table-presentation-desclist.inline .il-listing-characteristic-value-row {
+  display: flex;
+  width: auto;
+  padding-right: 20px;
+}
+
+.il-table-presentation-desclist.inline .il-listing-characteristic-value {
+  display: flex;
+  /* justify-content: space-evenly; */
+}
+
+.il-listing-characteristic-value-label, .il-listing-characteristic-value-item {
+  width: fit-content;
+}
+
+.il-listing-characteristic-value-row.clearfix {
+  border-top: none;
 }
 
 /* Modules/Wiki */
@@ -18705,13 +18729,6 @@ img.ilUserXXSmall {
   padding: 5px;
 }
 
-/*
-* Components
-*/
-/* UI Framework */
-/* Component parts from old delos.scss */
-/* Adapted from Bootstrap 3 */
-/* Legacy Modules & Services */
 /*
 	These classes are used to limit the number of rows when displaying larger chunks of text.
 	The mixin receives $height-in-rows as an integer. The classes il-multi-line-cap-2,3,5,10
