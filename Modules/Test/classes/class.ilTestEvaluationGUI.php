@@ -47,8 +47,6 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
     protected ilTestAccess $testAccess;
     protected ilTestProcessLockerFactory $processLockerFactory;
 
-    protected ilTestParticipantAccessFilterFactory $participant_access_filter;
-
     /**
      * ilTestEvaluationGUI constructor
      *
@@ -60,8 +58,6 @@ class ilTestEvaluationGUI extends ilTestServiceGUI
     public function __construct(ilObjTest $object)
     {
         parent::__construct($object);
-
-        $this->participant_access_filter = new ilTestParticipantAccessFilterFactory($this->access);
 
         $this->processLockerFactory = new ilTestProcessLockerFactory(
             new ilSetting('assessment'),
