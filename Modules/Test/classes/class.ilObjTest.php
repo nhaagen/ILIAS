@@ -163,10 +163,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             $this
         );
     }
-    
+
     public function getLocalDIC(): ILIAS\DI\Container
     {
-         return ilTestDIC::dic();
+        return ilTestDIC::dic();
     }
 
     /**
