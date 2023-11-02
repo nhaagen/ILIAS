@@ -78,7 +78,7 @@ class Renderer extends AbstractComponentRenderer
     protected function registerSignals(Filter\Filter $filter): Filter\Filter
     {
         $update = $filter->getUpdateSignal();
-        return $filter->withAdditionalOnLoadCode(fn ($id) => "$(document).on('$update', function(event, signalData) {
+        return $filter->withAdditionalOnLoadCode(fn($id) => "$(document).on('$update', function(event, signalData) {
                 il.UI.filter.onInputUpdate(event, signalData, '$id'); return false; 
             });");
     }
@@ -103,7 +103,7 @@ class Renderer extends AbstractComponentRenderer
         $tpl->parseCurrentBlock();
 
         $opener_expand = $f->button()->bulky($f->symbol()->glyph()->expand(), $this->txt("filter"), "")
-            ->withAdditionalOnLoadCode(fn ($id) => "$('#$id').on('click', function(event) {
+            ->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
 					il.UI.filter.onAjaxCmd(event, '$id', 'expand');
 					event.preventDefault();
 			    });");
@@ -114,7 +114,7 @@ class Renderer extends AbstractComponentRenderer
         $tpl->parseCurrentBlock();
 
         $opener_collapse = $f->button()->bulky($f->symbol()->glyph()->collapse(), $this->txt("filter"), "")
-            ->withAdditionalOnLoadCode(fn ($id) => "$('#$id').on('click', function(event) {
+            ->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
 					il.UI.filter.onAjaxCmd(event, '$id', 'collapse');
 					event.preventDefault();
 			    });");
@@ -149,7 +149,7 @@ class Renderer extends AbstractComponentRenderer
 
         // render apply and reset buttons
         $apply = $f->button()->bulky($f->symbol()->glyph()->apply(), $this->txt("apply"), "")
-            ->withOnLoadCode(fn ($id) => "$('#$id').on('click', function(event) {
+            ->withOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
                         il.UI.filter.onCmd(event, '$id', 'apply');
                         return false; // stop event propagation
                 });
@@ -193,11 +193,11 @@ class Renderer extends AbstractComponentRenderer
          * @var $toggle Toggle
          */
         $toggle = $f->button()->toggle("", $toggle_on_signal, $toggle_off_signal, $component->isActivated());
-        $toggle = $toggle->withAdditionalOnLoadCode(fn ($id) => "$(document).on('$toggle_on_signal',function(event) {
+        $toggle = $toggle->withAdditionalOnLoadCode(fn($id) => "$(document).on('$toggle_on_signal',function(event) {
                         il.UI.filter.onCmd(event, '$id', 'toggleOn');
                         return false; // stop event propagation
             });");
-        $toggle = $toggle->withAdditionalOnLoadCode(fn ($id) => "$(document).on('$toggle_off_signal',function(event) {
+        $toggle = $toggle->withAdditionalOnLoadCode(fn($id) => "$(document).on('$toggle_off_signal',function(event) {
                         il.UI.filter.onCmd(event, '$id', 'toggleOff');
                         return false; // stop event propagation
             });");
@@ -245,6 +245,42 @@ class Renderer extends AbstractComponentRenderer
 
         $renderer = $default_renderer->withAdditionalContext($component);
         $tpl->setVariable("INPUTS", $renderer->render($input_group));
+
+        // The remaining parameters for the view controls need to be stuffed into
+        // hidden fields, so the browser passes them as query parameters once the
+        // form is submitted.
+        $input_names = $component->getComponentInternalNames();
+
+        if($request = $component->getRequest()) {
+            $query_params = array_filter(
+                $request->getQueryParams(),
+                fn($k) => ! in_array($k, $input_names),
+                ARRAY_FILTER_USE_KEY
+            );
+
+            foreach ($query_params as $k => $v) {
+                if (is_array($v)) {
+                    foreach (array_values($v) as $arrv) {
+                        $tpl->setCurrentBlock('param');
+                        $tpl->setVariable("PARAM_NAME", $k . '[]');
+                        $tpl->setVariable("VALUE", $arrv);
+                        $tpl->parseCurrentBlock();
+                    }
+                } else {
+                    $tpl->setCurrentBlock('param');
+                    $tpl->setVariable("PARAM_NAME", $k);
+                    $tpl->setVariable("VALUE", $v);
+                    $tpl->parseCurrentBlock();
+                }
+            }
+            /*
+                        print '<pre>';
+                        var_dump($input_names);
+                        print '<hr>';
+                        var_dump($query_params);
+                        die();
+            */
+        }
     }
 
     /**

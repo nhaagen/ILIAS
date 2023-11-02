@@ -15,6 +15,7 @@
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
 declare(strict_types=1);
 
 namespace ILIAS\UI\Implementation\Component\Input\Container\Filter;
@@ -90,6 +91,7 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
     private int $count = 0;
     private array $used_names = [];
 
+    protected ?ServerRequestInterface $request = null;
 
     /**
      * @param string|Signal $toggle_action_on
@@ -219,12 +221,18 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
      */
     public function withRequest(ServerRequestInterface $request)
     {
+        $this->request = $request;
         $param_data = $this->extractParamData($request);
 
         $clone = clone $this;
         $clone->input_group = $this->getInputGroup()->withInput($param_data);
 
         return $clone;
+    }
+
+    public function getRequest(): ?ServerRequestInterface
+    {
+        return $this->request;
     }
 
     /**
@@ -358,5 +366,26 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
     protected function initSignals(): void
     {
         $this->update_signal = $this->signal_generator->create();
+    }
+
+    public function getComponentInternalNames(C\Input\Group $component = null, array $names = []): array
+    {
+        if(is_null($component)) {
+            $component = $this->getInputGroup();
+        }
+        foreach ($component->getInputs() as $input) {
+            if ($input instanceof C\Input\Group) {
+                $names = $this->getComponentInternalValues($input, $names);
+            }
+            if ($input instanceof HasInputGroup) {
+                $names = $this->getComponentInternalValues($input->getInputGroup(), $names);
+            }
+            if($name = $input->getName()) {
+                //$names[$input->getName()] = $input->getValue();
+                $names[] = $input->getName();
+            }
+        }
+
+        return $names;
     }
 }
