@@ -28,6 +28,7 @@ use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
 use ILIAS\UI\Implementation\Render\Template;
 use ILIAS\UI\Renderer as RendererInterface;
 use LogicException;
+use ILIAS\UI\Implementation\Render\ResourceRegistry;
 
 class Renderer extends AbstractComponentRenderer
 {
@@ -52,16 +53,18 @@ class Renderer extends AbstractComponentRenderer
     {
         $tpl = $this->getTemplate("tpl.standard_filter.html", true, true);
 
-        // JavaScript
-        $component = $this->registerSignals($component);
-        /**
-         * @var $component Filter\Standard
-         */
+        $this->renderInputs($tpl, $default_renderer, $component);
+        $this->renderExpandAndCollapse($tpl, $default_renderer, $component->isExpanded());
+
+        //$component = $this->registerSignals($component);
+        $is_expanded = $component->isExpanded() ? 'true' : 'false';
+        $is_activated = $component->isActivated() ? 'true' : 'false';
+        $component = $component->withAdditionalOnLoadCode(
+            fn($id) => "il.UI.filter.init('$id', $is_expanded, $is_activated)"
+        );
         $id = $this->bindJavaScript($component);
         $tpl->setVariable('ID_FILTER', $id);
 
-        // render expand and collapse
-        $this->renderExpandAndCollapse($tpl, $component, $default_renderer);
 
         // render apply and reset buttons
         $this->renderApplyAndReset($tpl, $component, $default_renderer);
@@ -69,8 +72,6 @@ class Renderer extends AbstractComponentRenderer
         // render toggle button
         $this->renderToggleButton($tpl, $component, $default_renderer);
 
-        // render inputs
-        $this->renderInputs($tpl, $component, $default_renderer);
 
         return $tpl->get();
     }
@@ -83,52 +84,22 @@ class Renderer extends AbstractComponentRenderer
             });");
     }
 
-    /**
-     * Render expand/collapse section
-     *
-     * @param Template $tpl
-     * @param Filter\Standard $component
-     * @param RendererInterface $default_renderer
-     */
     protected function renderExpandAndCollapse(
         Template $tpl,
-        Filter\Standard $component,
-        RendererInterface $default_renderer
+        RendererInterface $default_renderer,
+        bool $is_expanded
     ): void {
         $f = $this->getUIFactory();
-
-        $tpl->setCurrentBlock("action");
-        $tpl->setVariable("ACTION_NAME", "expand");
-        $tpl->setVariable("ACTION", $component->getExpandAction());
-        $tpl->parseCurrentBlock();
-
-        $opener_expand = $f->button()->bulky($f->symbol()->glyph()->expand(), $this->txt("filter"), "")
-            ->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
-					il.UI.filter.onAjaxCmd(event, '$id', 'expand');
-					event.preventDefault();
-			    });");
-
-        $tpl->setCurrentBlock("action");
-        $tpl->setVariable("ACTION_NAME", "collapse");
-        $tpl->setVariable("ACTION", $component->getCollapseAction());
-        $tpl->parseCurrentBlock();
-
-        $opener_collapse = $f->button()->bulky($f->symbol()->glyph()->collapse(), $this->txt("filter"), "")
-            ->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
-					il.UI.filter.onAjaxCmd(event, '$id', 'collapse');
-					event.preventDefault();
-			    });");
-
-        if ($component->isExpanded() == false) {
-            $opener = [$opener_collapse, $opener_expand];
-            $tpl->setVariable("OPENER", $default_renderer->render($opener));
-            $tpl->setVariable("ARIA_EXPANDED", "'false'");
-            $tpl->setVariable("INPUTS_ACTIVE_EXPANDED", "in");
-        } else {
-            $opener = [$opener_expand, $opener_collapse];
-            $tpl->setVariable("OPENER", $default_renderer->render($opener));
+        $tpl->setVariable("OPENER", $default_renderer->render([
+            $f->button()->bulky($f->symbol()->glyph()->expand(), $this->txt("filter"), ""),
+            $f->button()->bulky($f->symbol()->glyph()->collapse(), $this->txt("filter"), "")
+        ]));
+        if ($is_expanded) {
             $tpl->setVariable("ARIA_EXPANDED", "'true'");
             $tpl->setVariable("INPUTS_EXPANDED", "in");
+        } else {
+            $tpl->setVariable("ARIA_EXPANDED", "'false'");
+            $tpl->setVariable("INPUTS_ACTIVE_EXPANDED", "in");
         }
     }
 
@@ -210,48 +181,61 @@ class Renderer extends AbstractComponentRenderer
      */
     protected function renderInputs(
         Template $tpl,
-        Filter\Standard $component,
-        RendererInterface $default_renderer
+        RendererInterface $default_renderer,
+        Filter\Standard $component
     ): void {
-        // pass information on what inputs should be initially rendered
-        $is_input_rendered = $component->isInputRendered();
-        foreach ($component->getInputs() as $k => $input) {
-            $is_rendered = current($is_input_rendered);
-            $tpl->setCurrentBlock("status");
-            $tpl->setVariable("FIELD", $k);
-            $tpl->setVariable("VALUE", (int) $is_rendered);
-            $tpl->parseCurrentBlock();
-            next($is_input_rendered);
-        }
 
-        // render inputs
-        $input_group = $component->getInputGroup();
         if ($component->isActivated()) {
             $tpl->touchBlock("enabled");
         } else {
             $tpl->touchBlock("disabled");
         }
-        for ($i = 1; $i <= count($component->getInputs()); $i++) {
-            $tpl->setCurrentBlock("active_inputs");
-            $tpl->setVariable("ID_INPUT_ACTIVE", $i);
-            $tpl->parseCurrentBlock();
+
+        $renderer = $default_renderer->withAdditionalContext($component);
+
+        $input_group = $component->getInputGroup()
+            ->withOnUpdate(
+                $component->getUpdateSignal()
+            );
+
+        $inputs_html = [];
+        $user_fields = $component->getUserEditableInputs();
+        foreach ($component->getInputGroup()->getInputs() as $input) {
+            if(in_array($input, $user_fields)) {
+                $inputs_html[] = $renderer->render($input);
+            } else {
+                $inputs_html[] = $default_renderer->render($input);
+            }
         }
-        if (count($component->getInputs()) > 0) {
+
+        //$tpl->setVariable("INPUTS", $renderer->render($input_group));
+        $tpl->setVariable("INPUTS", implode('', $inputs_html));
+
+        //active filter values representation for collapsed mode
+        $active_filter_values = false;
+        foreach($user_fields as $input) {
+            $label = $input->getLabel();
+            $value = $input->getValue();
+            if($label && $value) {
+                $active_filter_values = true;
+                $tpl->setCurrentBlock("active_inputs");
+                $tpl->setVariable("INPUT_ACTIVE_VALUE", $label . ': ' . $value);
+                $tpl->parseCurrentBlock();
+            }
+        }
+        if($active_filter_values) {
             $tpl->setCurrentBlock("active_inputs_section");
             $tpl->parseCurrentBlock();
         }
 
-        $input_group = $input_group->withOnUpdate($component->getUpdateSignal());
-
-        $renderer = $default_renderer->withAdditionalContext($component);
-        $tpl->setVariable("INPUTS", $renderer->render($input_group));
-
-        // The remaining parameters for the view controls need to be stuffed into
+        // The remaining parameters for the filter controls need to be stuffed into
         // hidden fields, so the browser passes them as query parameters once the
         // form is submitted.
         $input_names = $component->getComponentInternalNames();
 
-        if($request = $component->getRequest()) {
+        if(! $request = $component->getRequest()) {
+            throw new \LogicException('No request was passed to the filter');
+        } else {
             $query_params = array_filter(
                 $request->getQueryParams(),
                 fn($k) => ! in_array($k, $input_names),
@@ -273,14 +257,16 @@ class Renderer extends AbstractComponentRenderer
                     $tpl->parseCurrentBlock();
                 }
             }
-            /*
-                        print '<pre>';
-                        var_dump($input_names);
-                        print '<hr>';
-                        var_dump($query_params);
-                        die();
-            */
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function registerResources(ResourceRegistry $registry): void
+    {
+        parent::registerResources($registry);
+        $registry->register('./src/UI/templates/js/Input/Container/dist/filter.min.js');
     }
 
     /**

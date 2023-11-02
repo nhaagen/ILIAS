@@ -47,9 +47,14 @@ class FilterContextRenderer extends AbstractComponentRenderer
          */
         $this->checkComponent($component);
 
-        if (!$component instanceof F\Group) {
+        if (!$component instanceof F\Group
+            && !$component instanceof F\Hidden
+        ) {
             $component = $this->setSignals($component);
         }
+
+        //var_dump($default_renderer->getContexts());
+        //die();
 
         switch (true) {
             case ($component instanceof F\Group):
@@ -66,6 +71,9 @@ class FilterContextRenderer extends AbstractComponentRenderer
 
             case ($component instanceof F\MultiSelect):
                 return $this->renderMultiSelectField($component, $default_renderer);
+
+            case ($component instanceof F\Hidden):
+                return $this->renderHiddenField($component, $default_renderer);
 
             default:
                 throw new LogicException("Cannot render '" . get_class($component) . "'");
@@ -123,11 +131,26 @@ class FilterContextRenderer extends AbstractComponentRenderer
         /**
          * @var $remove_glyph Component\Symbol\Glyph\Glyph
          */
-        $remove_glyph = $f->symbol()->glyph()->remove("")->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
-							il.UI.filter.onRemoveClick(event, '$id');
-							return false; // stop event propagation
-					});");
-
+        //        $signal = $component->getRemoveFromFilterSignal();
+        $remove_glyph = $f->symbol()->glyph()->remove();
+        /*            ->withAdditionalOnLoadCode(
+                        fn($id) => "$('#$id').on('click',
+                            function(event) {
+            					il.UI.filter.onRemoveClick(event, '$id');
+            						return false; // stop event propagation
+            				}
+                        );"
+                    );
+                    ->withAdditionalOnLoadCode(
+                        fn($id) => "document.getElementById('$id').addEventListener(
+                            'click',
+                            function(event) {
+                                const signal_event = new Event('$signal');
+                                document.dispatchEvent(signal_event);
+                                return false;
+                            });"
+                    );
+        */
         $tpl->setCurrentBlock("addon_left");
         $tpl->setVariable("LABEL", $component->getLabel());
         if ($id_pointing_to_input) {
@@ -166,7 +189,7 @@ class FilterContextRenderer extends AbstractComponentRenderer
         return $tpl->get();
     }
 
-    protected function applyName(FilterInput $component, Template $tpl): ?string
+    protected function applyName(FilterInput|F\Hidden $component, Template $tpl): ?string
     {
         $name = $component->getName();
         $tpl->setVariable("NAME", $name);
@@ -188,7 +211,7 @@ class FilterContextRenderer extends AbstractComponentRenderer
      * for this specific component and the placement of {VALUE} in its template.
      * Please note: this may not work for customized templates!
      */
-    protected function applyValue(FilterInput $component, Template $tpl, callable $escape = null): void
+    protected function applyValue(FilterInput|F\Hidden $component, Template $tpl, callable $escape = null): void
     {
         $value = $component->getValue();
         if (!is_null($escape)) {
@@ -288,13 +311,23 @@ class FilterContextRenderer extends AbstractComponentRenderer
         return $this->wrapInFilterContext($component, $tpl->get(), $default_renderer);
     }
 
+    protected function renderHiddenField(F\Hidden $input): string
+    {
+        $template = $this->getTemplate('tpl.hidden.html', true, true);
+        $this->applyName($input, $template);
+        $this->applyValue($component, $tpl, $this->escapeSpecialChars());
+        //$this->bindJSandApplyId($input, $template);
+        return $template->get();
+    }
+
+
     /**
      * @inheritdoc
      */
     public function registerResources(ResourceRegistry $registry): void
     {
         parent::registerResources($registry);
-        $registry->register('./src/UI/templates/js/Input/Container/dist/filter.js');
+        //$registry->register('./src/UI/templates/js/Input/Container/dist/filter.js');
         $registry->register('./src/UI/templates/js/Input/Field/input.js');
         $registry->register('./src/UI/templates/js/Input/Field/groups.js');
     }
@@ -329,7 +362,8 @@ class FilterContextRenderer extends AbstractComponentRenderer
             Component\Input\Field\Numeric::class,
             Component\Input\Field\Group::class,
             Component\Input\Field\Select::class,
-            Component\Input\Field\MultiSelect::class
+            Component\Input\Field\MultiSelect::class,
+            Component\Input\Field\Hidden::class
         ];
     }
 }

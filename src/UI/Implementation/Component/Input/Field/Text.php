@@ -24,14 +24,17 @@ use ILIAS\UI\Component as C;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\Refinery\Constraint;
 use Closure;
+use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
+use ILIAS\UI\Implementation\Component\Signal;
 
 /**
  * This implements the text input.
  */
-class Text extends FormInput implements C\Input\Field\Text
+class Text extends FormInput implements C\Input\Field\Text, FilterInputInternal
 {
     private ?int $max_length = null;
     private bool $complex = false;
+    private Signal $remove_from_filter_signal;
 
     /**
      * @inheritdoc
@@ -39,11 +42,13 @@ class Text extends FormInput implements C\Input\Field\Text
     public function __construct(
         DataFactory $data_factory,
         \ILIAS\Refinery\Factory $refinery,
+        SignalGeneratorInterface $signal_generator,
         string $label,
         ?string $byline
     ) {
         parent::__construct($data_factory, $refinery, $label, $byline);
         $this->setAdditionalTransformation($refinery->custom()->transformation(fn($v) => strip_tags($v)));
+        $this->remove_from_filter_signal = $signal_generator->create();
     }
 
     /**
@@ -114,4 +119,12 @@ class Text extends FormInput implements C\Input\Field\Text
     {
         return $this->complex;
     }
+
+    /**
+     * @inheritdoc
+     *
+    public function getRemoveFromFilterSignal(): Signal
+    {
+        return $this->remove_from_filter_signal;
+    }*/
 }

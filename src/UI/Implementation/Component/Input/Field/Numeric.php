@@ -26,17 +26,21 @@ use ILIAS\UI\Component as C;
 use ILIAS\Refinery\Constraint;
 use Closure;
 use ILIAS\Refinery\ConstraintViolationException;
+use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
+use ILIAS\UI\Implementation\Component\Signal;
 
 /**
  * This implements the numeric input.
  */
-class Numeric extends FormInput implements C\Input\Field\Numeric
+class Numeric extends FormInput implements C\Input\Field\Numeric, FilterInputInternal
 {
     private bool $complex = false;
+    private Signal $remove_from_filter_signal;
 
     public function __construct(
         DataFactory $data_factory,
         \ILIAS\Refinery\Factory $refinery,
+        SignalGeneratorInterface $signal_generator,
         string $label,
         ?string $byline
     ) {
@@ -52,6 +56,7 @@ class Numeric extends FormInput implements C\Input\Field\Numeric
         ->withProblemBuilder(fn($txt) => $txt("ui_numeric_only"));
 
         $this->setAdditionalTransformation($trafo_numericOrNull);
+        $this->remove_from_filter_signal = $signal_generator->create();
     }
 
     /**
@@ -92,4 +97,12 @@ class Numeric extends FormInput implements C\Input\Field\Numeric
     {
         return $this->complex;
     }
+
+    /**
+     * @inheritdoc
+     *
+    public function getRemoveFromFilterSignal(): Signal
+    {
+        return $this->remove_from_filter_signal;
+    }*/
 }

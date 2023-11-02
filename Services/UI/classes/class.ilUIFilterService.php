@@ -132,6 +132,8 @@ class ilUIFilterService
 
     public function getData(Filter\Standard $filter): ?array
     {
+        //return $filter->getData();
+
         $filter_data = null;
         if ($filter->isActivated()) {
             foreach ($filter->getInputs() as $k => $i) {

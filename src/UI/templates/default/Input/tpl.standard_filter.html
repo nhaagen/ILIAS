@@ -4,16 +4,26 @@
             <span class="il-filter-bar-opener" data-toggle="collapse" data-target=".il-filter-inputs-active,.il-filter-input-section" aria-expanded={ARIA_EXPANDED}> {OPENER} </span>
             <span class="il-filter-bar-toggle"> {TOGGLE} </span>
         </div>
+        
+
         <!-- BEGIN active_inputs_section -->
-        <div class="il-filter-inputs-active clearfix collapse {INPUTS_ACTIVE_EXPANDED}"><!-- BEGIN active_inputs --> <span id="{ID_INPUT_ACTIVE}"> </span> <!-- END active_inputs --></div>
+        <div class="il-filter-inputs-active clearfix collapse {INPUTS_ACTIVE_EXPANDED}">
+            <!-- BEGIN active_inputs --> 
+            <span>{INPUT_ACTIVE_VALUE}</span> 
+            <!-- END active_inputs -->
+        </div>
         <!-- END active_inputs_section -->
+
+
         <div class="il-filter-input-section row collapse {INPUTS_EXPANDED}">
             {INPUTS}
             <div class="il-filter-controls"> {APPLY} {RESET} </div>
         </div>
+
         <!-- BEGIN status -->
-        <input class="il-filter-field-status" type="hidden" name="__filter_status_{FIELD}" value="{VALUE}" />
+        <!-- input class="il-filter-field-status" type="hidden" name="__filter_status_{FIELD}" value="{VALUE}" / -->
         <!-- END status -->
+        
         <!-- BEGIN param -->
         {PARAM_NAME}: <input type="text" name="{PARAM_NAME}" value="{VALUE}" />
         <br>

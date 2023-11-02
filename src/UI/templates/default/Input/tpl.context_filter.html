@@ -1,14 +1,19 @@
-<div class="col-md-6 col-lg-4 il-popover-container">
-    <div class="input-group">
-        <!-- BEGIN addon_left -->
-        <label <!-- BEGIN for -->for="{ID}" <!-- END for --> class="input-group-addon leftaddon">{LABEL}</label>
-        <!-- END addon_left -->
-        <!-- BEGIN filter_field -->
+<div class="input-group il-filter__input">
+    <!-- BEGIN addon_left -->
+    <label <!-- BEGIN for -->for="{ID}" <!-- END for --> class="input-group-addon leftaddon">{LABEL}</label>
+    <!-- END addon_left -->
+    
+    <!-- BEGIN filter_field -->
+    <span class="il-filter_input__field">
         {FILTER_FIELD}
-        <!-- END filter_field -->
-        <!-- BEGIN addon_right -->
-        <span class="input-group-addon rightaddon">{DELETE}</span>
-        <!-- END addon_right -->
-    </div>
+    </span>
+    <!-- END filter_field -->
+
+    <!-- BEGIN addon_right -->
+    <span class="input-group-addon rightaddon">{DELETE}</span>
+    <!-- END addon_right -->
+</div>
+
+<div class="col-md-6 col-lg-4 il-popover-container">
     {POPOVER}
 </div>

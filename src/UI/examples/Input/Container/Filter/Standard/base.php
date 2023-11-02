@@ -27,9 +27,33 @@ function base()
 
     //Step 2: Define the filter and attach the inputs.
     $action = $DIC->ctrl()->getLinkTargetByClass("ilsystemstyledocumentationgui", "entries", "", true);
-    $filter = $DIC->uiService()->filter()->standard(
-        "filter_ID",
-        $action,
+    /*
+        $filter = $DIC->uiService()->filter()->standard(
+            "filter_ID",
+            $action,
+            [
+                "title" => $title_input,
+                "select" => $select,
+                "with_def" => $with_def,
+                "init_hide" => $init_hide,
+                "number" => $number,
+                "multi_select" => $multi_select
+            ],
+            [true, true, true, false, true, true],
+            true,
+            true
+        )->withRequest($DIC->http()->request());
+    */
+
+
+
+    $filter = $ui->input()->container()->filter()->standard(
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
         [
             "title" => $title_input,
             "select" => $select,
@@ -41,9 +65,10 @@ function base()
         [true, true, true, false, true, true],
         true,
         true
-    );
+    )->withRequest($DIC->http()->request());
 
     //Step 3: Get filter data
+    //$filter_data = $DIC->uiService()->filter()->getData($filter);
     $filter_data = $DIC->uiService()->filter()->getData($filter);
 
     //Step 4: Render the filter

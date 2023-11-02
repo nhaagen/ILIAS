@@ -26,6 +26,8 @@ use ILIAS\UI\Component\Input\Container\Form\FormInput;
 use ILIAS\UI\Component\Input\Field as I;
 use ILIAS\UI\Component\Input\Field\UploadHandler;
 use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
+use ILIAS\Refinery\Factory as Refinery;
+use ILIAS\Data\Factory as DataFactory;
 use ilLanguage;
 
 /**
@@ -35,24 +37,13 @@ use ilLanguage;
  */
 class Factory implements I\Factory
 {
-    protected UploadLimitResolver $upload_limit_resolver;
-    protected Data\Factory $data_factory;
-    protected SignalGeneratorInterface $signal_generator;
-    private \ILIAS\Refinery\Factory $refinery;
-    protected ilLanguage $lng;
-
     public function __construct(
-        UploadLimitResolver $upload_limit_resolver,
-        SignalGeneratorInterface $signal_generator,
-        Data\Factory $data_factory,
-        \ILIAS\Refinery\Factory $refinery,
-        ilLanguage $lng
+        protected UploadLimitResolver $upload_limit_resolver,
+        protected SignalGeneratorInterface $signal_generator,
+        protected DataFactory $data_factory,
+        protected Refinery $refinery,
+        protected ilLanguage $lng
     ) {
-        $this->upload_limit_resolver = $upload_limit_resolver;
-        $this->signal_generator = $signal_generator;
-        $this->data_factory = $data_factory;
-        $this->refinery = $refinery;
-        $this->lng = $lng;
     }
 
     /**
@@ -60,7 +51,7 @@ class Factory implements I\Factory
      */
     public function text(string $label, ?string $byline = null): I\Text
     {
-        return new Text($this->data_factory, $this->refinery, $label, $byline);
+        return new Text($this->data_factory, $this->refinery, $this->signal_generator, $label, $byline);
     }
 
     /**
@@ -68,7 +59,7 @@ class Factory implements I\Factory
      */
     public function numeric(string $label, ?string $byline = null): I\Numeric
     {
-        return new Numeric($this->data_factory, $this->refinery, $label, $byline);
+        return new Numeric($this->data_factory, $this->refinery, $this->signal_generator, $label, $byline);
     }
 
     /**

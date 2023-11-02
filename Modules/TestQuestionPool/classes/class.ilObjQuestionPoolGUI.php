@@ -1884,7 +1884,8 @@ class ilObjQuestionPoolGUI extends ilObjectGUI implements ilCtrlBaseClassInterfa
          * integrated, they are rendered and applied seperately
          */
         $filter_action = $this->ctrl->getLinkTarget($this, 'questions');
-        $filter = $table->getFilter($this->ui_service, $filter_action);
+        $filter = $table->getFilter($this->ui_service, $filter_action)
+            ->withRequest($this->http_request);
 
         $filter_params = $this->ui_service->filter()->getData($filter);
         if ($filter_params) {

@@ -28,6 +28,8 @@ use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
 use ILIAS\UI\Implementation\Component\JavaScriptBindable;
 use Psr\Http\Message\ServerRequestInterface;
 use ILIAS\UI\Implementation\Component\Input\QueryParamsFromServerRequest;
+use Component\Input\Group as InputGroup;
+use ILIAS\UI\Component\Input\Container\Filter\FilterInput;
 
 /**
  * This implements commonalities between all Filters.
@@ -93,6 +95,8 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
 
     protected ?ServerRequestInterface $request = null;
 
+    protected array $status_field_names = [];
+
     /**
      * @param string|Signal $toggle_action_on
      * @param string|Signal $toggle_action_off
@@ -129,16 +133,49 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
 
         $classes = ['\ILIAS\UI\Component\Input\Container\Filter\FilterInput'];
         $this->checkArgListElements("input", $inputs, $classes);
-
-        $this->initSignals();
-        $this->input_group = $field_factory->group($inputs)->withNameFrom($this);
-
         foreach ($is_input_rendered as $r) {
             $this->checkBoolArg("is_input_rendered", $r);
         }
+        $this->initSignals();
+
         $this->is_input_rendered = $is_input_rendered;
         $this->is_activated = $is_activated;
         $this->is_expanded = $is_expanded;
+
+        $status_fields = [];
+        foreach(array_keys($inputs) as $index => $possible_filter) {
+            $status_name = 'filter_status_' . $index + 1;
+            $status_fields[$status_name] = $field_factory->text($status_name, '')
+            //$status_fields[$status_name]  = $field_factory->hidden()
+                ->withDedicatedName($status_name)
+                ->withValue((string)$is_input_rendered[$index]);
+        }
+        $toggle_states = [
+            'filter_all_active' => $field_factory->text('filter_all_active', '')
+                ->withDedicatedName('filter_all_active')
+                ->withValue((string)$is_activated),
+            'filter_all_expanded' => $field_factory->text('filter_all_expanded', '')
+                ->withDedicatedName('filter_all_expanded')
+                ->withValue((string)$is_expanded),
+
+        ];
+        $this->status_field_names = array_merge(array_keys($status_fields), array_keys($toggle_states));
+        $inputs = array_merge($inputs, $status_fields, $toggle_states);
+        $this->input_group = $field_factory->group($inputs)
+            ->withDedicatedName('filter')
+            ->withNameFrom($this);
+
+        /*
+        foreach($inputs as $k => $in) {
+            print '<li>' . $k . '--' . $in->getValue();
+        }
+        print '<hr>';
+        foreach($this->input_group->getInputs() as $k => $in) {
+            print '<li>' . $k . '--' . $in->getName();
+        }
+        */
+        //die();
+
     }
 
 
@@ -225,7 +262,11 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
         $param_data = $this->extractParamData($request);
 
         $clone = clone $this;
-        $clone->input_group = $this->getInputGroup()->withInput($param_data);
+        try {
+            $clone->input_group = $this->getInputGroup()->withInput($param_data);
+        } catch (\Exception $e) {
+            //TODO: use StackedInputData as in https://github.com/ILIAS-eLearning/ILIAS/pull/6520
+        }
 
         return $clone;
     }
@@ -244,8 +285,11 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
         if (!$content->isok()) {
             return null;
         }
-
-        return $content->value();
+        return array_filter(
+            $content->value(),
+            static fn($k) => ! str_starts_with($k, 'filter_status_'),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
     /**
@@ -368,24 +412,46 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
         $this->update_signal = $this->signal_generator->create();
     }
 
-    public function getComponentInternalNames(C\Input\Group $component = null, array $names = []): array
-    {
+    public function getComponentInternalNames(
+        InputGroup $component = null,
+        array $names = []
+    ): array {
         if(is_null($component)) {
             $component = $this->getInputGroup();
         }
         foreach ($component->getInputs() as $input) {
-            if ($input instanceof C\Input\Group) {
+            if ($input instanceof InputGroup) {
                 $names = $this->getComponentInternalValues($input, $names);
             }
             if ($input instanceof HasInputGroup) {
                 $names = $this->getComponentInternalValues($input->getInputGroup(), $names);
             }
             if($name = $input->getName()) {
-                //$names[$input->getName()] = $input->getValue();
                 $names[] = $input->getName();
             }
         }
-
         return $names;
     }
+
+    /**
+     * @return FilterInput[]
+     */
+    public function getUserEditableInputs(): array
+    {
+        $inputs = [];
+        foreach ($this->getInputGroup()->getInputs() as $input) {
+            $add = true;
+            foreach($this->status_field_names as $status_field_name) {
+                if(str_ends_with($input->getName(), $status_field_name)) {
+                    $add = false;
+                    continue;
+                }
+            }
+            if($add) {
+                $inputs[] = $input;
+            }
+        }
+        return $inputs;
+    }
+
 }
