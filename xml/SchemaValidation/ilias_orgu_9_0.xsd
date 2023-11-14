@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+
+  <xs:element name='OrgUnits'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref='OrgUnit' minOccurs='0' maxOccurs='unbounded'/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="OrgUnit">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="external_id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="ou_id" type="xs:string" use="required" />
+      <xs:attribute name="ou_id_type" type="xs:string" use="required" />
+      <xs:attribute name="ou_parent_id" type="xs:string" use="required" />
+      <xs:attribute name="ou_parent_id_type" type="xs:string" use="required" />
+      <xs:attribute name="action" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
