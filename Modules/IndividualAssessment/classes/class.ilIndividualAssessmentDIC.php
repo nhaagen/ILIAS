@@ -93,7 +93,9 @@ trait ilIndividualAssessmentDIC
                 $dic['ilErr'],
                 $dic->refinery(),
                 $dic->http()->wrapper()->query(),
-                $c['helper.dateformat']
+                $c['helper.dateformat'],
+                $dic['resource_storage'],
+                new ilIndividualAssessmentGradingStakeholder()
             );
         };
 
