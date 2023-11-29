@@ -639,8 +639,14 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
             iljQueryUtil::initjQueryUI();
             $this->tpl->addJavaScript('./node_modules/@andxor/jquery-ui-touch-punch-fix/jquery.ui.touch-punch.js');
         }
-        $this->tpl->addJavaScript('Modules/TestQuestionPool/js/ilMatchingQuestion.js');
-        $this->tpl->addOnLoadCode('ilMatchingQuestionInit();');
+        //$this->tpl->addJavaScript('Modules/TestQuestionPool/js/ilMatchingQuestion.js');
+
+        $mode = $this->object->getMatchingMode() === assMatchingQuestion::MATCHING_MODE_1_ON_1 ? 1 : 2;
+        $this->tpl->addJavaScript('Modules/TestQuestionPool/js/dist/questions.min.js');
+        $this->tpl->addOnLoadCode("
+            il.Questions.Matching.init('ilc_question_MatchingQuestion', $mode);
+        ");
+
         $this->tpl->addCss(ilUtil::getStyleSheetLocation('output', 'test_javascript.css', 'Modules/TestQuestionPool'));
 
         $template = new ilTemplate("tpl.il_as_qpl_matching_output.html", true, true, "Modules/TestQuestionPool");
@@ -739,7 +745,6 @@ class assMatchingQuestionGUI extends assQuestionGUI implements ilGuiQuestionScor
             $template->setVariable("TERM_ID", $term->getIdentifier());
             $template->parseCurrentBlock();
         }
-
         $template->setVariable('MATCHING_MODE', $this->object->getMatchingMode());
 
         $template->setVariable("RESET_BUTTON", $this->lng->txt("reset_terms"));
