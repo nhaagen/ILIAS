@@ -63,22 +63,28 @@ class Renderer extends AbstractComponentRenderer
 
         $activate_first_item = false;
         $active = $component->getActive();
-        if ($active == "") {
+        if ($active === "") {
             $activate_first_item = true;
         }
 
         $tpl->setVariable("ARIA", $this->txt($component->getAriaLabel()));
         $tpl->setVariable("ROLE", self::MODE_ROLE);
+
         foreach ($component->getLabelledActions() as $label => $action) {
             $tpl->setCurrentBlock("view_control");
 
-            //At this point we don't have a specific text for the button aria label.
-            // component->getAriaLabel gets the main view control aria label.
-            $button = $f->button()->standard($label, $action)->withAriaLabel($label);
+            if($action instanceof Component\Button\Button) {
+                $button = $action;
+            } else {
+                //At this point we don't have a specific text for the button aria label.
+                // component->getAriaLabel gets the main view control aria label.
+                $button = $f->button()->standard($label, $action)->withAriaLabel($label);
+            }
+
             if ($activate_first_item) {
                 $button = $button->withEngagedState(true);
                 $activate_first_item = false;
-            } elseif ($active == $label) {
+            } elseif ($active === $label) {
                 $button = $button->withEngagedState(true);
             } else {
                 $button = $button->withEngagedState(false);

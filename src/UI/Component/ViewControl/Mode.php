@@ -39,7 +39,7 @@ interface Mode extends Component
      *
      * @return string the label of the currently active button of the mode control
      */
-    public function getActive(): ?string;
+    public function getActive(): string|int|null;
 
     /**
      * Get the array containing the actions and labels of the mode control

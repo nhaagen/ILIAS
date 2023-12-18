@@ -29,7 +29,7 @@ class Mode implements C\ViewControl\Mode
 
     protected array $labeled_actions;
     protected string $aria_label;
-    protected ?string $active = null;
+    protected string|int|null $active = null;
 
     public function __construct($labelled_actions, string $aria_label)
     {
@@ -37,14 +37,14 @@ class Mode implements C\ViewControl\Mode
         $this->aria_label = $aria_label;
     }
 
-    public function withActive(string $label): C\ViewControl\Mode
+    public function withActive(string|int $active): C\ViewControl\Mode
     {
         $clone = clone $this;
-        $clone->active = $label;
+        $clone->active = $active;
         return $clone;
     }
 
-    public function getActive(): ?string
+    public function getActive(): string|int|null
     {
         return $this->active;
     }
