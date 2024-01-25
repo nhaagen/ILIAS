@@ -37,6 +37,9 @@ use ILIAS\UI\Implementation\Component\Input\ViewControl\Pagination;
 
 class Data extends AbstractTable implements T\Data
 {
+    public const VIEWCONTROL_KEY_PAGINATION = 'range';
+    public const VIEWCONTROL_KEY_ORDERING = 'order';
+    public const VIEWCONTROL_KEY_FIELDSELECTION = 'selected_optional';
 
     protected int $number_of_rows = 800;
     /**
@@ -162,15 +165,6 @@ class Data extends AbstractTable implements T\Data
     public function getAdditionalParameters(): ?array
     {
         return $this->additional_parameters;
-    }
-
-
-    /**
-     * @return ViewControl[]
-     */
-    public function getViewControls(): array
-    {
-        return [];
     }
 
     /**
