@@ -33,7 +33,8 @@ abstract class Tag extends HTMLTag
 
     public function toHtml(): string
     {
-        return "<meta property=\"$this->property_name\" content=\"{$this->getValue()}\" />";
+        $value = htmlspecialchars($this->getValue(), ENT_QUOTES, null, false);
+        return "<meta property=\"$this->property_name\" content=\"{$value}\" />";
     }
 
     abstract protected function getValue(): string;

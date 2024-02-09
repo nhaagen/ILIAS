@@ -118,4 +118,16 @@ class HtmlMetadataTest extends TestCase
             }
         };
     }
+
+    public function testQuotesInTag(): void
+    {
+        $key = 'key';
+        $val = '"><a href="/">....</a>';
+        $user_defined_tag = $this->factory->userDefined($key, $val);
+        $this->assertEquals(
+            '<meta name="key" content="&quot;&gt;&lt;a href=&quot;/&quot;&gt;....&lt;/a&gt;" />',
+            $user_defined_tag->toHtml()
+        );
+    }
+
 }

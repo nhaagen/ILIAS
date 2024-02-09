@@ -329,4 +329,32 @@ class TagInputTest extends ILIAS_UI_TestBase
             )
         );
     }
+
+    public function testQuoteTags(): void
+    {
+        $f = $this->buildFactory();
+
+        $tags = [
+            '<script src="../">',
+            '"/>...'
+        ];
+        $tag = $f->tag("label", [])
+            ->withUserCreatedTagsAllowed(false)
+            ->withNameFrom($this->name_source)
+            ->withInput(
+                new DefInputData(
+                    ["name_0" => implode(',', $tags)]
+                )
+            );
+
+        $value = $tag->getContent()->value();
+        $this->assertEquals(
+            [
+                '&lt;script src=&quot;../&quot;&gt;',
+                '&quot;/&gt;...'
+            ],
+            $value
+        );
+    }
+
 }

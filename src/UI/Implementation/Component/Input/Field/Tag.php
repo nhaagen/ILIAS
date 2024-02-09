@@ -75,7 +75,12 @@ class Tag extends FormInput implements C\Input\Field\Tag
             if (count($v) == 1 && $v[0] === '') {
                 return [];
             }
-            return array_map("urldecode", $v);
+            $v = array_map("urldecode", $v);
+            $v = array_map(
+                fn($v) => htmlspecialchars($v, ENT_QUOTES, null, false),
+                $v
+            );
+            return $v;
         }));
     }
 

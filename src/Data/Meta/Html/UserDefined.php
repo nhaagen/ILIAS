@@ -37,7 +37,8 @@ class UserDefined extends Tag
      */
     public function toHtml(): string
     {
-        return "<meta name=\"$this->key\" content=\"$this->value\" />";
+        $value = htmlspecialchars($this->getValue(), ENT_QUOTES, null, false);
+        return "<meta name=\"$this->key\" content=\"$value\" />";
     }
 
     public function getKey(): string
