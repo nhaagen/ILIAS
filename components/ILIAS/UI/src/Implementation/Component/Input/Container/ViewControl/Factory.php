@@ -35,7 +35,6 @@ class Factory implements V\Factory
         protected SignalGeneratorInterface $signal_generator,
         protected ViewControlFactory $view_control_factory,
     ) {
-        $this->signal_generator = $signal_generator;
     }
 
     public function standard(array $controls): V\Standard

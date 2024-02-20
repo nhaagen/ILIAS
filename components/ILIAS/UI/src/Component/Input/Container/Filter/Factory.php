@@ -40,28 +40,10 @@ interface Factory
      *     1: Standard filters MUST be used if there is no good reason using another instance.
      *
      * ---
-     * @param    string|Signal    $toggle_action_on
-     * @param    string|Signal    $toggle_action_off
-     * @param    string|Signal    $expand_action
-     * @param    string|Signal    $collapse_action
-     * @param    string|Signal    $apply_action
-     * @param    string|Signal    $reset_action
      * @param    array<mixed,FormInput>    $inputs
-     * @param    array<bool>    $is_input_rendered
-     * @param    bool    $is_activated
-     * @param    bool    $is_expanded
      * @return    \ILIAS\UI\Component\Input\Container\Filter\Standard
      */
     public function standard(
-        $toggle_action_on,
-        $toggle_action_off,
-        $expand_action,
-        $collapse_action,
-        $apply_action,
-        $reset_action,
-        array $inputs,
-        array $is_input_rendered,
-        bool $is_activated = false,
-        bool $is_expanded = false
+        array $inputs
     ): Standard;
 }

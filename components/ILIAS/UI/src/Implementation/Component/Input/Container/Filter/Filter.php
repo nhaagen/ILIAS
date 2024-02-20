@@ -28,59 +28,61 @@ use ILIAS\UI\Implementation\Component\JavaScriptBindable;
 use Psr\Http\Message\ServerRequestInterface;
 use ILIAS\UI\Implementation\Component\Input\QueryParamsFromServerRequest;
 
+use ILIAS\UI\Implementation\Component\Input;
+use ILIAS\UI\Implementation\Component\Input\InputData;
+use ILIAS\UI\Implementation\Component\Input\StackedInputData;
+use ILIAS\UI\Implementation\Component\Input\Container\Container;
+
 /**
  * This implements commonalities between all Filters.
  */
-abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameSource
+abstract class Filter extends Container implements C\Input\Container\Filter\Filter
 {
     use ComponentHelper;
     use JavaScriptBindable;
 
-    /**
-     * @var string|Signal
-     */
-    protected $toggle_action_on;
 
     /**
      * @var string|Signal
      */
-    protected $toggle_action_off;
+    protected $toggle_action_on = '#';
 
     /**
      * @var string|Signal
      */
-    protected $expand_action;
+    protected $toggle_action_off = '#';
 
     /**
      * @var string|Signal
      */
-    protected $collapse_action;
+    protected $expand_action = '#';
 
     /**
      * @var string|Signal
      */
-    protected $apply_action;
+    protected $collapse_action = '#';
 
     /**
      * @var string|Signal
      */
-    protected $reset_action;
+    protected $apply_action = '#';
+
+    /**
+     * @var string|Signal
+     */
+    protected $reset_action = '#';
 
 
-    protected C\Input\Field\Group $input_group;
+    protected C\Input\Group $input_group;
 
     /**
      * @var bool[]
      */
-    protected array $is_input_rendered;
+    protected array $is_input_rendered = [];
 
-    protected bool $is_activated;
+    protected bool $is_activated = true;
 
-    protected bool $is_expanded;
-
-    protected C\Input\Field\Factory $field_factory;
-
-    protected SignalGeneratorInterface $signal_generator;
+    protected bool $is_expanded = false;
 
     protected Signal $update_signal;
 
@@ -91,52 +93,32 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
     private array $used_names = [];
 
 
+    protected ?ServerRequestInterface $request = null;
+    protected Input\ArrayInputData $stored_input;
+
+
     /**
-     * @param string|Signal $toggle_action_on
-     * @param string|Signal $toggle_action_off
-     * @param string|Signal $expand_action
-     * @param string|Signal $collapse_action
-     * @param string|Signal $apply_action
-     * @param string|Signal $reset_action
      * @param C\Input\Container\Form\FormInput[] $inputs
-     * @param bool[] $is_input_rendered
      */
     public function __construct(
-        SignalGeneratorInterface $signal_generator,
+        protected SignalGeneratorInterface $signal_generator,
+        Input\NameSource $name_source,
         CI\Input\Field\Factory $field_factory,
-        $toggle_action_on,
-        $toggle_action_off,
-        $expand_action,
-        $collapse_action,
-        $apply_action,
-        $reset_action,
-        array $inputs,
-        array $is_input_rendered,
-        bool $is_activated,
-        bool $is_expanded
+        array $inputs
     ) {
-        $this->signal_generator = $signal_generator;
-        $this->field_factory = $field_factory;
-        $this->toggle_action_on = $toggle_action_on;
-        $this->toggle_action_off = $toggle_action_off;
-        $this->expand_action = $expand_action;
-        $this->collapse_action = $collapse_action;
-        $this->apply_action = $apply_action;
-        $this->reset_action = $reset_action;
-        //No further handling for actions needed here, will be done in constructors of the respective component
+        parent::__construct($name_source);
 
         $classes = ['\ILIAS\UI\Component\Input\Container\Filter\FilterInput'];
         $this->checkArgListElements("input", $inputs, $classes);
 
         $this->initSignals();
-        $this->input_group = $field_factory->group($inputs)->withNameFrom($this);
 
-        foreach ($is_input_rendered as $r) {
-            $this->checkBoolArg("is_input_rendered", $r);
-        }
-        $this->is_input_rendered = $is_input_rendered;
-        $this->is_activated = $is_activated;
-        $this->is_expanded = $is_expanded;
+        $this->input_group = $field_factory->group($inputs)
+            ->withNameFrom($name_source)
+            ->withDedicatedName('filter');
+        //global $DIC;
+        //$this->input_group = $DIC['ui.factory']->input()->viewControl()->group($inputs)->withDedicatedName('filter');
+        $this->stored_input = new Input\ArrayInputData([]);
     }
 
 
@@ -209,23 +191,28 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
     /**
      * @inheritdocs
      */
-    public function getInputGroup(): C\Input\Field\Group
+    public function getInputGroup(): C\Input\Group
     {
         return $this->input_group;
     }
 
     /**
-     * @inheritdocs
+     * @inheritdoc
      */
-    public function withRequest(ServerRequestInterface $request)
+    public function withRequest(ServerRequestInterface $request): Container
     {
-        $param_data = $this->extractParamData($request);
-
+        //$clone = parent::withRequest($request);
         $clone = clone $this;
-        $clone->input_group = $this->getInputGroup()->withInput($param_data);
 
+        $clone->request = $request;
         return $clone;
     }
+
+    public function getRequest(): ?ServerRequestInterface
+    {
+        return $this->request;
+    }
+
 
     /**
      * @inheritdocs
@@ -253,7 +240,7 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
      *
      * @inheritdoc
      */
-    public function getNewName(): string
+    public function XXXgetNewName(): string
     {
         $name = "filter_input_$this->count";
         $this->count++;
@@ -265,7 +252,7 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
      * Implementation of NameSource
      * for using dedicated names in filter fields
      */
-    public function getNewDedicatedName(string $dedicated_name): string
+    public function XXXgetNewDedicatedName(string $dedicated_name): string
     {
         if ($dedicated_name == 'filter_input') {
             return $this->getNewName();
@@ -358,5 +345,44 @@ abstract class Filter implements C\Input\Container\Filter\Filter, CI\Input\NameS
     protected function initSignals(): void
     {
         $this->update_signal = $this->signal_generator->create();
+    }
+
+    protected function extractRequestData(ServerRequestInterface $request): InputData
+    {
+        $internal_input_data = new Input\ArrayInputData($this->getComponentInternalValues());
+
+        return new StackedInputData(
+            new QueryParamsFromServerRequest($request),
+            $this->stored_input,
+            $internal_input_data,
+        );
+    }
+
+    /**
+    * @return array     with key input name and its current value
+    */
+    public function getComponentInternalValues(
+        C\Input\Group $component = null,
+        array $input_values = []
+    ): array {
+        if(is_null($component)) {
+            $component = $this->getInputGroup();
+        }
+        foreach ($component->getInputs() as $input) {
+            if ($input instanceof C\Input\Group) {
+                $input_values = $this->getComponentInternalValues($input, $input_values);
+                //$input_values = $this->getComponentInternalValues($input->getInputGroup(), $input_values);
+                die('xxx');
+            }
+            if ($input instanceof HasInputGroup) {
+                die('yyy');
+                $input_values = $this->getComponentInternalValues($input->getInputGroup(), $input_values);
+            }
+            if($name = $input->getName()) {
+                $input_values[$input->getName()] = $input->getValue();
+            }
+        }
+
+        return $input_values;
     }
 }

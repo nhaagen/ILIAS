@@ -123,10 +123,12 @@ class FilterContextRenderer extends AbstractComponentRenderer
         /**
          * @var $remove_glyph Component\Symbol\Glyph\Glyph
          */
-        $remove_glyph = $f->symbol()->glyph()->remove("")->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
+        $remove_glyph = $f->symbol()->glyph()->remove("")->withAdditionalOnLoadCode(
+            fn($id) => "$('#$id').on('click', function(event) {
 							il.UI.filter.onRemoveClick(event, '$id');
 							return false; // stop event propagation
-					});");
+			     		});"
+        );
 
         $tpl->setCurrentBlock("addon_left");
         $tpl->setVariable("LABEL", $component->getLabel());
@@ -214,6 +216,7 @@ class FilterContextRenderer extends AbstractComponentRenderer
         }
 
         $this->applyValue($component, $tpl, $this->escapeSpecialChars());
+
         $id = $this->bindJSandApplyId($component, $tpl);
         return $this->wrapInFilterContext($component, $tpl->get(), $default_renderer, $id);
     }

@@ -39,6 +39,9 @@ class Renderer extends AbstractComponentRenderer
         $this->checkComponent($component);
 
         if ($component instanceof Filter\Standard) {
+            if (!$component->getRequest()) {
+                throw new LogicException("No request was passed to the container. Please call 'withRequest' on the Container.");
+            }
             return $this->renderStandard($component, $default_renderer);
         }
 
@@ -50,27 +53,71 @@ class Renderer extends AbstractComponentRenderer
      */
     protected function renderStandard(Filter\Standard $component, RendererInterface $default_renderer): string
     {
-        $tpl = $this->getTemplate("tpl.standard_filter.html", true, true);
+        //$tpl = $this->getTemplate("tpl.standard_filter.html", true, true);
+        $tpl = $this->getTemplate("tpl.filter_container.html", true, true);
+        $f = $this->getUIFactory();
+
+        $signal_collapse = '#';
+        $signal_expand = '#';
+        $signal_toggle_on = '#';
+        $signal_toggle_off = '#';
+        $signal_apply = '#';
+        $signal_reset = '#';
+
+        $collapse = $f->button()->bulky($f->symbol()->glyph()->collapse(), $this->txt("filter"), $signal_collapse);
+        $expand = $f->button()->bulky($f->symbol()->glyph()->expand(), $this->txt("filter"), $signal_expand);
+        $toggle = $f->button()->toggle("", $signal_toggle_on, $signal_toggle_off, $component->isActivated());
+        $apply = $f->button()->bulky($f->symbol()->glyph()->apply(), $this->txt("apply"), $signal_apply);
+        $reset = $f->button()->bulky($f->symbol()->glyph()->reset(), $this->txt("reset"), $signal_reset);
+
+        $tpl->setVariable("COLLAPSE", $default_renderer->render($collapse));
+        $tpl->setVariable("EXPAND", $default_renderer->render($expand));
+        $tpl->setVariable("TOGGLE", $default_renderer->render($toggle));
+        $tpl->setVariable("APPLY", $default_renderer->render($apply));
+        $tpl->setVariable("RESET", $default_renderer->render($reset));
+
+
+        $tpl->setVariable(
+            "INPUTS",
+            $default_renderer->withAdditionalContext($component)
+            ->render($component->getInputs())
+        );
+
+
+        $submission_signal = $component->getUpdateSignal();
+        $component = $component->withAdditionalOnLoadCode(
+            fn($id) => "$(document).on('{$submission_signal}',
+                function(event, signalData) { 
+                    document.getElementById('{$id}').submit();
+                    return false;
+                });"
+        );
+        $tpl->setVariable("ID", $this->bindJavaScript($component));
+
+        $input_names = array_keys($component->getComponentInternalValues());
+        $query_params = array_filter(
+            $component->getRequest()?->getQueryParams(),
+            fn($k) => !in_array($k, $input_names),
+            ARRAY_FILTER_USE_KEY
+        );
+
 
         // JavaScript
-        $component = $this->registerSignals($component);
-        /**
-         * @var $component Filter\Standard
-         */
-        $id = $this->bindJavaScript($component);
-        $tpl->setVariable('ID_FILTER', $id);
+        //$component = $this->registerSignals($component);
+        //$id = $this->bindJavaScript($component);
+        //$tpl->setVariable('ID_FILTER', $id);
 
         // render expand and collapse
-        $this->renderExpandAndCollapse($tpl, $component, $default_renderer);
+        //$this->renderExpandAndCollapse($tpl, $component, $default_renderer);
 
         // render apply and reset buttons
-        $this->renderApplyAndReset($tpl, $component, $default_renderer);
+        //$this->renderApplyAndReset($tpl, $component, $default_renderer);
 
         // render toggle button
-        $this->renderToggleButton($tpl, $component, $default_renderer);
+        //$this->renderToggleButton($tpl, $component, $default_renderer);
 
         // render inputs
-        $this->renderInputs($tpl, $component, $default_renderer);
+        //$this->renderInputs($tpl, $component, $default_renderer);
 
         return $tpl->get();
     }
@@ -78,7 +125,7 @@ class Renderer extends AbstractComponentRenderer
     protected function registerSignals(Filter\Filter $filter): Filter\Filter
     {
         $update = $filter->getUpdateSignal();
-        return $filter->withAdditionalOnLoadCode(fn ($id) => "$(document).on('$update', function(event, signalData) {
+        return $filter->withAdditionalOnLoadCode(fn($id) => "$(document).on('$update', function(event, signalData) {
                 il.UI.filter.onInputUpdate(event, signalData, '$id'); return false; 
             });");
     }
@@ -103,7 +150,7 @@ class Renderer extends AbstractComponentRenderer
         $tpl->parseCurrentBlock();
 
         $opener_expand = $f->button()->bulky($f->symbol()->glyph()->expand(), $this->txt("filter"), "")
-            ->withAdditionalOnLoadCode(fn ($id) => "$('#$id').on('click', function(event) {
+            ->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
 					il.UI.filter.onAjaxCmd(event, '$id', 'expand');
 					event.preventDefault();
 			    });");
@@ -114,7 +161,7 @@ class Renderer extends AbstractComponentRenderer
         $tpl->parseCurrentBlock();
 
         $opener_collapse = $f->button()->bulky($f->symbol()->glyph()->collapse(), $this->txt("filter"), "")
-            ->withAdditionalOnLoadCode(fn ($id) => "$('#$id').on('click', function(event) {
+            ->withAdditionalOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
 					il.UI.filter.onAjaxCmd(event, '$id', 'collapse');
 					event.preventDefault();
 			    });");
@@ -149,7 +196,7 @@ class Renderer extends AbstractComponentRenderer
 
         // render apply and reset buttons
         $apply = $f->button()->bulky($f->symbol()->glyph()->apply(), $this->txt("apply"), "")
-            ->withOnLoadCode(fn ($id) => "$('#$id').on('click', function(event) {
+            ->withOnLoadCode(fn($id) => "$('#$id').on('click', function(event) {
                         il.UI.filter.onCmd(event, '$id', 'apply');
                         return false; // stop event propagation
                 });
@@ -193,11 +240,11 @@ class Renderer extends AbstractComponentRenderer
          * @var $toggle Toggle
          */
         $toggle = $f->button()->toggle("", $toggle_on_signal, $toggle_off_signal, $component->isActivated());
-        $toggle = $toggle->withAdditionalOnLoadCode(fn ($id) => "$(document).on('$toggle_on_signal',function(event) {
+        $toggle = $toggle->withAdditionalOnLoadCode(fn($id) => "$(document).on('$toggle_on_signal',function(event) {
                         il.UI.filter.onCmd(event, '$id', 'toggleOn');
                         return false; // stop event propagation
             });");
-        $toggle = $toggle->withAdditionalOnLoadCode(fn ($id) => "$(document).on('$toggle_off_signal',function(event) {
+        $toggle = $toggle->withAdditionalOnLoadCode(fn($id) => "$(document).on('$toggle_off_signal',function(event) {
                         il.UI.filter.onCmd(event, '$id', 'toggleOff');
                         return false; // stop event propagation
             });");
@@ -214,14 +261,14 @@ class Renderer extends AbstractComponentRenderer
         RendererInterface $default_renderer
     ): void {
         // pass information on what inputs should be initially rendered
-        $is_input_rendered = $component->isInputRendered();
+        //$is_input_rendered = $component->isInputRendered();
         foreach ($component->getInputs() as $k => $input) {
-            $is_rendered = current($is_input_rendered);
+            $is_rendered = true; //current($is_input_rendered);
             $tpl->setCurrentBlock("status");
             $tpl->setVariable("FIELD", $k);
             $tpl->setVariable("VALUE", (int) $is_rendered);
             $tpl->parseCurrentBlock();
-            next($is_input_rendered);
+            //next($is_input_rendered);
         }
 
         // render inputs
@@ -253,5 +300,20 @@ class Renderer extends AbstractComponentRenderer
     protected function getComponentInterfaceName(): array
     {
         return array(Filter\Standard::class);
+    }
+
+    protected function getComponentInternalNames(Component\Input\Group $component, array $names = []): array
+    {
+        foreach ($component->getInputs() as $input) {
+            if ($input instanceof Component\Input\Group) {
+                $names = $this->getComponentInternalNames($input, $names);
+            }
+            if ($input instanceof HasInputGroup) {
+                $names = $this->getComponentInternalNames($input->getInputGroup(), $names);
+            }
+            $names[] = $input->getName();
+        }
+
+        return $names;
     }
 }

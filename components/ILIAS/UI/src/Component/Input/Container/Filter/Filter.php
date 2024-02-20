@@ -26,11 +26,12 @@ use ILIAS\UI\Component\JavaScriptBindable;
 use ILIAS\UI\Component\Triggerable;
 use ILIAS\UI\Component\Input\Container\Form\FormInput;
 use Psr\Http\Message\ServerRequestInterface;
+use ILIAS\UI\Component\Input\Container\Container;
 
 /**
  * This describes commonalities between all filters.
  */
-interface Filter extends Component, JavaScriptBindable, Triggerable
+interface Filter extends Container, JavaScriptBindable //, Triggerable
 {
     /**
      * Get the action which is passed for the activated Toggle Button.
@@ -91,7 +92,7 @@ interface Filter extends Component, JavaScriptBindable, Triggerable
     /**
      * Get a Filter like this where data from the request is attached.
      */
-    public function withRequest(ServerRequestInterface $request);
+    public function withRequest(ServerRequestInterface $request): Container;
 
     /**
      * Get the data in the Filter if all inputs are ok. If data was not ok, this will return null.
