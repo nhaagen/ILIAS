@@ -17,7 +17,12 @@ function base()
     $text = $ui->input()->field()->text("text");
 
     $filter = $ui->input()->container()->filter()->standard([
-        "text" => $text,
+        "text" => $ui->input()->field()->text("text"),
+        "numeric" => $ui->input()->field()->numeric("numeric"),
+        "group" => $ui->input()->field()->group([
+            $ui->input()->field()->text("grouptext_1"),
+            $ui->input()->field()->text("grouptext_2"),
+        ], 'group'),
     ])
     ->withRequest($request);
 

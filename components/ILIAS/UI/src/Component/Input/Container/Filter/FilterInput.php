@@ -37,5 +37,5 @@ interface FilterInput extends FormInput
     /**
      * Is this input complex and must be rendered in a Popover when using it in a Filter?
      */
-    public function isComplex(): bool;
+    //public function isComplex(): bool;
 }

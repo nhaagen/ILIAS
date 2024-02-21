@@ -57,18 +57,20 @@ class Renderer extends AbstractComponentRenderer
         $tpl = $this->getTemplate("tpl.filter_container.html", true, true);
         $f = $this->getUIFactory();
 
+        $submission_signal = $component->getUpdateSignal();
+        
         $signal_collapse = '#';
         $signal_expand = '#';
         $signal_toggle_on = '#';
         $signal_toggle_off = '#';
-        $signal_apply = '#';
-        $signal_reset = '#';
+        $signal_apply = $component->getUpdateSignal();
+        $signal_reset = $component->getUpdateSignal();
 
         $collapse = $f->button()->bulky($f->symbol()->glyph()->collapse(), $this->txt("filter"), $signal_collapse);
         $expand = $f->button()->bulky($f->symbol()->glyph()->expand(), $this->txt("filter"), $signal_expand);
         $toggle = $f->button()->toggle("", $signal_toggle_on, $signal_toggle_off, $component->isActivated());
-        $apply = $f->button()->bulky($f->symbol()->glyph()->apply(), $this->txt("apply"), $signal_apply);
-        $reset = $f->button()->bulky($f->symbol()->glyph()->reset(), $this->txt("reset"), $signal_reset);
+        $apply = $f->button()->bulky($f->symbol()->glyph()->apply(), $this->txt("apply"), '')->withOnClick($signal_apply);
+        $reset = $f->button()->bulky($f->symbol()->glyph()->reset(), $this->txt("reset"), '')->withOnClick($signal_reset);
 
         $tpl->setVariable("COLLAPSE", $default_renderer->render($collapse));
         $tpl->setVariable("EXPAND", $default_renderer->render($expand));
@@ -77,14 +79,6 @@ class Renderer extends AbstractComponentRenderer
         $tpl->setVariable("RESET", $default_renderer->render($reset));
 
 
-        $tpl->setVariable(
-            "INPUTS",
-            $default_renderer->withAdditionalContext($component)
-            ->render($component->getInputs())
-        );
-
-
-        $submission_signal = $component->getUpdateSignal();
         $component = $component->withAdditionalOnLoadCode(
             fn($id) => "$(document).on('{$submission_signal}',
                 function(event, signalData) { 
@@ -92,7 +86,26 @@ class Renderer extends AbstractComponentRenderer
                     return false;
                 });"
         );
-        $tpl->setVariable("ID", $this->bindJavaScript($component));
+        foreach($component->getInputs() as $k => $input) {
+            $input_name = $input->getName();
+            $input_type = explode('\\', get_class($input));
+            $input_type = end($input_type);
+
+            $component = $component->withAdditionalOnLoadCode(
+                fn($id) => "il.UI.Input.FieldRegistry.register('{$input_name}', '{$input_type}')"
+            );
+        }
+        $id = $this->bindJavaScript($component);
+        $tpl->setVariable("ID", $id);
+
+
+        $tpl->setVariable(
+            "INPUTS",
+            $default_renderer
+                ->withAdditionalContext($component)
+                ->render($component->getInputs())
+        );
+
 
         $input_names = array_keys($component->getComponentInternalValues());
         $query_params = array_filter(

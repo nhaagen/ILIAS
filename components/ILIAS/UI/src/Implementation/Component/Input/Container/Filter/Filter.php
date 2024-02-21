@@ -372,10 +372,8 @@ abstract class Filter extends Container implements C\Input\Container\Filter\Filt
             if ($input instanceof C\Input\Group) {
                 $input_values = $this->getComponentInternalValues($input, $input_values);
                 //$input_values = $this->getComponentInternalValues($input->getInputGroup(), $input_values);
-                die('xxx');
             }
             if ($input instanceof HasInputGroup) {
-                die('yyy');
                 $input_values = $this->getComponentInternalValues($input->getInputGroup(), $input_values);
             }
             if($name = $input->getName()) {

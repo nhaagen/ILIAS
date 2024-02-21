@@ -22,12 +22,14 @@ namespace ILIAS\UI\Component\Input\Field;
 
 use ILIAS\UI\Component\Input\Container\Form\FormInput;
 use ILIAS\UI\Component\Input\Group as GroupInterface;
+use ILIAS\UI\Component\Input\Container\Filter\FilterInput;
+
 
 /**
  * Describes the monoid operation of grouping form inputs.
  *
  * @author Thibeau Fuhrer <thibeau@sr.solutions>
  */
-interface Group extends FormInput, GroupInterface
+interface Group extends FormInput, GroupInterface, FilterInput
 {
 }
