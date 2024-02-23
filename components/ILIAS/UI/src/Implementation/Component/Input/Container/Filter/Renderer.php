@@ -54,6 +54,23 @@ class Renderer extends AbstractComponentRenderer
 
         // JavaScript
         $component = $this->registerSignals($component);
+
+
+        /*
+        foreach($component->getInputs() as $k => $input) {
+            $input_name = $input->getName();
+            
+            $input_type = explode('\\', get_class($input));
+            $input_type = end($input_type);
+
+            $component = $component->withAdditionalOnLoadCode(
+                fn($id) => "il.UI.Input.FieldRegistry.register('{$input_name}', '{$input_type}')"
+            );
+        }
+        */
+
+
+
         /**
          * @var $component Filter\Standard
          */

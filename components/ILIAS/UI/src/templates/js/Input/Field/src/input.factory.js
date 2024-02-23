@@ -9,14 +9,17 @@
  * other and are bundled into separate files.
  */
 
-import TextareaFactory from "./Textarea/textarea.factory";
-import MarkdownFactory from "./Markdown/markdown.factory";
+import TextareaFactory from './Textarea/textarea.factory';
+import MarkdownFactory from './Markdown/markdown.factory';
+
+import FieldRegistry from './Registry/field.registry';
 
 var il = il || {};
 il.UI = il.UI || {};
 il.UI.Input = il.UI.Input || {};
 
 (function (Input) {
-    Input.textarea = new TextareaFactory();
-    Input.markdown = new MarkdownFactory();
-})(il.UI.Input);
+  Input.textarea = new TextareaFactory();
+  Input.markdown = new MarkdownFactory();
+  Input.FieldRegistry = new FieldRegistry();
+}(il.UI.Input));

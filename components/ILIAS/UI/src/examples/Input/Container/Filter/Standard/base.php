@@ -32,13 +32,14 @@ function base()
         $action,
         [
             "title" => $title_input,
-            "select" => $select,
+            //"select" => $select,
             "with_def" => $with_def,
-            "init_hide" => $init_hide,
+            //"init_hide" => $init_hide,
             "number" => $number,
             "multi_select" => $multi_select
         ],
-        [true, true, true, false, true, true],
+        //[true, true, true, false, true, true],
+        [true, true, true, true],
         true,
         true
     );

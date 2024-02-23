@@ -56,6 +56,13 @@ class FilterContextRenderer extends AbstractComponentRenderer
                 return $this->renderFieldGroups($component, $default_renderer);
 
             case ($component instanceof F\Text):
+                $component = $component->withAdditionalOnLoadCode(
+                    fn($id) => "il.UI.Input.FieldRegistry.register(
+                        '{$component->getName()}', 
+                        new il.UI.Input.FieldRegistry.types.GenericField('{$id}')
+                    );"
+                );
+
                 return $this->renderTextField($component, $default_renderer);
 
             case ($component instanceof F\Numeric):
@@ -65,6 +72,13 @@ class FilterContextRenderer extends AbstractComponentRenderer
                 return $this->renderSelectField($component, $default_renderer);
 
             case ($component instanceof F\MultiSelect):
+                $component = $component->withAdditionalOnLoadCode(
+                    fn($id) => "il.UI.Input.FieldRegistry.register(
+                        '{$component->getName()}', 
+                        new il.UI.Input.FieldRegistry.types.MultiSelectField('{$id}')
+                        //il.UI.Input.FieldRegistry.types.MultiSelectField
+                    );"
+                );
                 return $this->renderMultiSelectField($component, $default_renderer);
 
             default:
@@ -312,9 +326,8 @@ class FilterContextRenderer extends AbstractComponentRenderer
         if ($signals !== null) {
             $signals = json_encode($signals);
 
-            $input = $input->withAdditionalOnLoadCode(fn($id) => "il.UI.input.setSignalsForId('$id', $signals);");
-
-            $input = $input->withAdditionalOnLoadCode($input->getUpdateOnLoadCode());
+            //$input = $input->withAdditionalOnLoadCode(fn($id) => "il.UI.input.setSignalsForId('$id', $signals);");
+            //$input = $input->withAdditionalOnLoadCode($input->getUpdateOnLoadCode());
         }
         return $input;
     }
