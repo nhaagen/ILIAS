@@ -18435,6 +18435,7 @@ a.ilMediaLightboxClose:hover {
 .c-toolbar .ilToolbarSeparator {
   border-left: 1px solid #dddddd;
   align-self: stretch;
+  margin-bottom: 9px;
 }
 .c-toolbar .navbar-form > .form-control {
   width: auto;

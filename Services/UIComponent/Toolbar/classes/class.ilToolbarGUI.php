@@ -316,9 +316,16 @@ class ilToolbarGUI
                 $tpl->parseCurrentBlock();
             }
 
+            $groups = $this->getGroupedItems();
+
+            $multipleGroups = FALSE;
+            if (count($groups) > 1) {
+                $multipleGroups = TRUE;
+            }
+
             $markup_items = '';
-            foreach ($this->getGroupedItems() as $i => $group) {
-                $tpl_items = new ilTemplate("tpl.toolbar_items.html", true, true, "Services/UIComponent/Toolbar");
+            foreach ($groups as $i => $group) {
+                $tpl_itemcontainer = new ilTemplate("tpl.toolbar_itemcontainer.html", true, true, "Services/UIComponent/Toolbar");
                 if ($i > 0) {
                     static $tpl_separator;
                     if ($tpl_separator === null) {
@@ -327,80 +334,84 @@ class ilToolbarGUI
                     $tpl_separator->touchBlock('separator');
                     $markup_items .= $tpl_separator->get();
                 }
+
+                $groupitems = '';
+                
                 foreach ($group as $item) {
-                    $tpl_items->touchBlock("item");
+                    $tpl_itemcontent = new ilTemplate("tpl.toolbar_itemcontent.html", true, true, "Services/UIComponent/Toolbar");
                     switch ($item["type"]) {
                         case "button":
-                            $tpl_items->setCurrentBlock("button");
-                            $tpl_items->setVariable("BTN_TXT", $item["txt"]);
-                            $tpl_items->setVariable("BTN_LINK", $item["cmd"]);
+                            $tpl_itemcontent->setCurrentBlock("button");
+                            $tpl_itemcontent->setVariable("BTN_TXT", $item["txt"]);
+                            $tpl_itemcontent->setVariable("BTN_LINK", $item["cmd"]);
                             if ($item["target"] != "") {
-                                $tpl_items->setVariable("BTN_TARGET", 'target="' . $item["target"] . '"');
+                                $tpl_itemcontent->setVariable("BTN_TARGET", 'target="' . $item["target"] . '"');
                             }
                             if ($item["id"] != "") {
-                                $tpl_items->setVariable("BID", 'id="' . $item["id"] . '"');
+                                $tpl_itemcontent->setVariable("BID", 'id="' . $item["id"] . '"');
                             }
                             if (($item['add_attrs'])) {
-                                $tpl_items->setVariable('BTN_ADD_ARG', $item['add_attrs']);
+                                $tpl_itemcontent->setVariable('BTN_ADD_ARG', $item['add_attrs']);
                             }
-                            $tpl_items->setVariable('BTN_CLASS', $item['class']);
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setVariable('BTN_CLASS', $item['class']);
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
 
                         case "fbutton":
-                            $tpl_items->setCurrentBlock("form_button");
-                            $tpl_items->setVariable("SUB_TXT", $item["txt"]);
-                            $tpl_items->setVariable("SUB_CMD", $item["cmd"]);
+                            $tpl_itemcontent->setCurrentBlock("form_button");
+                            $tpl_itemcontent->setVariable("SUB_TXT", $item["txt"]);
+                            $tpl_itemcontent->setVariable("SUB_CMD", $item["cmd"]);
                             if ($item["primary"]) {
-                                $tpl_items->setVariable("SUB_CLASS", " emphsubmit");
+                                $tpl_itemcontent->setVariable("SUB_CLASS", " emphsubmit");
                             } elseif ($item["class"]) {
-                                $tpl_items->setVariable("SUB_CLASS", " " . $item["class"]);
+                                $tpl_itemcontent->setVariable("SUB_CLASS", " " . $item["class"]);
                             }
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->parseCurrentBlock();
+                            $tpl_itemcontent->touchBlock("item");
                             break;
 
                         case "button_obj":
-                            $tpl_items->setCurrentBlock("button_instance");
-                            $tpl_items->setVariable("BUTTON_OBJ", $item["instance"]->render());
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setCurrentBlock("button_instance");
+                            $tpl_itemcontent->setVariable("BUTTON_OBJ", $item["instance"]->render());
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
 
                         case "input":
                             if ($item["label"]) {
-                                $tpl_items->setCurrentBlock("input_label");
-                                $tpl_items->setVariable("TXT_INPUT", $item["input"]->getTitle());
-                                $tpl_items->setVariable("INPUT_ID", $item["input"]->getFieldId());
-                                $tpl_items->parseCurrentBlock();
+                                $tpl_itemcontent->setCurrentBlock("input_label");
+                                $tpl_itemcontent->setVariable("TXT_INPUT", $item["input"]->getTitle());
+                                $tpl_itemcontent->setVariable("INPUT_ID", $item["input"]->getFieldId());
+                                $tpl_itemcontent->parseCurrentBlock();
                             }
-                            $tpl_items->setCurrentBlock("input");
-                            $tpl_items->setVariable("INPUT_HTML", $item["input"]->getToolbarHTML());
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setCurrentBlock("input");
+                            $tpl_itemcontent->setVariable("INPUT_HTML", $item["input"]->getToolbarHTML());
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
 
                             // bs-patch start
                         case "dropdown":
-                            $tpl_items->setCurrentBlock("dropdown");
-                            $tpl_items->setVariable("TXT_DROPDOWN", $item["txt"]);
-                            $tpl_items->setVariable("DROP_DOWN", $item["dd_html"]);
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setCurrentBlock("dropdown");
+                            $tpl_itemcontent->setVariable("TXT_DROPDOWN", $item["txt"]);
+                            $tpl_itemcontent->setVariable("DROP_DOWN", $item["dd_html"]);
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
                             // bs-patch end
                         case "text":
-                            $tpl_items->setCurrentBlock("text");
-                            $tpl_items->setVariable("VAL_TEXT", $item["text"]);
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setCurrentBlock("text");
+                            $tpl_itemcontent->setVariable("VAL_TEXT", $item["text"]);
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
 
                         case "component":
-                            $tpl_items->setCurrentBlock("component");
-                            $tpl_items->setVariable("COMPONENT", $this->ui->renderer()->render($item["component"]));
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setCurrentBlock("component");
+                            $tpl_itemcontent->setVariable("COMPONENT", $this->ui->renderer()->render($item["component"]));
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
 
                         case "adv_sel_list":
-                            $tpl_items->setCurrentBlock("component");
-                            $tpl_items->setVariable("COMPONENT", $item["list"]->getHTML());
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setCurrentBlock("component");
+                            $tpl_itemcontent->setVariable("COMPONENT", $item["list"]->getHTML());
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
 
 
@@ -409,34 +420,37 @@ class ilToolbarGUI
                             if (!$item["width"]) {
                                 $item["width"] = 2;
                             }
-                            $tpl_items->setVariable("SPACER_WIDTH", $item["width"]);
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->setVariable("SPACER_WIDTH", $item["width"]);
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
 
                         case "link":
                             if ($item["disabled"] == false) {
-                                $tpl_items->setCurrentBlock("link");
-                                $tpl_items->setVariable("LINK_TXT", $item["txt"]);
-                                $tpl_items->setVariable("LINK_URL", $item["cmd"]);
+                                $tpl_itemcontent->setCurrentBlock("link");
+                                $tpl_itemcontent->setVariable("LINK_TXT", $item["txt"]);
+                                $tpl_itemcontent->setVariable("LINK_URL", $item["cmd"]);
                             } else {
-                                $tpl_items->setCurrentBlock("link_disabled");
-                                $tpl_items->setVariable("LINK_DISABLED_TXT", $item["txt"]);
+                                $tpl_itemcontent->setCurrentBlock("link_disabled");
+                                $tpl_itemcontent->setVariable("LINK_DISABLED_TXT", $item["txt"]);
                             }
-                            $tpl_items->parseCurrentBlock();
+                            $tpl_itemcontent->parseCurrentBlock();
                             break;
                     }
+                    $tpl_itemcontainer->setCurrentBlock("item");
+                    $tpl_itemcontainer->setVariable("ITEM_CONTENT", $tpl_itemcontent->get());
+                    $tpl_itemcontainer->parseCurrentBlock();
+                    $groupitems .=  $tpl_itemcontainer->get();
                 }
-
-                if ($i > 0) {
+                if ($multipleGroups) {
                     $tpl_itemgroups = new ilTemplate("tpl.toolbar_itemgroup.html", true, true, "Services/UIComponent/Toolbar");
                     $tpl_itemgroups->setCurrentBlock("itemgroup");
-                    $tpl_itemgroups->setVariable("ITEMS", $tpl_items->get());
-                    $tpl_itemgroups->parseCurrentBlock();
+                    $tpl_itemgroups->setVariable("ITEMS", $groupitems);
                     $markup_items .= $tpl_itemgroups->get();
                 } else {
-                    $markup_items .= $tpl_items->get();
+                    $markup_items .= $groupitems;
                 }
             }
+            
 
             $tpl->setVariable('ITEMS', $markup_items);
             $tpl->setVariable("TXT_FUNCTIONS", $lng->txt("functions"));

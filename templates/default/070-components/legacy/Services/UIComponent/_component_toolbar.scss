@@ -116,6 +116,7 @@ $il-toolbar-border: 1px solid $il-main-border-color !default;
 	.ilToolbarSeparator {
 		border-left: $il-toolbar-border;
 		align-self: stretch;
+		margin-bottom: $il-padding-xlarge-vertical;
 	}
 	.navbar-form > .form-control {
 		width: auto;
