@@ -39,20 +39,19 @@ il.UI.Input.groups = il.UI.Input.groups || {};
     {
         var init = function (id) {
             var control = $('#' + id);
-            control.change(onchange)
-            control.change()
+            control.change(onchange);
+            control.change();
         }
 
         var onchange = function () {
             var control = $(this),
                 options = control.children('.il-input-radiooption').children('input');
-
             options.each(function(index, opt) {
-                var group = $(opt).siblings('.form-group');
+                let groups = opt.parentNode.querySelectorAll('.form-group');
                 if(opt.checked) {
-                    group.show();
+                    groups.forEach((group)=>group.style.display='block');
                 } else {
-                    group.hide();
+                    groups.forEach((group)=>group.style.display='none');
                 }
             });
         };

@@ -17,12 +17,17 @@ export default class FormNode {
   /**
    * @type {string}
    */
-  #name;
+  #label;
 
   /**
-   * @type {Array<string, FormNode>}
+   * @type {string}
    */
-  #nodes;
+  #type;
+
+  /**
+   * @type {FormNode[]}
+   */
+  #children;
 
   /**
    * @type {HTMLElement[]}
@@ -31,48 +36,40 @@ export default class FormNode {
 
   /**
    * @param {string} name
+   * @param {string} type
    * @return {void}
    */
-  constructor(name) {
-    this.#name = name;
-    this.#nodes = [];
+  constructor(label, type) {
+    this.#label = label;
+    this.#type = type;
+    this.#children = [];
     this.#htmlFields = [];
   }
 
   /**
    * @return {string}
    */
-  getName() {
-    return this.#name;
+  getLabel() {
+    return this.#label;
+  }
+
+  /**
+   * @return {string}
+   */
+  getType() {
+    return this.#type;
   }
 
   /**
    * @param {FormNode} node
    * @return {void}
    */
-  addNode(node) {
-    this.#nodes[node.getName()] = node;
+  addChildNode(node) {
+    this.#children.push(node);
   }
 
-  /**
-   * @return {Array<string, FormNode>}
-   */
-  getNodes() {
-    return this.#nodes;
-  }
-
-  /**
-   * @return {string[]}
-   */
-  getNodeNames() {
-    return Object.keys(this.#nodes);
-  }
-
-  /**
-   * @return {FormNode}
-   */
-  getNodeByName(name) {
-    return this.#nodes[name];
+  getChildren() {
+    return this.#children;
   }
 
   /**
@@ -109,5 +106,31 @@ export default class FormNode {
     );
 
     return values;
+  }
+
+  /**
+   * @return {FormNode[]}
+   */
+  getFilteredChildren() {
+    if (this.getType() === 'SwitchableGroupFieldInput') {
+      const children = [];
+      const nodes = this.getChildren();
+      this.getHtmlFields().forEach(
+        (field, index) => {
+          if (field.checked) {
+            children.push(nodes[index]);
+          }
+        },
+      );
+      return children;
+    }
+
+    if (this.getType() === 'OptionalGroupFieldInput'
+      && !this.getHtmlFields()[0].checked
+    ) {
+      return [];
+    }
+
+    return this.getChildren();
   }
 }

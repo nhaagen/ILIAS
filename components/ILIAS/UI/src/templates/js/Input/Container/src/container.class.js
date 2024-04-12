@@ -18,13 +18,15 @@ import FormNode from './formnode.class.js';
 /**
  * @type {string}
  */
-const SEARCH = '[name]';
+// const SEARCH_FORMNODE = '[name]';
+const SEARCH_FORMNODE = '[data-il-ui-type]';
+const SEARCH_FIELD = '[name]';
 
 export default class Container {
   /**
    * @type {HTMLElement}
    */
-  #component;
+  #container;
 
   /**
    * @type {FormNode}
@@ -32,136 +34,174 @@ export default class Container {
   #nodes;
 
   /**
-   * @param {HTMLElement} component
+   * @param {HTMLElement} container
    * @return {void}
    */
-  constructor(component) {
-    this.#component = component;
-    this.#buildTree();
-  }
+  constructor(container) {
+    this.#container = container;
+    this.#nodes = new FormNode('form', 'FormContainerInput');
 
-  /**
-   * @return {void}
-   */
-  #buildTree() {
-    const htmlFields = this.#component.querySelectorAll(SEARCH);
-    htmlFields.forEach((htmlField) => {
-      this.#register(this.#nodes, htmlField.name.split('/'), htmlField);
-    });
-  }
+    const ilTopInputDomElements = Array.from(
+      container.querySelectorAll(SEARCH_FORMNODE),
+    )
+      .filter((element) => !element.parentNode.closest(SEARCH_FORMNODE));
 
-  /*
-   * @param {FormNode} pointer
-   * @param {string[]} nameparts
-   * @param {HTMLElement} component
-   * @return {FormNode}
-   */
-  #register(pointer, nameparts, component) {
-    let current = pointer;
-    const part = nameparts.shift();
-
-    if (!current) {
-      this.#nodes = new FormNode(part);
-      current = this.#nodes;
-    }
-
-    if (!current.getNodeNames().includes(part)) {
-      current.addNode(new FormNode(part));
-    }
-    current = current.getNodeByName(part);
-
-    if (nameparts.length > 0) {
-      this.#register(current, nameparts, component);
-    } else {
-      current.addHtmlField(component);
-    }
-  }
-
-  /**
-   * @param {string} [htmlFieldName]
-   * @return {FormNode}
-   */
-  node(htmlFieldName) {
-    let node = this.#nodes;
-    if (htmlFieldName === '' || htmlFieldName === undefined) {
-      return node.getNodeByName(node.getNodeNames().shift());
-    }
-    htmlFieldName.split('/').forEach((n) => { node = node.getNodeByName(n); });
-    return node;
-  }
-
-  /**
-   * @param {string} [htmlFieldName]
-   * @return {Array}
-   */
-  getValues(htmlFieldName) {
-    const node = this.node(htmlFieldName);
-    return this.#getValuesRecursively(node, null);
-  }
-
-  /**
-   * @param {string} [htmlFieldName]
-   * @return {Array}
-   */
-  getValuesFlat(htmlFieldName) {
-    const node = this.node(htmlFieldName);
-    return this.#getValuesFlat(node, null, null);
-  }
-
-  /**
-   * @param {FormNode} node
-   * @param {Array|null} [initValues]
-   * @return {Array<string, Array>}
-   */
-  #getValuesRecursively(node, initValues) {
-    const values = initValues || [];
-    values[node.getName()] = node.getValues();
-
-    const subnodes = this.#groupFilteredSubnodes(node);
-    subnodes.forEach(
-      (n) => this.#getValuesRecursively(node.getNodeByName(n), values[node.getName()]),
+    ilTopInputDomElements.forEach(
+      (topInputDomElement) => this.#register(topInputDomElement, this.#nodes),
     );
-    return values;
   }
 
-  /**
-   * @param {FormNode} [node]
-   * @param {Array|null} [initValues]
-   * @param {string|null} [initName]
-   * @return {Array<string, Array>}
-   */
-  #getValuesFlat(node, initValues, initName) {
-    const values = initValues || [];
-    const name = initName || [node.getName()];
-
-    values[name.join('/')] = node.getValues();
-    const subnodes = this.#groupFilteredSubnodes(node);
-    subnodes.forEach(
-      (n) => this.#getValuesFlat(node.getNodeByName(n), values, name.concat([n])),
+  #register(outerDomNode, node) {
+    const label = this.#getLabel(outerDomNode);
+    const nuNode = new FormNode(
+      label,
+      outerDomNode.getAttribute('data-il-ui-type'),
     );
-    return values;
+
+    const inputFields = this.#getInputFields(outerDomNode);
+    inputFields.forEach(
+      (field) => nuNode.addHtmlField(field),
+    );
+
+    const ilUIFormNodes = this.#getIlUIFormNodes(outerDomNode);
+    ilUIFormNodes.forEach(
+      (domNode) => this.#register(domNode, nuNode),
+    );
+    node.addChildNode(nuNode);
   }
 
-  /**
-   * @return {FormNode[]}
-   */
-  #groupFilteredSubnodes(node) {
-    let subnodes = node.getNodeNames();
+  #getIlUIFormNodes(outerDomNode) {
+    return Array.from(
+      outerDomNode.querySelectorAll(SEARCH_FORMNODE),
+    ).filter((element) => element.parentNode.closest(SEARCH_FORMNODE) === outerDomNode);
+  }
 
-    // optional groups:
-    if (node.getHtmlFields().length > 0 && node.getValues().length === 0) {
-      subnodes = []; // or, equally: return values;
+  #getInputFields(outerDomNode) {
+    return Array.from(
+      outerDomNode.querySelectorAll(SEARCH_FIELD),
+    ).filter((element) => element.parentNode.closest(SEARCH_FORMNODE) === outerDomNode);
+  }
+
+  #getLabel(outerDomNode) {
+    let label = '';
+    const labelNode = Array.from(
+      outerDomNode.querySelectorAll('label'),
+    ).filter((element) => element.parentNode.closest(SEARCH_FORMNODE) === outerDomNode);
+    if (labelNode.length > 0) {
+      label = labelNode[0].textContent;
     }
-    // switchable groups
-    if (node.getHtmlFields().length > 0
-      && node.getHtmlFields().filter((f) => f.type === 'radio').length === node.getHtmlFields().length
-    ) {
-      subnodes = [];
-      const index = node.getHtmlFields().findIndex((f) => f.value === node.getValues().shift());
-      if (node.getNodeNames().length > index && index > -1) {
-        subnodes = [node.getNodeNames()[index]];
+    return label;
+  }
+
+  getNodes() {
+    return this.#nodes;
+  }
+
+  getAllNodesFlat(initNode, initOut) {
+    let out = initOut;
+    let node = initNode;
+    if (!out) {
+      out = [];
+      node = this.#nodes;
+    }
+
+    out.push(
+      {
+        label: node.getLabel(),
+        values: node.getValues(),
+        valuesRepresentation: this.#getValueRepresentation(node),
+        type: node.getType(),
+      },
+    );
+    const children = node.getFilteredChildren();
+    if (children.length > 0) {
+      children.forEach(
+        (child) => this.getAllNodesFlat(child, out),
+      );
+    }
+    return out;
+  }
+
+  getAllNodesStruct(initNode) {
+    let node = initNode;
+    if (!node) {
+      node = this.#nodes;
+    }
+    const entry = {
+      label: node.getLabel(),
+      values: node.getValues(),
+      valuesRepresentation: this.#getValueRepresentation(node),
+      type: node.getType(),
+      fields: node.getHtmlFields(),
+      children: [],
+    };
+
+    // let children = node.getChildren();
+    const children = node.getFilteredChildren();
+    if (children.length > 0) {
+      children.forEach(
+        (child) => entry.children.push(this.getAllNodesStruct(child)),
+      );
+    }
+    return entry;
+  }
+
+  #getValueRepresentation(node) {
+    this.tempInit();
+
+    if (this.presentation[node.getType()]) {
+      return this.presentation[node.getType()](node);
+    }
+    return node.getValues();
+  }
+
+  presentation = [];
+
+  tempInit() {
+    this.presentation.PasswordFieldInput = () => null;
+
+    this.presentation.SwitchableGroupFieldInput = function (node) {
+      const children = node.getFilteredChildren();
+      if (children.length === 0) {
+        return [];
       }
-    }
-    return subnodes;
+      const representation = [];
+      children.forEach((child) => representation.push(child.getLabel()));
+      return representation;
+    };
+
+    this.presentation.RadioFieldInput = function (node) {
+      const checked = node.getHtmlFields().filter((element) => element.checked);
+      if (checked.length === 0) {
+        return [];
+      }
+      const representation = [];
+      checked.forEach(
+        (field) => representation.push(
+          field.parentNode.querySelector('label').textContent,
+        ),
+      );
+      return representation;
+    };
+
+    this.presentation.MultiSelectFieldInput = this.presentation.RadioFieldInput;
+
+    this.presentation.DurationFieldInput = function (node) {
+      const [start, end] = node.getChildren().map((child) => child.getValues()[0]);
+      if (start && end) {
+        return `${start} - ${end}`;
+      }
+      return '-';
+    };
+
+    this.presentation.LinkFieldInput = function (node) {
+      const [label, url] = node.getChildren().map((child) => child.getValues()[0]);
+      return `${label} [${url}]`;
+    };
+
+    this.presentation.SelectFieldInput = function (node) {
+      const field = node.getHtmlFields()[0];
+      return field.options[field.options.selectedIndex].text;
+    };
   }
 }
