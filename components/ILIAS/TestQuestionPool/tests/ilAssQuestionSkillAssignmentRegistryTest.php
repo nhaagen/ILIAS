@@ -141,7 +141,7 @@ class ilAssQuestionSkillAssignmentRegistryTest extends assBaseTestCase
     /**
      * @return array
      */
-    public function serializedData(): array
+    public static function serializedData(): array
     {
         $pre = function ($value) {
             return serialize($value);

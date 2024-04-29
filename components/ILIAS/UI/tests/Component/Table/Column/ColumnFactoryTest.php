@@ -53,7 +53,7 @@ class ColumnFactoryTest extends AbstractFactoryTest
         ];
     }
 
-    public function getColumnTypeProvider(): array
+    public static function getColumnTypeProvider(): array
     {
         list($f, $df) = $this->buildFactories();
         $date_format = $df->dateFormat()->germanShort();

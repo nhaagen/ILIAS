@@ -28,7 +28,7 @@ class ilChatroomServerSettingsTest extends TestCase
 {
     protected ilChatroomServerSettings $settings;
 
-    public function setterAndGettersProvider(): array
+    public static function setterAndGettersProvider(): array
     {
         $assertIsString = function ($actual): void {
             $this->assertIsString($actual, 'The actual return value is not a type of "string"');

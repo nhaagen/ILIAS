@@ -29,7 +29,7 @@ class ilMailAddressParserTest extends ilMailBaseTest
     /**
      * @return array[]
      */
-    public function emailAddressesProvider(): array
+    public static function emailAddressesProvider(): array
     {
         return [
             'Username Addresses' => [
@@ -109,7 +109,7 @@ class ilMailAddressParserTest extends ilMailBaseTest
     /**
      * @return array[]
      */
-    public function emailInvalidAddressesProvider(): array
+    public static function emailInvalidAddressesProvider(): array
     {
         return [
             'Trailing Quote in Local Part' => [

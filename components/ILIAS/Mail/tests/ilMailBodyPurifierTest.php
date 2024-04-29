@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 class ilMailBodyPurifierTest extends ilMailBaseTest
 {
-    public function bodyProvider(): array
+    public static function bodyProvider(): array
     {
         return [
             'Reply indicators are kept' => [

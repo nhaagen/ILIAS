@@ -55,7 +55,7 @@ class LightboxTest extends ModalBase
         $this->assertEquals($expected, $actual);
     }
 
-    public function getPageProvider(): array
+    public static function getPageProvider(): array
     {
         $image = new I\Component\Image\Image("responsive", 'src/fake/image.jpg', 'description');
         $card = new I\Component\Card\Card('foo');

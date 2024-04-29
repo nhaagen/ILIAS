@@ -99,7 +99,7 @@ class PresentationHeaderTest extends TestCase
         $head->show('tile_view', $additional_component[0] ?? null);
     }
 
-    public function showProvider(): array
+    public static function showProvider(): array
     {
         return [
             'Without additional component' => [],

@@ -627,7 +627,7 @@ class ilIndividualAssessmentMembersStorageDBTest extends TestCase
         $obj->removeMembersRecord($iass, $record);
     }
 
-    public function dataFor_getWhereFromFilter(): array
+    public static function dataFor_getWhereFromFilter(): array
     {
         return [
             [

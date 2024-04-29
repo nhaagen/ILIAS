@@ -24,7 +24,7 @@ declare(strict_types=1);
  */
 class ilMailAddressListTest extends ilMailBaseTest
 {
-    public function addressTestProvider(): array
+    public static function addressTestProvider(): array
     {
         return [
             'Username Addresses' => [
@@ -68,7 +68,7 @@ class ilMailAddressListTest extends ilMailBaseTest
         $this->assertCount($numberOfExpectedItems, $list->value());
     }
 
-    public function externalAddressTestProvider(): array
+    public static function externalAddressTestProvider(): array
     {
         return [
             'Username' => [

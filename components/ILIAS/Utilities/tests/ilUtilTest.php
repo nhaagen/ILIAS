@@ -46,8 +46,8 @@ class ilUtilTest extends TestCase
      */
     public function testMakeClickableWithGotoLinksAndInvalidRefId(string $expected, string $input, array $ref_to_obj, array $obj_to_title): void
     {
-        $wrap_array = static fn (array $array): array => (
-            array_map(static fn (int $x): array => [$x], $array)
+        $wrap_array = static fn(array $array): array => (
+            array_map(static fn(int $x): array => [$x], $array)
         );
 
         $container = $this->mockClickableCall($input, $expected);
@@ -73,7 +73,7 @@ class ilUtilTest extends TestCase
         unset($GLOBALS['DIC']);
     }
 
-    public function provideGotoLinkData(): array
+    public static function provideGotoLinkData(): array
     {
         // Please note that these test cases represent the current state, not necessarily the correct state.
         // For example all anchor attributes are REMOVED and the target is ALWAYS set to target="_self".

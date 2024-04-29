@@ -103,7 +103,7 @@ class FlavourMachineTest extends AbstractBaseTest
         $this->assertEquals(NoEngine::class, $null_machine->dependsOnEngine());
     }
 
-    public function definitionsToMachines(): array
+    public static function definitionsToMachines(): array
     {
         return [
             [new PagesToExtract(true), ExtractPages::class, ImagickEngineWithOptionalFFMpeg::class],
@@ -130,7 +130,7 @@ class FlavourMachineTest extends AbstractBaseTest
         $this->assertSame($machine_instance, $machine_instance_second_get);
     }
 
-    public function machinesToEngines(): array
+    public static function machinesToEngines(): array
     {
         return [
             [ExtractPages::class, ImagickEngine::class],

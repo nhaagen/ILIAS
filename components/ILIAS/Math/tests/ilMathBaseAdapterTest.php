@@ -152,7 +152,7 @@ abstract class ilMathBaseAdapterTest extends TestCase
     /**
      * @return array
      */
-    public function addData(): array
+    public static function addData(): array
     {
         return [
             ['1', '2', '3', self::DEFAULT_SCALE]

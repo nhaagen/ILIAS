@@ -164,7 +164,7 @@ class ilMailOptionsTest extends ilMailBaseTest
         $this->assertEquals($result, $mailOptions->isAbsent());
     }
 
-    public function provideMailOptionsData(): Generator
+    public static function provideMailOptionsData(): Generator
     {
         yield 'correct configuration' => [
             'absence_status' => true,

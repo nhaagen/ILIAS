@@ -84,7 +84,7 @@ final class ilBcryptPasswordEncoderTest extends ilPasswordBaseTest
     /**
      * @return array<string, string[]>
      */
-    public function costsProvider(): array
+    public static function costsProvider(): array
     {
         $data = [];
         for ($i = 4; $i <= 31; ++$i) {

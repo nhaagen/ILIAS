@@ -102,7 +102,7 @@ abstract class AbstractFactoryTest extends TestCase
         return new ReflectionClass($this->factory_title);
     }
 
-    final public function getMethodsProvider(): array
+    final public static function getMethodsProvider(): array
     {
         $reflection = $this->buildFactoryReflection();
         return array_filter(

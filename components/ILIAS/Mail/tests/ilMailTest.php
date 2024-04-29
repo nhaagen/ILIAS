@@ -248,7 +248,7 @@ class ilMailTest extends ilMailBaseTest
         $instance->getPreviousMail($mailId);
     }
 
-    public function provideGetPreviousMail(): array
+    public static function provideGetPreviousMail(): array
     {
         return [
             [[]],

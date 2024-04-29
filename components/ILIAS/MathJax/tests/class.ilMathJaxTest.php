@@ -44,7 +44,7 @@ class ilMathJaxTest extends ilMathJaxBaseTest
         $this->assertEquals($expected, $result, 'input: ' . $input);
     }
 
-    public function clientSideData(): array
+    public static function clientSideData(): array
     {
         return  [
             [0, '[tex]e=m*c^2[/tex]', null, null, '\(e=m*c^2\)'],
@@ -87,7 +87,7 @@ class ilMathJaxTest extends ilMathJaxBaseTest
         $this->assertEquals($expected, $head, 'purpose: ' . $purpose);
     }
 
-    public function serverSideData(): array
+    public static function serverSideData(): array
     {
         return  [
             ['browser', 'example.svg', '<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="17.47'],

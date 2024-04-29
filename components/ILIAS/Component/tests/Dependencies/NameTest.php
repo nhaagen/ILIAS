@@ -43,7 +43,7 @@ class NameTest extends TestCase
         $n = new Name($name);
     }
 
-    public function properNames(): array
+    public static function properNames(): array
     {
         return [
             [\ILIAS\Component\Tests::class],

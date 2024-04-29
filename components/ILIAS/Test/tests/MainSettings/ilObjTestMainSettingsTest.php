@@ -44,7 +44,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertNull($output);
     }
 
-    public function throwOnDifferentTestIdDataProvider(): array
+    public static function throwOnDifferentTestIdDataProvider(): array
     {
         return [
             [-1],
@@ -76,7 +76,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         self::callMethod($ilObjTestMainSettings, 'throwOnDifferentTestId', [$testSettings]);
     }
 
-    public function throwOnDifferentTestIdExceptionDataProvider(): array
+    public static function throwOnDifferentTestIdExceptionDataProvider(): array
     {
         return [
             [['test_id_1' => -1, 'test_id_2' => 0]],
@@ -131,7 +131,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getTestId());
     }
 
-    public function getAndWithTestIdDataProvider(): array
+    public static function getAndWithTestIdDataProvider(): array
     {
         return [
             [-1],
@@ -163,7 +163,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getGeneralSettings());
     }
 
-    public function getAndWithGeneralSettingsDataProvider(): array
+    public static function getAndWithGeneralSettingsDataProvider(): array
     {
         return [
             [$this->createMock(ilObjTestSettingsGeneral::class)]
@@ -193,7 +193,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getIntroductionSettings());
     }
 
-    public function getAndWithIntroductionSettingsDataProvider(): array
+    public static function getAndWithIntroductionSettingsDataProvider(): array
     {
         return [
             [$this->createMock(ilObjTestSettingsIntroduction::class)]
@@ -223,7 +223,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getAccessSettings());
     }
 
-    public function getAndWithAccessSettingsDataProvider(): array
+    public static function getAndWithAccessSettingsDataProvider(): array
     {
         return [
             [$this->createMock(ilObjTestSettingsAccess::class)]
@@ -253,7 +253,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getTestBehaviourSettings());
     }
 
-    public function getAndWithTestBehaviourSettingsDataProvider(): array
+    public static function getAndWithTestBehaviourSettingsDataProvider(): array
     {
         return [
             [$this->createMock(ilObjTestSettingsTestBehaviour::class)]
@@ -313,7 +313,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getParticipantFunctionalitySettings());
     }
 
-    public function getAndWithParticipantFunctionalitySettingsDataProvider(): array
+    public static function getAndWithParticipantFunctionalitySettingsDataProvider(): array
     {
         return [
             [$this->createMock(ilObjTestSettingsParticipantFunctionality::class)]
@@ -343,7 +343,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getFinishingSettings());
     }
 
-    public function getAndWithFinishingSettingsDataProvider(): array
+    public static function getAndWithFinishingSettingsDataProvider(): array
     {
         return [
             [$this->createMock(ilObjTestSettingsFinishing::class)]
@@ -373,7 +373,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getAdditionalSettings());
     }
 
-    public function getAndWithAdditionalSettingsDataProvider(): array
+    public static function getAndWithAdditionalSettingsDataProvider(): array
     {
         return [
             [$this->createMock(ilObjTestSettingsAdditional::class)]

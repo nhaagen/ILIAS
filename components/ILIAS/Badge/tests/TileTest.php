@@ -195,7 +195,7 @@ class TileTest extends TestCase
         array_map($this->assertInstanceOf(...), $expected_components, $components);
     }
 
-    public function provideAsVariants(): array
+    public static function provideAsVariants(): array
     {
         return [
             'Test asImage.' => ['asImage', [ModalComponent::class, ImageComponent::class]],

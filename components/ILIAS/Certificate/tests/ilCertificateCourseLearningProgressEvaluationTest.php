@@ -303,7 +303,7 @@ class ilCertificateCourseLearningProgressEvaluationTest extends ilCertificateBas
         $this->assertSame([], $completedCourses);
     }
 
-    public function globalLearningProgressStateProvder(): array
+    public static function globalLearningProgressStateProvder(): array
     {
         return [
             'LP globally enabled' => [true, []],

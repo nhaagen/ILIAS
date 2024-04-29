@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ilWhiteListUrlValidatorTest extends TestCase
 {
-    public function domainProvider(): array
+    public static function domainProvider(): array
     {
         return [
             'Empty String / Empty Whitelist' => ['', [], false],

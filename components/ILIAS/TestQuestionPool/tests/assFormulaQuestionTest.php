@@ -63,7 +63,7 @@ class assFormulaQuestionTest extends assBaseTestCase
         $this->assertEquals($expectedResult, $isCorrect);
     }
 
-    public function simpleRatedCalculationsData(): array
+    public static function simpleRatedCalculationsData(): array
     {
         global $DIC;
 

@@ -178,7 +178,7 @@ class ilChatroomUserTest extends ilChatroomAbstractTest
         $this->assertSame('jdoe', $suggestions['login']);
     }
 
-    public function usernameDataProvider(): array
+    public static function usernameDataProvider(): array
     {
         return [
             ['username', 'username'],

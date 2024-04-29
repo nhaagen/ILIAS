@@ -38,7 +38,7 @@ class ByTryingTransformationTest extends TestCase
         $this->refinery = new Refinery($df, $lang);
     }
 
-    public function NullOrNumericDataProvider(): array
+    public static function NullOrNumericDataProvider(): array
     {
         return [
             'empty string' => ['', null],
@@ -75,7 +75,7 @@ class ByTryingTransformationTest extends TestCase
     }
 
 
-    public function NullOrNumericOrStringDataProvider(): array
+    public static function NullOrNumericOrStringDataProvider(): array
     {
         return [
             'string' => ['str', 'str'],
@@ -107,7 +107,7 @@ class ByTryingTransformationTest extends TestCase
         $this->assertEquals($expected, $transformed);
     }
 
-    public function StringOrNullDataProvider(): array
+    public static function StringOrNullDataProvider(): array
     {
         return [
             'string' => ['str', 'str'],

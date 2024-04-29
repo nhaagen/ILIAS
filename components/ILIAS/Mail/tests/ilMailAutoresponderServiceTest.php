@@ -128,7 +128,7 @@ class ilMailAutoresponderServiceTest extends ilMailBaseTest
         );
     }
 
-    public function autoresponderProvider(): Generator
+    public static function autoresponderProvider(): Generator
     {
         $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 

@@ -46,7 +46,7 @@ class ilMailErrorFormatterTest extends ilMailBaseTest
         $this->errorFormatter = new ilMailErrorFormatter($languageMock);
     }
 
-    public function errorCollectionProvider(): array
+    public static function errorCollectionProvider(): array
     {
         return [
             'Zero errors' => [
