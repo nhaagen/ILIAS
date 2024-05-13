@@ -40,7 +40,7 @@ abstract class AbstractFactoryTest extends TestCase
 
     /* This allows to omit checking of certain factory methods, use prudently...
      */
-    private array $omit_factory_methods = [
+    private static array $omit_factory_methods = [
         "helpTopics"
     ];
 
@@ -97,17 +97,17 @@ abstract class AbstractFactoryTest extends TestCase
         return preg_match("#^(\\\\)?ILIAS\\\\UI\\\\Component\\\\([a-zA-Z]+\\\\)*Factory$#", $name) === 1;
     }
 
-    final public function buildFactoryReflection(): ReflectionClass
+    final public static function buildFactoryReflection(): ReflectionClass
     {
-        return new ReflectionClass($this->factory_title);
+        return new ReflectionClass(static::$factory_title);
     }
 
     final public static function getMethodsProvider(): array
     {
-        $reflection = $this->buildFactoryReflection();
+        $reflection = self::buildFactoryReflection();
         return array_filter(
             array_map(function ($element) {
-                if (!in_array($element->getName(), $this->omit_factory_methods)) {
+                if (!in_array($element->getName(), static::$omit_factory_methods)) {
                     return array($element, $element->getName());
                 }
                 return false;

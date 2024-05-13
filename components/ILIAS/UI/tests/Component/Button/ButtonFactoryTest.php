@@ -32,5 +32,5 @@ class ButtonFactoryTest extends AbstractFactoryTest
         "toggle" => ["context" => false]
     ];
 
-    public string $factory_title = 'ILIAS\\UI\\Component\\Button\\Factory';
+    public static string $factory_title = 'ILIAS\\UI\\Component\\Button\\Factory';
 }

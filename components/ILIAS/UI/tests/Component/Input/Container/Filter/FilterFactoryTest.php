@@ -33,7 +33,7 @@ class FilterFactoryTest extends AbstractFactoryTest
         ]
     ];
 
-    public string $factory_title = 'ILIAS\\UI\\Component\\Input\\Container\\Filter\\Factory';
+    public static string $factory_title = 'ILIAS\\UI\\Component\\Input\\Container\\Filter\\Factory';
 
 
     final public function buildFactory(): Factory

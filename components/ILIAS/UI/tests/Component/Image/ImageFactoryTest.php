@@ -34,5 +34,5 @@ class ImageFactoryTest extends AbstractFactoryTest
     ];
 
 
-    public string $factory_title = 'ILIAS\\UI\\Component\\Image\\Factory';
+    public static string $factory_title = 'ILIAS\\UI\\Component\\Image\\Factory';
 }

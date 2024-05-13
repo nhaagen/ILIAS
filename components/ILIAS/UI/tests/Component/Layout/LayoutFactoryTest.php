@@ -36,5 +36,5 @@ class LayoutFactoryTest extends AbstractFactoryTest
             "context" => true
         ]
     ];
-    public string $factory_title = 'ILIAS\\UI\\Component\\Layout\\Factory';
+    public static string $factory_title = 'ILIAS\\UI\\Component\\Layout\\Factory';
 }

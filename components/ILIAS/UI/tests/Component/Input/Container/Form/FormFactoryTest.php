@@ -34,7 +34,7 @@ class FormFactoryTest extends AbstractFactoryTest
         ],
     ];
 
-    public string $factory_title = 'ILIAS\\UI\\Component\\Input\\Container\\Form\\Factory';
+    public static string $factory_title = 'ILIAS\\UI\\Component\\Input\\Container\\Form\\Factory';
 
     final public function buildFactory(): I\Container\Form\Factory
     {

@@ -23,5 +23,5 @@ require_once 'components/ILIAS/UI/tests/AbstractFactoryTest.php';
 class CounterFactoryTest extends AbstractFactoryTest
 {
     public array $kitchensink_info_settings = array( "status" => array("context" => false));
-    public string $factory_title = 'ILIAS\\UI\\Component\\Counter\\Factory';
+    public static string $factory_title = 'ILIAS\\UI\\Component\\Counter\\Factory';
 }
