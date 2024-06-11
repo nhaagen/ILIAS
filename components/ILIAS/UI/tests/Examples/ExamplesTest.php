@@ -31,7 +31,7 @@ use ILIAS\FileUpload\FileUpload;
  */
 class ExamplesTest extends ILIAS_UI_TestBase
 {
-    protected string $path_to_base_factory = "components/ILIAS/UI/src/Factory.php";
+    protected static string $path_to_base_factory = "components/ILIAS/UI/src/Factory.php";
     protected Container $dic;
 
     public function setUp(): void
@@ -137,16 +137,16 @@ class ExamplesTest extends ILIAS_UI_TestBase
     /**
      * @throws Crawler\Exception\CrawlerException
      */
-    protected function getEntriesFromCrawler(): Crawler\Entry\ComponentEntries
+    protected static function getEntriesFromCrawler(): Crawler\Entry\ComponentEntries
     {
         $crawler = new Crawler\FactoriesCrawler();
-        return $crawler->crawlFactory($this->path_to_base_factory);
+        return $crawler->crawlFactory(self::$path_to_base_factory);
     }
 
     public static function getFullFunctionNamesAndPathExample(): array
     {
         $function_names = [];
-        foreach ($this->getEntriesFromCrawler() as $entry) {
+        foreach (static::getEntriesFromCrawler() as $entry) {
             foreach ($entry->getExamples() as $name => $example_path) {
                 $function_names[$entry->getExamplesNamespace() . "\\" . $name] = [
                     $entry->getExamplesNamespace() . "\\" . $name,

@@ -51,7 +51,7 @@ class NameTest extends TestCase
         ];
     }
 
-    public function improperNames(): array
+    public static function improperNames(): array
     {
         return [
             ['ILIAS \Component\Tests'],

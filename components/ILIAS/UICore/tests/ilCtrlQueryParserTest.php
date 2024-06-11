@@ -32,7 +32,7 @@ class ilCtrlQueryParserTest extends TestCase
         $this->query_parser = new ilCtrlQueryRegexParser();
     }
 
-    public function queryStringProvider(): array
+    public static function queryStringProvider(): array
     {
         return [
             [

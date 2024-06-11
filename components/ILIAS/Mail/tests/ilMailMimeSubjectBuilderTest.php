@@ -21,7 +21,7 @@ declare(strict_types=1);
 /**
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ilMailMimeSubjectBuilderTest extends ilMailBaseTest
+class ilMailMimeSubjectBuilderTest extends ilMailBaseTestCase
 {
     private const DEFAULT_PREFIX = 'docu default';
 

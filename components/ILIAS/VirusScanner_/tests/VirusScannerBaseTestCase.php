@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -15,16 +16,29 @@
  *
  *********************************************************************/
 
+declare(strict_types=1);
+
+use ILIAS\DI\Container;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @author  Michael Jansen <mjansen@databay.de>
- * @version $Id$
- */
-class ilUserBaseTest extends TestCase
+abstract class VirusScannerBaseTestCase extends TestCase
 {
-    protected function assertException(string $exception_class): void
+    protected function setUp(): void
     {
-        $this->expectException($exception_class);
+        $GLOBALS['DIC'] = new Container();
+
+        parent::setUp();
+    }
+
+    protected function setGlobalVariable(string $name, $value): void
+    {
+        global $DIC;
+
+        $GLOBALS[$name] = $value;
+
+        unset($DIC[$name]);
+        $DIC[$name] = static function (Container $c) use ($name) {
+            return $GLOBALS[$name];
+        };
     }
 }

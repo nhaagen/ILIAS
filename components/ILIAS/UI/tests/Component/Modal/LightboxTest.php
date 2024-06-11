@@ -61,9 +61,9 @@ class LightboxTest extends ModalBase
         $card = new I\Component\Card\Card('foo');
 
         return [
-            'Render image page' => ['lightboxImagePage', [$image, 'title'], $this->getExpectedImagePageHTML()],
-            'Render text page' => ['lightboxTextPage', ['HelloWorld', 'title'], $this->getExpectedTextPageHTML()],
-            'Render card page' => ['lightboxCardPage', [$card], $this->getExpectedCardPageHTML()],
+            'Render image page' => ['lightboxImagePage', [$image, 'title'], self::getExpectedImagePageHTML()],
+            'Render text page' => ['lightboxTextPage', ['HelloWorld', 'title'], self::getExpectedTextPageHTML()],
+            'Render card page' => ['lightboxCardPage', [$card], self::getExpectedCardPageHTML()],
         ];
     }
 
@@ -87,7 +87,7 @@ class LightboxTest extends ModalBase
         return new LightboxMockPage();
     }
 
-    protected function getExpectedTextPageHTML(): string
+    protected static function getExpectedTextPageHTML(): string
     {
         return <<<EOT
 <div class="modal fade il-modal-lightbox il-modal-lightbox-bright" tabindex="-1" role="dialog" id="id_1">
@@ -152,7 +152,7 @@ class LightboxTest extends ModalBase
 EOT;
     }
 
-    protected function getExpectedImagePageHTML(): string
+    protected static function getExpectedImagePageHTML(): string
     {
         return <<<EOT
 <div class="modal fade il-modal-lightbox il-modal-lightbox-dark" tabindex="-1" role="dialog" id="id_1">
@@ -228,7 +228,7 @@ EOT;
 EOT;
     }
 
-    protected function getExpectedMixedPagesHTML(): string
+    protected static function getExpectedMixedPagesHTML(): string
     {
         return <<<EOT
 <div class="modal fade il-modal-lightbox il-modal-lightbox-dark" tabindex="-1" role="dialog" id="id_1">
@@ -328,7 +328,7 @@ EOT;
 EOT;
     }
 
-    private function getExpectedCardPageHTML(): string
+    private static function getExpectedCardPageHTML(): string
     {
         return <<<EOT
 <div class="modal fade il-modal-lightbox il-modal-lightbox-bright" tabindex="-1" role="dialog" id="id_1">

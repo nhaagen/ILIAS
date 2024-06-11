@@ -31,7 +31,7 @@ use ILIAS\Mail\Service\MailSignatureService;
  * Class ilMailMimeTest
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ilMailTest extends ilMailBaseTest
+class ilMailTest extends ilMailBaseTestCase
 {
     private MockObject&ilDBInterface $mock_database;
     private MockObject&ilMailAddressTypeFactory $mock_address_type_factory;

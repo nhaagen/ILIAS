@@ -149,10 +149,22 @@ class ilModulesFileTest extends TestCase
         // identification
         $rid = new ResourceIdentification('the_identification');
 
-        $this->manager_mock->expects($this->any())
-                           ->method('find')
-                           ->withConsecutive(['-'], ['the_identification'], ['the_identification'])
-                           ->willReturnOnConsecutiveCalls(null, $rid, $rid);
+        $consecutive = [
+            ['-', null],
+            ['the_identification', $rid],
+            ['the_identification', $rid],
+        ];
+        $this->manager_mock
+            ->expects($this->any())
+            ->method('find')
+            ->willReturnCallback(
+                function (string $id) use (&$consecutive): ?ResourceIdentification {
+                    $expected = array_shift($consecutive);
+                    list($eid, $ret) = $consecutive;
+                    $this->assertEquals($eid, $id);
+                    return $ret;
+                }
+            );
 
         $this->manager_mock->expects($this->once())
                            ->method('stream')

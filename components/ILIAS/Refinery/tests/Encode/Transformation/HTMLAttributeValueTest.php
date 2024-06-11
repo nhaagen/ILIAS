@@ -56,7 +56,7 @@ class HTMLAttributeValueTest extends TestCase
         (new HTMLAttributeValue())->transform(8);
     }
 
-    public function provideTransformData(): array
+    public static function provideTransformData(): array
     {
         return [
             'Empty string' => ['', '', 'assertSame'],

@@ -174,7 +174,7 @@ class UnzipTest extends TestCase
 
         $unzipped_files = $this->directoryToArray($temp_unzip_path);
 
-        $this->assertSame($this->expected_flat_files, $unzipped_files);
+        $this->assertSame(self::$expected_flat_files, $unzipped_files);
         $this->assertTrue($this->recurseRmdir($temp_unzip_path));
     }
 

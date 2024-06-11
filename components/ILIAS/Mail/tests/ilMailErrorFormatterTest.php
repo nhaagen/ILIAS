@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-class ilMailErrorFormatterTest extends ilMailBaseTest
+class ilMailErrorFormatterTest extends ilMailBaseTestCase
 {
     private ilMailErrorFormatter $errorFormatter;
 

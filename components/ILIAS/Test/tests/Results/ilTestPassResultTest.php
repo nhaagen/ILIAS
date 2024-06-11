@@ -95,9 +95,9 @@ class ilTestPassResultTest extends ilTestBaseTestCase
     /**
      * @ dataProvider getQuestionResultsDataProvider
      */
-    public function testGetQuestionResults(array $IO): void
+    public function testGetQuestionResults(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilTestPassResult = new ilTestPassResult(
             new ilTestPassResultsSettings(),
             0,
@@ -110,9 +110,15 @@ class ilTestPassResultTest extends ilTestBaseTestCase
     public static function getQuestionResultsDataProvider(): array
     {
         return [
-            [[]],
-            [[$this->createMock(ilQuestionResult::class)]],
-            [[$this->createMock(ilQuestionResult::class), $this->createMock(ilQuestionResult::class)]]
+            [static fn(self $test_case): array => []],
+            [static fn(self $test_case): array => [
+                $test_case->createMock(ilQuestionResult::class)
+            ]],
+            [static fn(self $test_case): array => [
+                $test_case->createMock(ilQuestionResult::class),
+                $test_case->createMock(ilQuestionResult::class),
+            ]]
         ];
+
     }
 }

@@ -22,7 +22,7 @@ declare(strict_types=1);
  * Class ilMailAddressParserTest
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ilMailAddressParserTest extends ilMailBaseTest
+class ilMailAddressParserTest extends ilMailBaseTestCase
 {
     private const DEFAULT_HOST = 'ilias';
 

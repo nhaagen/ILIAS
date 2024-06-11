@@ -121,7 +121,7 @@ xmlns="http://www.w3.org/2000/svg">
         $this->assertSame('SVG OK', $result->getMessage());
     }
 
-    private static function provideSomeComplexSaneSVG(): array
+    public static function provideSomeComplexSaneSVG(): array
     {
         return [
             [__DIR__ . '/../../../../../components/ILIAS/UI/resources/images/media/bigplay.svg'],

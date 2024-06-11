@@ -104,7 +104,7 @@ class ImageConversionTest extends TestCase
         $this->assertEquals(200, $getimagesizefromstring[self::H]);
     }
 
-    public function getImageSizesByWidth(): array
+    public static function getImageSizesByWidth(): array
     {
         return [
             [400, 300, self::BY_WIDTH_FINAL, 192],
@@ -207,7 +207,7 @@ class ImageConversionTest extends TestCase
         );
     }
 
-    public function getImageSizesByFixed(): array
+    public static function getImageSizesByFixed(): array
     {
         return [
             [1024, 768, 300, 100, true],

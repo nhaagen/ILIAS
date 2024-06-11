@@ -36,6 +36,9 @@ class ilCronFinishUnfinishedTestPassesTest extends ilTestBaseTestCase
         $this->addGlobal_ilUser();
         $this->addGlobal_lng();
         $this->addGlobal_ilDB();
+        if (!defined("ILIAS_LOG_ENABLED")) {
+            define("ILIAS_LOG_ENABLED", false);
+        }
 
         $this->test_obj = new ilCronFinishUnfinishedTestPasses();
     }

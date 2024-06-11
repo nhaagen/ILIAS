@@ -25,6 +25,6 @@ use PHPUnit\Framework\TestCase;
  * Class ilOnScreenChatBaseTest
  * @author Michael Jansen <mjansen@databay.de>
  */
-abstract class ilOnScreenChatBaseTest extends TestCase
+abstract class ilOnScreenChatBaseTestCase extends TestCase
 {
 }

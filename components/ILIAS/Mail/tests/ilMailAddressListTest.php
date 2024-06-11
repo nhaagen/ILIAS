@@ -22,7 +22,7 @@ declare(strict_types=1);
  * Class ilMailAddressListTest
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ilMailAddressListTest extends ilMailBaseTest
+class ilMailAddressListTest extends ilMailBaseTestCase
 {
     public static function addressTestProvider(): array
     {

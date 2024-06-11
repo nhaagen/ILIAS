@@ -25,7 +25,7 @@ use OrgUnit\User\ilOrgUnitUser;
  * Class ilMailTemplateContextTest
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ilMailTemplateContextTest extends ilMailBaseTest
+class ilMailTemplateContextTest extends ilMailBaseTestCase
 {
     public function getAnonymousTemplateContext(
         OrgUnitUserService $orgUnitUserService,
@@ -87,7 +87,7 @@ class ilMailTemplateContextTest extends ilMailBaseTest
     /**
      * @throws ReflectionException
      */
-    public function userProvider(): array
+    public static function userProvider(): array
     {
         $testUsers = [];
 

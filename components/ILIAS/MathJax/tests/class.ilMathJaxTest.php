@@ -18,12 +18,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/ilMathJaxBaseTest.php';
-
 /**
  * Testing the MathJax class
  */
-class ilMathJaxTest extends ilMathJaxBaseTest
+class ilMathJaxTest extends ilMathJaxBaseTestCase
 {
     public function testInstanceCanBeCreated(): void
     {

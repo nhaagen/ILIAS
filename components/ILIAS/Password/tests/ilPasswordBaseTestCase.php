@@ -16,13 +16,14 @@
  *
  *********************************************************************/
 
-namespace ILIAS\Tests\FileDelivery;
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
 /**
- * @author Fabian Schmid <fabian@sr.solutions.ch>
+ * @author  Michael Jansen <mjansen@databay.de>
+ * @version $Id$
  */
-abstract class AbstractBaseTest extends TestCase
+abstract class ilPasswordBaseTestCase extends TestCase
 {
 }

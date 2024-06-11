@@ -531,7 +531,7 @@ EOT;
         $this->verifyFoGeneratedFromXhtml($form_data, $fo);
     }
 
-    public function noNonBreakingSpaceIsAddedDataProvider(): Generator
+    public static function noNonBreakingSpaceIsAddedDataProvider(): Generator
     {
         $expected_fo_with_centered_block = <<<EOT
 <?xml version="1.0"?>

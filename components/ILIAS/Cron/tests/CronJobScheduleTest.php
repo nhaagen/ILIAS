@@ -92,7 +92,7 @@ class CronJobScheduleTest extends TestCase
         };
 
         $job_instance->setDateTimeProvider(function (): DateTimeImmutable {
-            return self::now;
+            return self::$now;
         });
 
         return $job_instance;

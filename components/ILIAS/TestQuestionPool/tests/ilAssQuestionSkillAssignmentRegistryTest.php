@@ -106,7 +106,7 @@ class ilAssQuestionSkillAssignmentRegistryTest extends assBaseTestCase
      * @param callable $post
      * @return array
      */
-    protected function getTestData(callable $pre, callable $post): array
+    protected static function getTestData(callable $pre, callable $post): array
     {
         $data = [];
 
@@ -153,6 +153,6 @@ class ilAssQuestionSkillAssignmentRegistryTest extends assBaseTestCase
             return unserialize($value);
         };
 
-        return $this->getTestData($pre, $post);
+        return self::getTestData($pre, $post);
     }
 }

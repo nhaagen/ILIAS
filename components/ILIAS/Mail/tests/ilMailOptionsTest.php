@@ -24,7 +24,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 /**
  * @author Ingmar Szmais <iszmais@databay.de>
  */
-class ilMailOptionsTest extends ilMailBaseTest
+class ilMailOptionsTest extends ilMailBaseTestCase
 {
     protected stdClass $object;
     protected MockObject&ilDBInterface $database;

@@ -84,5 +84,10 @@ class ilRBACTest extends TestCase
                                ->getMock();
         $logger_factory->method('getComponentLogger')->willReturn($logger);
         $this->setGlobalVariable('ilLoggerFactory', $logger_factory);
+
+        if (!defined("ILIAS_LOG_ENABLED")) {
+            define("ILIAS_LOG_ENABLED", true);
+        }
+
     }
 }

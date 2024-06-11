@@ -59,26 +59,18 @@ class ilCASSettingsTest extends TestCase
         //setup some method calls
         /** @var $setting MockObject */
         $setting = $DIC['ilSetting'];
-        $setting->method("get")->withConsecutive(
-            ['cas_server'],
-            ['cas_port'],
-            ['cas_uri'],
-            ['cas_active'],
-            ['cas_user_default_role'],
-            ['cas_login_instructions'],
-            ['cas_allow_local'],
-            ['cas_create_users']
-        )->
-        willReturnOnConsecutiveCalls(
-            'casserver',
-            "1",
-            'cas',
-            'true',
-            '0',
-            'casInstruction',
-            'false',
-            'true'
-        );
+        $consecutive_returns = [
+            'cas_server' => 'casserver',
+            'cas_port' => '1',
+            'cas_uri' => 'cas',
+            'cas_active' => 'true',
+            'cas_user_default_role' => '0',
+            'cas_login_instructions' => 'casInstruction',
+            'cas_allow_local' => 'false',
+            'cas_create_users' => 'true',
+        ];
+        $setting->method("get")
+            ->willReturnCallback(fn($k) => $consecutive_returns[$k]);
 
         $casSettings = ilCASSettings::getInstance();
         $this->assertEquals("casserver", $casSettings->getServer());

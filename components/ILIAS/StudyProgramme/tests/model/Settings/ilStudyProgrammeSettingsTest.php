@@ -7,21 +7,6 @@ class ilStudyProgrammeSettingsTest extends \PHPUnit\Framework\TestCase
 {
     protected $backupGlobals = false;
 
-    public function setUp(): void
-    {
-        PHPUnit_Framework_Error_Deprecated::$enabled = false;
-
-        global $DIC;
-        if (!$DIC) {
-            include_once("./components/ILIAS/PHPUnit/classes/class.ilUnitUtil.php");
-            try {
-                ilUnitUtil::performInitialisation();
-            } catch (\Exception $e) {
-            }
-        }
-    }
-
-
     public function test_init_and_id()
     {
         $sps = new ilStudyProgrammeSettings(123);

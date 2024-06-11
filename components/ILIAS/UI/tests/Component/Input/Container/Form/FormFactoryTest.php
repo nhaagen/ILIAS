@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-require_once 'components/ILIAS/UI/tests/AbstractFactoryTest.php';
+require_once 'components/ILIAS/UI/tests/AbstractFactoryTestCase.php';
 
 use ILIAS\UI\Component\Input\Container\Form;
 use ILIAS\UI\Implementation\Component\SignalGenerator;
@@ -26,9 +26,9 @@ use ILIAS\Data;
 use ILIAS\UI\Implementation\Component\Input as I;
 use ILIAS\Refinery\Factory;
 
-class FormFactoryTest extends AbstractFactoryTest
+class FormFactoryTest extends AbstractFactoryTestCase
 {
-    public array $kitchensink_info_settings = [
+    public static array $kitchensink_info_settings = [
         "standard" => [
             "context" => false,
         ],

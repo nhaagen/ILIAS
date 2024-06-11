@@ -25,7 +25,7 @@ use org\bovigo\vfs;
  * @author  Michael Jansen <mjansen@databay.de>
  * @package ServicesPassword
  */
-final class ilBcryptPasswordEncoderTest extends ilPasswordBaseTest
+final class ilBcryptPasswordEncoderTest extends ilPasswordBaseTestCase
 {
     /** @var string */
     private const VALID_COSTS = '08';

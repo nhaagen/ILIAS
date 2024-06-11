@@ -25,7 +25,7 @@ use ILIAS\Data\Factory as DataFactory;
 
 require_once("./components/ILIAS/Refinery/tests/TestCase.php");
 
-class ByTryingTransformationTest extends TestCase
+class ByTryingTransformTest extends TestCase
 {
     private const ERROR = 'error_expected';
 

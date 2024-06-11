@@ -143,9 +143,9 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     /**
      * @ dataProvider getAndWithGeneralSettingsDataProvider
      */
-    public function testGetAndWithGeneralSettings(ilObjTestSettingsGeneral $IO): void
+    public function testGetAndWithGeneralSettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -166,17 +166,18 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
 
     public static function getAndWithGeneralSettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsGeneral::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsGeneral =>
+                $test_case->createMock(ilObjTestSettingsGeneral::class)
+        ]];
     }
 
     /**
      * @ dataProvider getAndWithIntroductionSettingsDataProvider
      */
-    public function testGetAndWithIntroductionSettings(ilObjTestSettingsIntroduction $IO): void
+    public function testGetAndWithIntroductionSettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -197,17 +198,18 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
 
     public static function getAndWithIntroductionSettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsIntroduction::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsIntroduction =>
+                $test_case->createMock(ilObjTestSettingsIntroduction::class)
+        ]];
     }
 
     /**
      * @ dataProvider getAndWithAccessSettingsDataProvider
      */
-    public function testGetAndWithAccessSettings(ilObjTestSettingsAccess $IO): void
+    public function testGetAndWithAccessSettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -228,17 +230,18 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
 
     public static function getAndWithAccessSettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsAccess::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsAccess =>
+                $test_case->createMock(ilObjTestSettingsAccess::class)
+        ]];
     }
 
     /**
      * @ dataProvider getAndWithTestBehaviourSettingsDataProvider
      */
-    public function testGetAndWithTestBehaviourSettings(ilObjTestSettingsTestBehaviour $IO): void
+    public function testGetAndWithTestBehaviourSettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -259,17 +262,18 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
 
     public static function getAndWithTestBehaviourSettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsTestBehaviour::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsTestBehaviour =>
+                $test_case->createMock(ilObjTestSettingsTestBehaviour::class)
+        ]];
     }
 
     /**
      * @ dataProvider getAndWithQuestionBehaviourSettingsDataProvider
      */
-    public function testGetAndWithQuestionBehaviourSettings(ilObjTestSettingsQuestionBehaviour $IO): void
+    public function testGetAndWithQuestionBehaviourSettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -288,19 +292,20 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
         $this->assertEquals($IO, $ilObjTestMainSettings->getQuestionBehaviourSettings());
     }
 
-    public function getAndWithQuestionBehaviourSettingsDataProvider(): array
+    public static function getAndWithQuestionBehaviourSettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsQuestionBehaviour::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsQuestionBehaviour =>
+                $test_case->createMock(ilObjTestSettingsQuestionBehaviour::class)
+        ]];
     }
 
     /**
      * @ dataProvider getAndWithParticipantFunctionalitySettingsDataProvider
      */
-    public function testGetAndWithParticipantFunctionalitySettings(ilObjTestSettingsParticipantFunctionality $IO): void
+    public function testGetAndWithParticipantFunctionalitySettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -321,17 +326,18 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
 
     public static function getAndWithParticipantFunctionalitySettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsParticipantFunctionality::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsParticipantFunctionality =>
+                $test_case->createMock(ilObjTestSettingsParticipantFunctionality::class)
+        ]];
     }
 
     /**
      * @ dataProvider getAndWithFinishingSettingsDataProvider
      */
-    public function testGetAndWithFinishingSettings(ilObjTestSettingsFinishing $IO): void
+    public function testGetAndWithFinishingSettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -352,17 +358,18 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
 
     public static function getAndWithFinishingSettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsFinishing::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsFinishing =>
+                $test_case->createMock(ilObjTestSettingsFinishing::class)
+        ]];
     }
 
     /**
      * @ dataProvider getAndWithAdditionalSettingsDataProvider
      */
-    public function testGetAndWithAdditionalSettings(ilObjTestSettingsAdditional $IO): void
+    public function testGetAndWithAdditionalSettings(\Closure $IO): void
     {
-        $this->markTestSkipped('Data Provider needs to be revisited.');
+        $IO = $IO($this);
         $ilObjTestMainSettings = new ilObjTestMainSettings(
             0,
             0,
@@ -383,8 +390,9 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
 
     public static function getAndWithAdditionalSettingsDataProvider(): array
     {
-        return [
-            [$this->createMock(ilObjTestSettingsAdditional::class)]
-        ];
+        return [[
+            static fn(self $test_case): ilObjTestSettingsAdditional =>
+                $test_case->createMock(ilObjTestSettingsAdditional::class)
+        ]];
     }
 }
