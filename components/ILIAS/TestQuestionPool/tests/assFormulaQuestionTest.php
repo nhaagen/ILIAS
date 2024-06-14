@@ -43,7 +43,7 @@ class assFormulaQuestionTest extends assBaseTestCase
     }
 
     /**
-     * @ dataProvider simpleRatedCalculationsData
+     * @dataProvider simpleRatedCalculationsData
      * @param assFormulaQuestionResult     $result
      * @param assFormulaQuestionVariable[] $variables
      * @param assFormulaQuestionUnit[]     $results

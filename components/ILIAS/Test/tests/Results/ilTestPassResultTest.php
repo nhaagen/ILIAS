@@ -93,7 +93,7 @@ class ilTestPassResultTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getQuestionResultsDataProvider
+     * @dataProvider getQuestionResultsDataProvider
      */
     public function testGetQuestionResults(\Closure $IO): void
     {

@@ -36,7 +36,7 @@ class ilAssQuestionSkillAssignmentRegistryTest extends assBaseTestCase
     }
 
     /**
-     * @ dataProvider serializedData
+     * @dataProvider serializedData
      * @param          $value
      * @param          $chunkSize
      * @param callable $preCallback

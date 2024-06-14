@@ -141,7 +141,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithGeneralSettingsDataProvider
+     * @dataProvider getAndWithGeneralSettingsDataProvider
      */
     public function testGetAndWithGeneralSettings(\Closure $IO): void
     {
@@ -173,7 +173,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithIntroductionSettingsDataProvider
+     * @dataProvider getAndWithIntroductionSettingsDataProvider
      */
     public function testGetAndWithIntroductionSettings(\Closure $IO): void
     {
@@ -205,7 +205,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithAccessSettingsDataProvider
+     * @dataProvider getAndWithAccessSettingsDataProvider
      */
     public function testGetAndWithAccessSettings(\Closure $IO): void
     {
@@ -237,7 +237,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithTestBehaviourSettingsDataProvider
+     * @dataProvider getAndWithTestBehaviourSettingsDataProvider
      */
     public function testGetAndWithTestBehaviourSettings(\Closure $IO): void
     {
@@ -269,7 +269,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithQuestionBehaviourSettingsDataProvider
+     * @dataProvider getAndWithQuestionBehaviourSettingsDataProvider
      */
     public function testGetAndWithQuestionBehaviourSettings(\Closure $IO): void
     {
@@ -301,7 +301,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithParticipantFunctionalitySettingsDataProvider
+     * @dataProvider getAndWithParticipantFunctionalitySettingsDataProvider
      */
     public function testGetAndWithParticipantFunctionalitySettings(\Closure $IO): void
     {
@@ -333,7 +333,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithFinishingSettingsDataProvider
+     * @dataProvider getAndWithFinishingSettingsDataProvider
      */
     public function testGetAndWithFinishingSettings(\Closure $IO): void
     {
@@ -365,7 +365,7 @@ class ilObjTestMainSettingsTest extends ilTestBaseTestCase
     }
 
     /**
-     * @ dataProvider getAndWithAdditionalSettingsDataProvider
+     * @dataProvider getAndWithAdditionalSettingsDataProvider
      */
     public function testGetAndWithAdditionalSettings(\Closure $IO): void
     {
