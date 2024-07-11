@@ -78,4 +78,10 @@ class DefaultRendererFactory implements RendererFactory
     {
         return $this->js_binding;
     }
+
+    public function resetJSBinding(): void
+    {
+        $this->js_binding->resetOnLoadCodeAsync();
+    }
+
 }

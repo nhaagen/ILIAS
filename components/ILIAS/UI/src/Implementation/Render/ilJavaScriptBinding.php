@@ -34,7 +34,7 @@ class ilJavaScriptBinding implements JavaScriptBinding
     /**
      * Cache for all registered JS code
      */
-    protected array $code = array();
+    protected array $code = [];
 
     public function __construct(ilGlobalTemplateInterface $global_tpl)
     {
@@ -70,4 +70,10 @@ class ilJavaScriptBinding implements JavaScriptBinding
         $this->code = [];
         return $js_out;
     }
+
+    public function resetOnLoadCodeAsync(): void
+    {
+        $this->code = [];
+    }
+
 }

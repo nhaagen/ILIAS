@@ -76,6 +76,7 @@ class DefaultRenderer implements Renderer
                 $out .= $root->renderAsync($_component);
             }
         } else {
+            //$this->resetJSBinding($component);
             $out = $this->render($component, $root) .
             $this->getJSCodeForAsyncRenderingFor($component);
         }
@@ -129,4 +130,12 @@ class DefaultRenderer implements Renderer
     {
         return $this->contexts;
     }
+
+    public function resetJSBinding($component): void
+    {
+        $this->component_renderer_loader
+            ->getRendererFactoryFor($component)
+            ->resetJSBinding();
+    }
+
 }
