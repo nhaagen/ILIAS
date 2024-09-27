@@ -13,21 +13,15 @@
  * us at:
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
- *
- *********************************************************************/
+ */
 
-declare(strict_types=1);
+namespace ILIAS\UI\Implementation\Component\Input;
 
-namespace ILIAS\Component\Activities;
+use ILIAS\UI\Component\Input\Json as JsonInterface;
 
 /**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
+ * @author Thibeau Fuhrer <thibeau@sr.solutions>
  */
-abstract class ActivityImpl implements Activity
+interface JsonInternal extends InputInternal, JsonInterface
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
 }

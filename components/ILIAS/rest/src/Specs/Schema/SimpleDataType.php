@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,16 +19,16 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\Specs\Schema;
 
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
+enum SimpleDataType: string
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
+    case STRING = 'string';
+    case INTEGER = 'integer';
+    case FLOAT = 'float';
+    case NUMERIC = 'numeric';
+    case BOOLEAN = 'boolean';
+    case OBJECT = 'object';
+    case ARRAY = 'array';
+    case NULL = 'null';
 }

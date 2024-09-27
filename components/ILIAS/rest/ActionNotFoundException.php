@@ -16,18 +16,8 @@
  *
  *********************************************************************/
 
-declare(strict_types=1);
+namespace ILIAS\REST;
 
-namespace ILIAS\Component\Activities;
-
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
+class ActionNotFoundException extends \ilException
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
 }

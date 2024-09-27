@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,16 +19,12 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\Specs\Schema;
 
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
+enum StructureRule: string
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
+    case ONE_OF = 'oneOf'; // Matches exactly one subschema
+    case ALL_OF = 'allOf'; // Matches all subschemas
+    case ANY_OF = 'anyOf'; // Matches at least one subschema
+    case NONE = 'none';    // No specific structure rule applies
 }

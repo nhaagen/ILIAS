@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,16 +19,22 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\Specs\Schema;
 
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
+class ListType extends AbstractSchemaType
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
+    public function __construct(string $name, SchemaType $itemType)
     {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
+        $this->withName($name)
+            ->withTypeClass('list')
+            ->withDataType(SimpleDataType::ARRAY)
+            ->withListItemType($itemType);
+    }
+
+    public function toSchema(): array
+    {
+        $schema = parent::toSchema();
+        $schema['items'] = $this->getListItemType()->getDataType();
+        return $schema;
     }
 }

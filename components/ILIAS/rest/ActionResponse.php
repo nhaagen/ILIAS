@@ -16,18 +16,25 @@
  *
  *********************************************************************/
 
-declare(strict_types=1);
+namespace ILIAS\REST;
 
-namespace ILIAS\Component\Activities;
-
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
+interface ActionResponse
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
+    /**
+     * Get the response payload
+     * @return mixed The response data
+     */
+    public function getData(): mixed;
+
+    /**
+     * Get response status code
+     */
+    public function getStatusCode(): int;
+
+    /**
+     * Get any error messages
+     * @return array<string> List of error messages
+     */
+    public function getErrors(): array;
+
 }

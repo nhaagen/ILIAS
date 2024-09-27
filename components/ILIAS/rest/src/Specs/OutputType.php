@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,16 +19,22 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\Specs\Type;
 
 /**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
+ * Interface for describing output types.
  */
-abstract class ActivityImpl implements Activity
+interface OutputType
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
+    /**
+     * Get the name of the type (e.g., string, integer, array, object).
+     */
+    public function getName(): string;
+
+    /**
+     * Get the schema representation of the type.
+     *
+     * @return mixed Schema representation (e.g., array for REST, string for WSDL).
+     */
+    public function toSchema(): mixed;
 }

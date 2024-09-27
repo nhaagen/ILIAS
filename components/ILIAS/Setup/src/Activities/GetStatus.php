@@ -31,7 +31,7 @@ class GetStatus extends \ILIAS\Component\Activities\Query
     {
     }
 
-    public function getInputDescription(): \ILIAS\UI\Component\Input\Control\Form\FormInput
+    public function getInputDescription(): FormInput
     {
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,16 +19,20 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\Specs\Type;
 
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
+class TypeFactory
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
+    public function object(string $name, array $fields): ObjectType
     {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
+        return new ObjectType($name, $fields);
+    }
+    public function primitive(string $name): PrimitiveType
+    {
+        return new PrimitiveType($name);
+    }
+    public function array(OutputType $type): ArrayType
+    {
+        return new ArrayType($type);
     }
 }

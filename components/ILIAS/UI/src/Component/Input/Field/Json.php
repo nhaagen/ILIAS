@@ -18,16 +18,16 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\UI\Component\Input\Field;
+
+use ILIAS\UI\Component\Input\Container\Form\FormInput;
+use ILIAS\UI\Component\Input\Group as GroupInterface;
 
 /**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
+ * Describes the monoid operation of grouping form inputs.
+ *
+ * @author Thibeau Fuhrer <thibeau@sr.solutions>
  */
-abstract class ActivityImpl implements Activity
+interface Json extends FormInput, GroupInterface
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
 }

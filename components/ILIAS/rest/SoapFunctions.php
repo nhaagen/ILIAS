@@ -16,18 +16,26 @@
  *
  *********************************************************************/
 
-declare(strict_types=1);
+namespace ILIAS\REST;
 
-namespace ILIAS\Component\Activities;
+use ILIAS\Component\Activities\Activity;
+use ILIAS\Specs\Schema\SchemaType;
+use ILIAS\Specs\Schema\Simple;
+use ILIAS\Specs\Type\TypeFactory;
+use ILIAS\Specs\Type\ObjectType;
+use ILIAS\UI\Component\Input\Field\Json;
+use soap_server;
 
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
+class SoapFunctions
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
+    public function __construct()
     {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
+
     }
+
+    public function __call(string $name, array $arguments)
+    {
+
+    }
+
 }

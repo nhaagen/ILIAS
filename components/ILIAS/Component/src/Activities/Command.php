@@ -21,13 +21,12 @@ declare(strict_types=1);
 namespace ILIAS\Component\Activities;
 
 /**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
+ * Basic class for Queries.
  */
-abstract class ActivityImpl implements Activity
+abstract class Command extends ActivityImpl
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
+    public function getType(): \ILIAS\Component\Activities\ActivityType
     {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
+        return ActivityType::Command;
     }
 }

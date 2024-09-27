@@ -18,16 +18,9 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+require_once '../../vendor/composer/vendor/autoload.php';
+require_once __DIR__ . '/../../artifacts/bootstrap_default.php';
+entry_point('ILIAS Legacy Initialisation Adapter');
 
-/**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
- */
-abstract class ActivityImpl implements Activity
-{
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
-}
+
+require_once '../../components/ILIAS/rest/resources/rest/app.php';

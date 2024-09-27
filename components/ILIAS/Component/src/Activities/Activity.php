@@ -25,6 +25,7 @@ use ILIAS\UI\Component\Input\Control\Form\FormInput;
 use ILIAS\Data\Result;
 use ILIAS\Data\Text;
 use ILIAS\Data\Description\Description;
+use ILIAS\UI\Component\Input\Input;
 
 /**
  * An Activity is an action on the domain layer action of a component.

@@ -18,16 +18,16 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\UI\Implementation\Component\Input\Field;
+
+use ILIAS\UI\Implementation\Component\Input\JsonInternal;
+use ILIAS\UI\Implementation\Component\Input\Json as JsonInternals;
 
 /**
- * Basic Implementation for Activities. Use Command or Query for more speficism
- * instead.
+ * This implements the group input.
  */
-abstract class ActivityImpl implements Activity
+class Json extends Group implements JsonInternal, \ILIAS\UI\Component\Input\Field\Json
 {
-    public function getName(): \ILIAS\Component\Dependencies\Name
-    {
-        return new \ILIAS\Component\Dependencies\Name(static::class);
-    }
+    use JsonInternals;
+
 }

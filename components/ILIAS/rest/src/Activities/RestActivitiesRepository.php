@@ -18,16 +18,19 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\Component\Activities;
+namespace ILIAS\REST\Activities;
 
+use ILIAS\Component\Activities\Activity;
+use ILIAS\Component\Activities\ActivityType;
+use ILIAS\Component\Activities\Repository;
 use ILIAS\Data\Range;
 
-class StaticRepository implements Repository
+class RestActivitiesRepository implements Repository
 {
     protected array $activities = [];
 
     /**
-     * @param array<Activity> $ativities
+     * @param array<Activity> $activities
      */
     public function __construct(
         array $activities
@@ -44,27 +47,9 @@ class StaticRepository implements Repository
 
     public function getActivitiesByName(string $name_matcher, ?ActivityType $type = null, ?Range $range = null): \Iterator
     {
-        if ($range !== null) {
-            [$start, $length] = $range->unpack();
-        } else {
-            [$start, $length] = [0, PHP_INT_MAX];
-        }
-
         foreach ($this->activities as $name => $activity) {
-            if ($type !== null && $activity->getType() !== $type) {
-                continue;
-            }
             if (preg_match($name_matcher, $name)) {
-                if ($start <= 0) {
-                    $length--;
-                    yield $name => $activity;
-                }
-            }
-
-            $start--;
-
-            if ($length === 0) {
-                break;
+                yield $name => $activity;
             }
         }
     }
