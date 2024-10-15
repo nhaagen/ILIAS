@@ -94,6 +94,9 @@ class Renderer extends AbstractComponentRenderer
             case ($component instanceof F\SwitchableGroup):
                 return $this->renderSwitchableGroup($component, $default_renderer);
 
+            case ($component instanceof F\DynSection):
+                return $this->renderDynSection($component, $default_renderer);
+
             case ($component instanceof F\Section):
                 return $this->renderSection($component, $default_renderer);
 
@@ -205,7 +208,7 @@ class Renderer extends AbstractComponentRenderer
             }
         }
 
-        if($dependant_group_html !== '') {
+        if ($dependant_group_html !== '') {
             $tpl->setVariable("DEPENDANT_GROUP", $dependant_group_html);
         }
         return $tpl->get();
@@ -470,7 +473,7 @@ class Renderer extends AbstractComponentRenderer
             $tpl->setVariable("HIDDEN", "hidden");
         }
 
-        if(!($value && $component->isRequired())) {
+        if (!($value && $component->isRequired())) {
             $tpl->setVariable("VALUE", null);
             $tpl->setVariable("VALUE_STR", $component->isRequired() ? $this->txt('ui_select_dropdown_label') : '-');
             $tpl->parseCurrentBlock();
@@ -740,6 +743,80 @@ class Renderer extends AbstractComponentRenderer
         $id = $this->bindJSandApplyId($component, $tpl);
         $tpl->setVariable('DURATION', $input_html);
         return $this->wrapInFormContext($component, $component->getLabel(), $tpl->get(), $first_input_id);
+    }
+
+
+    protected function getRenderedDynGroup(F\Group $dyngroup, RendererInterface $default_renderer): string
+    {
+        $remove = $this->getUIFactory()->symbol()->glyph()->remove()
+            ->withOnLoadCode(
+                function ($id) {
+                    return "
+                        document.getElementById('$id').addEventListener(
+                            'click',
+                            function(e) { 
+                                const f = document.getElementById('$id').closest('fieldset');
+                                if(f.parentNode.closest('fieldset').querySelectorAll('.c-input__field > fieldset').length > 1) {
+                                    f.remove();
+                                }
+                            }
+                        );
+                    ";
+                }
+            );
+        $tpl = $this->getTemplate("tpl.dyngroup.html", true, true);
+        $tpl->setVariable('GROUP', $default_renderer->render($dyngroup));
+        $tpl->setVariable('REMOVE', $default_renderer->render($remove));
+        return $this->wrapInFormContext($dyngroup, $dyngroup->getLabel(), $tpl->get());
+    }
+
+    protected function renderDynSection(F\DynSection $section, RendererInterface $default_renderer): string
+    {
+        $inputs = count($section->getDynamicInputs()) ? $section->getDynamicInputs() : [$section->getTemplateForDynamicInputs()];
+
+        $inputs_html = '';
+        foreach ($inputs as $index => $dyngroup) {
+            $inputs_html .= $this->getRenderedDynGroup($dyngroup, $default_renderer);
+        }
+
+        //$section = $this->initClientsideRenderer($section, $tpl->get('dyngroup'));
+
+        $add = $this->getUIFactory()->symbol()->glyph()->add()
+            ->withOnLoadCode(function ($id) {
+                return "
+                    document.getElementById('$id').addEventListener(
+                        'click',
+                        function() { 
+                            const template = document.getElementById('$id').closest('.c-input-group__template');
+                            const clone = template.querySelector('template').content.cloneNode(true);
+                            const rm = clone.querySelector('.c-input-group__remove > .glyph');
+                            rm.addEventListener(
+                                'click',
+                                function(e) { 
+                                    const f = e.srcElement.closest('fieldset');
+                                    if(f.parentNode.closest('fieldset').querySelectorAll('.c-input__field > fieldset').length > 1) {
+                                        f.remove();
+                                    }
+                                }
+                            );
+                            template.parentNode.insertBefore(clone, template);
+                        }
+                    );
+                ";
+            });
+
+        $tpl = $this->getTemplate("tpl.dyngroup.html", true, true);
+        $tpl->setVariable('ADD', $default_renderer->render($add));
+        $template = $section->getTemplateForDynamicInputs();
+        $tpl->setVariable(
+            'TEMPLATE',
+            $this->getRenderedDynGroup($template, $default_renderer)
+        );
+
+        $inputs_html .= $tpl->get();
+
+        $id = $this->bindJavaScript($section) ?? $this->createId();
+        return $this->wrapInFormContext($section, $section->getLabel(), $inputs_html, $id, '', false);
     }
 
     protected function renderSection(F\Section $section, RendererInterface $default_renderer): string
@@ -1057,7 +1134,7 @@ class Renderer extends AbstractComponentRenderer
             $tpl->parseCurrentBlock();
         }
 
-        if(!$component->isRequired()) {
+        if (!$component->isRequired()) {
             $tpl->setVariable('NEUTRAL_ID', $id . '-0');
             $tpl->setVariable('NEUTRAL_NAME', $component->getName());
             $tpl->setVariable('NEUTRAL_LABEL', $this->txt('reset_stars'));

@@ -100,6 +100,7 @@ abstract class HasDynamicInputsBase extends FormInput implements HasDynamicInput
         $clone = clone $this;
 
         foreach ($value as $input_name => $input_value) {
+
             $clone->dynamic_inputs[$input_name] = $clone->dynamic_input_template->withValue($input_value);
         }
 

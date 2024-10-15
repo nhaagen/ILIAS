@@ -58,6 +58,7 @@ trait Group
      */
     public function withValue($value): self
     {
+        //        die("this is from group");
         $this->checkArg("value", $this->isClientSideValueOk($value), "Display value does not match input type.");
         $clone = clone $this;
         foreach ($this->getInputs() as $k => $i) {

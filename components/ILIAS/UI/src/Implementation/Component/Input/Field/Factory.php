@@ -243,4 +243,22 @@ class Factory implements I\Factory
     {
         return new Rating($this->data_factory, $this->refinery, $label, $byline);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function dynSection(I\Group $section, string $label, ?string $byline = null): I\DynSection
+    {
+        //return new DynSection($this->data_factory, $this->refinery, $this->lng, [$section], $label, $byline);
+        return new DynSection(
+            $this->lng,
+            $this->data_factory,
+            $this->refinery,
+            $label,
+            $section,
+            $byline
+        );
+
+    }
+
 }

@@ -797,4 +797,20 @@ interface Factory
      * @return \ILIAS\UI\Component\Input\Field\Rating
      */
     public function rating(string $label, ?string $byline = null): Rating;
+
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *      Dynamically add Fields
+     *
+     *
+     * ---
+     * @param Section     $section
+     * @param string      $label
+     * @param string|null $byline
+     * @return \ILIAS\UI\Component\Input\Field\DynSection
+     */
+    public function dynSection(Group $section, string $label, ?string $byline = null): DynSection;
 }
