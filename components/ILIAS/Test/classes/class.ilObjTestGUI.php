@@ -34,11 +34,9 @@ use ILIAS\Test\Logging\LogTable;
 use ILIAS\Test\Logging\TestQuestionAdministrationInteractionTypes;
 use ILIAS\Test\Logging\TestAdministrationInteractionTypes;
 use ILIAS\Test\Presentation\TestScreenGUI;
-
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\TestQuestionPool\RequestDataCollector as QPLRequestDataCollector;
 use ILIAS\TestQuestionPool\Import\TestQuestionsImportTrait;
-
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
@@ -54,6 +52,7 @@ use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\Filesystem\Util\Archive\Archives;
 use ILIAS\Skill\Service\SkillService;
 use ILIAS\ResourceStorage\Services as IRSS;
+use ILIAS\Test\Scoring\Manual\ManualScoringGUI;
 
 /**
  * Class ilObjTestGUI
@@ -93,6 +92,7 @@ use ILIAS\ResourceStorage\Services as IRSS;
  * @ilCtrl_Calls ilObjTestGUI: ilAssQuestionPreviewGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestQuestionBrowserTableGUI, ilTestInfoScreenToolbarGUI, ilLTIProviderObjectSettingGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestPageGUI
+ * @ilCtrl_Calls ilObjTestGUI: ILIAS\Test\Scoring\Manual\ManualScoringGUI
  *
  * @ingroup components\ILIASTest
  */
@@ -862,6 +862,22 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this->questionrepository,
                     $this->getTable()
                         ->withContextCorrections()
+                );
+                $this->ctrl->forwardCommand($gui);
+                break;
+
+            case strtolower(ManualScoringGUI::class):
+                $this->prepareOutput();
+                $gui = new ManualScoringGUI(
+                    $this->ctrl,
+                    $this->tpl,
+                    $this->tabs_gui,
+                    $this->lng,
+                    $this->ui_factory,
+                    $this->ui_renderer,
+                    $this->refinery,
+                    $this->request,
+                    $this->object
                 );
                 $this->ctrl->forwardCommand($gui);
                 break;
