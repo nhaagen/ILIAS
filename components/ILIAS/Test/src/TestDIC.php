@@ -22,7 +22,6 @@ namespace ILIAS\Test;
 
 use Pimple\Container as PimpleContainer;
 use ILIAS\DI\Container as ILIASContainer;
-
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\Test\Scoring\Marks\MarksRepository;
@@ -36,7 +35,6 @@ use ILIAS\Test\Logging\TestLoggingDatabaseRepository;
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Logging\TestLogViewer;
 use ILIAS\Test\Logging\Factory as InteractionFactory;
-
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\TestQuestionPool\RequestDataCollector as QPLRequestDataCollector;
 
@@ -154,6 +152,15 @@ class TestDIC extends PimpleContainer
                 $DIC['refinery'],
                 $DIC['upload']
             );
+
+        $dic['scoring.manual'] = static fn($c): \Closure =>
+            fn($c, $obj_test): \ILIAS\Test\Scoring\Manual\ManualScoring =>
+                new \ILIAS\Test\Scoring\Manual\ManualScoring(
+                    $DIC['ui.factory'],
+                    $DIC['refinery'],
+                    $DIC['lng'],
+                    $obj_test
+                );
 
         return $dic;
     }

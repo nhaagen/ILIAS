@@ -25,12 +25,17 @@ use ILIAS\UI\Component\Legacy\Legacy;
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
 use ILIAS\Refinery\Factory as Refinery;
+use ILIAS\HTTP\Services as HTTPServices;
+use ILIAS\HTTP\Wrapper\RequestWrapper;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ManualScoringGUI
 {
     public const CMD_VIEW = 'view';
-    //public const CMD_VIEW = 'view';
+    public const CMD_STORE_SINGLE = 'store';
+
+    private ServerRequestInterface $request;
+    private RequestWrapper $query;
 
     public function __construct(
         private readonly \ilCtrlInterface $ctrl,
@@ -40,16 +45,16 @@ class ManualScoringGUI
         private readonly UIFactory $ui_factory,
         private readonly UIRenderer $ui_renderer,
         private readonly Refinery $refinery,
-        private ServerRequestInterface $request,
-        private readonly \ilObjTest $object,
+        private HTTPServices $http,
+        private readonly ManualScoring $scoring,
     ) {
-
+        $this->request = $http->request();
+        $this->query = $http->wrapper()->query();
         //$this->tpl->addCss(\ilUtil::getStyleSheetLocation("output", "test_print.css"), "print");
     }
 
     public function executeCommand()
     {
-
         $cmd = $this->ctrl->getCmd();
         $next_class = $this->ctrl->getNextClass();
 
@@ -62,122 +67,100 @@ class ManualScoringGUI
                 $this->tabs->activateTab(\ilTestTabsManager::TAB_ID_MANUAL_SCORING);
                 switch ($cmd) {
                     case self::CMD_VIEW:
+                        $this->tpl->addJavaScript('assets/js/manual_scoring.min.js');
                         $this->tpl->setContent(
                             $this->view()
                         );
                         break;
+                    case self::CMD_STORE_SINGLE:
+                        $params = $this->retrieveSingleParamters();
+                        $action = $this->getScoringFormAction(...$params);
+                        $form = $this->scoring->getScoringForm($action, ...$params)
+                            ->withRequest($this->request);
+
+                        $out = [];
+
+                        $data = $form->getData();
+                        if ($data) {
+                            //$out[] = $this->ui_factory->legacy(print_r($data, true));
+                            $out[] = $this->ui_factory->messageBox()->success($this->lng->txt('ok'));
+                        }
+
+                        $out[] = $form;
+                        echo $this->ui_renderer->renderAsync($out);
+                        exit();
+
                     default:
                         throw new \Exception("Unknown command " . $cmd);
                 }
         }
     }
 
+    private function retrieveSingleParamters(): array
+    {
+        return [
+            $this->query->retrieve('qid', $this->refinery->kindlyTo()->int()),
+            $this->query->retrieve('usr_active_id', $this->refinery->kindlyTo()->int()),
+            $this->query->retrieve('pass_id', $this->refinery->kindlyTo()->int()),
+        ];
+    }
+    private function getScoringFormAction(int $qid, int $usr_active_id, int $pass_id): string
+    {
+        $this->ctrl->setParameter($this, 'qid', $qid);
+        $this->ctrl->setParameter($this, 'usr_active_id', $usr_active_id);
+        $this->ctrl->setParameter($this, 'pass_id', $pass_id);
+        $action = $this->ctrl->getFormAction($this, self::CMD_STORE_SINGLE);
+        return $action;
+    }
+
 
     protected function view(): string
     {
-
-
         $out = [];
+        $out[] = $this->scoring->getQuestionRepresentation(1);
         $out[] = $this->scoringWidget(1, 3, 1);
+
+        $out[] = $this->scoring->getQuestionRepresentation(2);
         $out[] = $this->scoringWidget(2, 3, 1);
+
+        $out[] = $this->scoring->getQuestionRepresentation(3);
         $out[] = $this->scoringWidget(3, 4, 0);
         $out[] = $this->scoringWidget(3, 3, 1);
-        return implode('', $out);
+        $out[] = $this->scoringWidget(3, 4, 1);
+        return  $this->ui_renderer->render($out);
     }
 
 
     /**
      * return a form to score a question
      */
-    protected function scoringWidget(int $qid, int $usr_active_id, int $pass_id): string
+    protected function scoringWidget(int $qid, int $usr_active_id, int $pass_id): array
     {
         //new ilTemplate("tpl.il_as_tst_print_body.html", true, true, "components/ILIAS/Test");
 
-        $question_output = $this->getQuestionOutput($qid);
-        $user_answer = $this->getUserAnswer($qid, $usr_active_id, $pass_id);
-        $form = $this->getScoringForm();
+        /*
+        $scoredPass = $this->object->_getResultPass($usr_active_id);
+        $lastPass = ilObjTest::_getPass($usr_active_id);
+        */
+        //$question_output = $this->getQuestioInfo($qid);
 
-        $layout = $this->ui_factory->layout()->alignment()->vertical(
-            $question_output,
-            $this->ui_factory->layout()->alignment()->horizontal()->evenlyDistributed(
-                $user_answer,
-                $form
-            )
+        $user_answer = $this->scoring->getUserAnswer($qid, $usr_active_id, $pass_id);
+        $form = $this->scoring->getScoringForm(
+            $this->getScoringFormAction($qid, $usr_active_id, $pass_id),
+            $qid,
+            $usr_active_id,
+            $pass_id
         );
 
-        return $this->ui_renderer->render([
+        $layout = $this->ui_factory->layout()->alignment()->horizontal()->evenlyDistributed(
+            $user_answer,
+            $form
+        );
+
+        return [
             $layout,
             $this->ui_factory->divider()->horizontal()
-        ]);
+        ];
     }
 
-    protected function getUserAnswer(int $qid, int $usr_active_id, int $pass_id): Legacy
-    {
-        $dic = $this->object->getLocalDIC();
-
-        $question_gui = $this->object->createQuestionGUI("", $qid);
-        $question = $question_gui->getObject();
-        $shuffle_trafo = $dic['shuffler']->getAnswerShuffleFor($qid, $usr_active_id, $pass_id);
-        $question->setShuffler($shuffle_trafo);
-        $question_gui->setObject($question);
-        $question_solution = $question_gui->getSolutionOutput(
-            $usr_active_id,
-            $pass_id,
-            $graphical_output = true,
-            $result_output = true,
-            $show_question_only = false,
-            $show_feedback = false,
-            $show_correct_solution = false,
-            $show_manual_scoring = true,
-            $show_question_text = false,
-            $show_inline_feedback = false
-        );
-
-        return $this->ui_factory->legacy($question_solution);
-    }
-
-    protected function getQuestionOutput(int $qid): Legacy
-    {
-        return $this->ui_factory->legacy(
-            \assQuestion::instantiateQuestion($qid)->getQuestionForHTMLOutput()
-        );
-    }
-
-    protected function getScoringForm(): Form
-    {
-        $inputs = [];
-        $inputs[] = $this->ui_factory->input()->field()->numeric(
-            $this->lng->txt('tst_change_points_for_question')
-        );
-        $inputs[] = $this->ui_factory->input()->field()->markdown(
-            new \ilUIMarkdownPreviewGUI(),
-            $this->lng->txt('set_manual_feedback')
-        );
-        $inputs[] = $this->ui_factory->input()->field()->checkbox(
-            $this->lng->txt('finalized_evaluation')
-        );
-
-        //turn into async:
-        $inputs[] = $this->ui_factory->input()->field()->hidden()
-            ->withAdditionalOnLoadCode(
-                static fn(string $id): string => "
-                    console.log('$id');
-                    const f = document.getElementById('$id');
-                    const form = f.closest('form');
-
-                    console.log(form.action);
-                    console.log(form.method);
-                    form.addEventListener('submit', (e) => {
-                       e.preventDefault();
-                       console.log(form.action);
-                       console.log(form.method);
-                       console.log(new FormData(form));
-                       return false;
-                    });
-                "
-            );
-
-        $action = '#';
-        return $this->ui_factory->input()->container()->form()->standard($action, $inputs);
-    }
 }
