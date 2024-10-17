@@ -22,7 +22,6 @@ namespace ILIAS\Test;
 
 use Pimple\Container as PimpleContainer;
 use ILIAS\DI\Container as ILIASContainer;
-
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\Test\Scoring\Marks\MarksRepository;
@@ -36,7 +35,6 @@ use ILIAS\Test\Logging\TestLoggingDatabaseRepository;
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Logging\TestLogViewer;
 use ILIAS\Test\Logging\Factory as InteractionFactory;
-
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\TestQuestionPool\RequestDataCollector as QPLRequestDataCollector;
 
@@ -154,6 +152,29 @@ class TestDIC extends PimpleContainer
                 $DIC['refinery'],
                 $DIC['upload']
             );
+
+        $dic['scoring.manual'] = static fn($c): \Closure =>
+            fn($c, $obj_test): \ILIAS\Test\Scoring\Manual\ManualScoring =>
+                new \ILIAS\Test\Scoring\Manual\ManualScoring(
+                    $DIC['ui.factory'],
+                    $DIC['refinery'],
+                    $DIC['lng'],
+                    $c['scoring.manual.db'],
+                    $c['shuffler'],
+                    $obj_test,
+                    $dic['question.general_properties.repository']
+                    //new \ilTestPassesSelector($DIC['ilDB'], $obj_test)
+                );
+
+        $dic['scoring.manual.db'] = static fn($c): \ILIAS\Test\Scoring\Manual\ManualScoringDB =>
+            new \ILIAS\Test\Scoring\Manual\ManualScoringDB(
+                $DIC['ilDB'],
+                $c['logging.logger'],
+                $DIC['ilUser']->getId()
+            );
+
+        $dic['gs.current_context'] = static fn($c): \ILIAS\GlobalScreen\ScreenContext\ScreenContext
+            => $DIC->globalScreen()->tool()->context()->current();
 
         return $dic;
     }

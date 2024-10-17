@@ -868,6 +868,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
 
             case strtolower(ManualScoringGUI::class):
                 $this->prepareOutput();
+
+                $local_dic = TestDIC::dic();
+                $scoring = $local_dic['scoring.manual']($local_dic, $this->object);
                 $gui = new ManualScoringGUI(
                     $this->ctrl,
                     $this->tpl,
@@ -876,8 +879,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                     $this->ui_factory,
                     $this->ui_renderer,
                     $this->refinery,
-                    $this->request,
-                    $this->object
+                    $this->http,
+                    $scoring
                 );
                 $this->ctrl->forwardCommand($gui);
                 break;

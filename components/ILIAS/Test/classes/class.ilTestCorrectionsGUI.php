@@ -19,16 +19,13 @@
 declare(strict_types=1);
 
 use ILIAS\Test\Scoring\Manual\TestScoring;
-
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\RequestDataCollector;
 use ILIAS\Test\Logging\TestAdministrationInteractionTypes;
 use ILIAS\Test\Logging\TestQuestionAdministrationInteractionTypes;
 use ILIAS\Test\Logging\AdditionalInformationGenerator;
 use ILIAS\Test\Questions\QuestionsTable;
-
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
-
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
 use ILIAS\Refinery\Factory as RefineryFactory;
@@ -593,7 +590,7 @@ class ilTestCorrectionsGUI
     protected function allowedInAdjustment(\assQuestionGUI $question_object): bool
     {
         $setting = new ilSetting('assessment');
-        $types = explode(',', $setting->get('assessment_scoring_adjustment'));
+        $types = explode(',', $setting->get('assessment_scoring_adjustment', ''));
         $type_def = [];
         foreach ($types as $type) {
             $type_def[$type] = ilObjQuestionPool::getQuestionTypeByTypeId($type);

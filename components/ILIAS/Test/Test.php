@@ -48,5 +48,7 @@ class Test implements Component\Component
             new Component\Resource\ComponentCSS($this, "test_print.css");
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\ComponentCSS($this, "test_print_hide_content.css");
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\ComponentJS($this, "js/dist/manual_scoring.min.js");
     }
 }
