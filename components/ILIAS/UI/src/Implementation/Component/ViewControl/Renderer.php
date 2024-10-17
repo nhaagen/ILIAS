@@ -140,10 +140,14 @@ class Renderer extends AbstractComponentRenderer
             $internal_signal = $component->getSelectSignal();
             $signal = $triggeredSignals[0]->getSignal();
 
-            $component = $component->withAdditionalOnLoadCode(fn($id) => "$(document).on('$internal_signal', function(event, signalData) {
-                            il.UI.viewcontrol.sortation.onInternalSelect(event, signalData, '$signal', '$id');
-                            return false;
-                        })");
+            $component = $component->withAdditionalOnLoadCode(
+                fn($id) => "
+                il.UI.viewcontrol.sortation.init('$id');
+                $(document).on('$internal_signal', function(event, signalData) {
+                    il.UI.viewcontrol.sortation.onInternalSelect(event, signalData, '$signal', '$id');
+                    return false;
+                });"
+            );
         }
 
         $this->renderId($component, $tpl, "id", "ID");
@@ -177,7 +181,7 @@ class Renderer extends AbstractComponentRenderer
     ): string {
         $range = $this->getPaginationRange($component);
 
-        if($component->getNumberOfPages() < 2) {
+        if ($component->getNumberOfPages() < 2) {
             return '';
         }
 
@@ -187,11 +191,13 @@ class Renderer extends AbstractComponentRenderer
         if ($triggeredSignals) {
             $internal_signal = $component->getInternalSignal();
             $signal = $triggeredSignals[0]->getSignal();
-            $component = $component->withOnLoadCode(
-                fn($id) => "$(document).on('$internal_signal', function(event, signalData) {
-                            il.UI.viewcontrol.pagination.onInternalSelect(event, signalData, '$signal', '$id');
-                            return false;
-                        })"
+            $component = $component->withAdditionalOnLoadCode(
+                fn($id) => "
+                    il.UI.viewcontrol.pagination.init('$id');
+                    $(document).on('$internal_signal', function(event, signalData) {
+                        il.UI.viewcontrol.pagination.get('$id').onInternalSelect(event, signalData, '$signal');
+                        return false;
+                    });"
             );
             $id = $this->bindJavaScript($component);
             $tpl->setVariable('ID', $id);
