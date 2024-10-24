@@ -77,7 +77,6 @@ class DataTest extends TableTestBase
         $table = $this->getTableFactory()->data('title', $cols, $data);
         $this->assertInstanceOf(Order::class, $table->getOrder());
         $this->assertInstanceOf(Range::class, $table->getRange());
-        $this->assertInstanceOf(I\Signal::class, $table->getAsyncActionSignal());
         $this->assertInstanceOf(I\Signal::class, $table->getMultiActionSignal());
         $this->assertInstanceOf(I\Signal::class, $table->getSelectionSignal());
         $this->assertFalse($table->hasSingleActions());
