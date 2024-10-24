@@ -114,38 +114,6 @@ class ilTestService
         return $passOverwiewData;
     }
 
-    /**
-     * Returns the list of answers of a users test pass and offers a scoring option
-     */
-    public function getManScoringQuestionGuiList(int $active_id, int $pass): array
-    {
-        $man_scoring_question_types = ilObjTestFolder::_getManualScoring();
-
-        $test_result_data = $this->object->getTestResult($active_id, $pass);
-
-        $man_scoring_question_gui_list = [];
-
-        foreach ($test_result_data as $question_data) {
-            if (!isset($question_data['qid'])) {
-                continue;
-            }
-
-            if (!isset($question_data['type'])) {
-                throw new ilTestException('no question type given!');
-            }
-
-            $question_gui = $this->object->createQuestionGUI("", $question_data['qid']);
-
-            if (!in_array($question_gui->getObject()->getQuestionTypeID(), $man_scoring_question_types)) {
-                continue;
-            }
-
-            $man_scoring_question_gui_list[ $question_data['qid'] ] = $question_gui;
-        }
-
-        return $man_scoring_question_gui_list;
-    }
-
     public function buildVirtualSequence(ilTestSession $testSession): ilTestVirtualSequence
     {
         $test_sequence_factory = new ilTestSequenceFactory($this->object, $this->db, $this->questionrepository);

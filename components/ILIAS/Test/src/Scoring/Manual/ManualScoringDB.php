@@ -27,6 +27,9 @@ use ILIAS\Test\Logging\AdditionalInformationGenerator;
 
 class ManualScoringDB
 {
+    private const TABLE_NAME_SCORING_DONE = "manscoring_done";
+
+
     public function __construct(
         private readonly  \ilDBInterface $db,
         protected readonly TestLogger $logger,
@@ -136,6 +139,44 @@ class ManualScoringDB
     }
 
 
-    //NLZ TODO: TestManScoringDoneHelper
+    public function exists(int $active_id): bool
+    {
+        $result = $this->db->queryF(
+            "SELECT active_id FROM " . self::TABLE_NAME_SCORING_DONE . " WHERE active_id = %s",
+            ["integer"],
+            [$active_id]
+        );
+
+        return $result->numRows() === 1;
+    }
+
+    public function isDone(int $active_id): bool
+    {
+        $result = $this->db->queryF(
+            "SELECT done FROM " . self::TABLE_NAME_SCORING_DONE . " WHERE active_id = %s AND done = 1",
+            ["integer"],
+            [$active_id]
+        );
+
+        return $result->numRows() === 1;
+    }
+
+    public function setDone(int $active_id, bool $done): void
+    {
+        if ($this->exists($active_id)) {
+            $this->db->manipulateF(
+                "UPDATE " . self::TABLE_NAME_SCORING_DONE . " SET done = %s WHERE active_id = %s",
+                ["integer", "integer"],
+                [$done, $active_id]
+            );
+            return;
+        }
+
+        $this->db->manipulateF(
+            "INSERT INTO " . self::TABLE_NAME_SCORING_DONE . " (active_id, done) VALUES (%s, %s)",
+            ["integer", "integer"],
+            [$active_id, $done]
+        );
+    }
 
 }

@@ -38,11 +38,16 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
     public const PART_FILTER_MANSCORING_DONE = 4;
     public const PART_FILTER_MANSCORING_NONE = 5;
 
+    public const CMD_MANUAL_SCORING = 'showManualScoring';
+
     protected \ilTestAccess $test_access;
+    private ManualScoringDB $manual_scoring_db;
 
     public function __construct(\ilObjTest $object)
     {
         parent::__construct($object);
+        $this->manual_scoring_db = $object->getLocalDIC()['scoring.manual.db'];
+
     }
 
     /**
@@ -76,6 +81,13 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
             $this->lng->txt('tst_man_scoring_by_part'),
             $this->ctrl->getLinkTargetByClass([\ilObjTestGUI::class, self::class], 'showManScoringParticipantsTable')
         );
+        $this->tabs->addSubTab(
+            'manual_scoring',
+            $this->lng->txt('tst_man_scoring'),
+            $this->ctrl->getLinkTargetByClass([\ilObjTestGUI::class, ManualScoringGUI::class], ManualScoringGUI::CMD_VIEW)
+            //$this->ctrl->getLinkTargetByClass(ManualScoringGUI::class, ManualScoringGUI::CMD_VIEW)
+        );
+
         $this->tabs->setSubTabActive($active_sub_tab);
     }
 
@@ -126,11 +138,27 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
         }
 
         $this->tabs->activateTab(\ilTestTabsManager::TAB_ID_MANUAL_SCORING);
-        $this->buildSubTabs($this->getActiveSubTabId());
 
         $command = $this->ctrl->getCmd($this->getDefaultCommand());
-        $this->$command();
+        switch ($command) {
+            case self::CMD_MANUAL_SCORING:
+                $this->buildSubTabs('manual_scoring');
+                $this->tpl->setContent($this->manualScoring());
+                break;
+            default:
+                $this->buildSubTabs($this->getActiveSubTabId());
+                $this->$command();
+        }
+
     }
+
+
+
+
+
+
+
+
 
     protected function getDefaultCommand(): string
     {
@@ -191,7 +219,7 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
         $content_html .= $table->getHTML() . '<br />';
 
         if ($form === null) {
-            $question_gui_list = $this->service->getManScoringQuestionGuiList($active_id, $pass);
+            $question_gui_list = $this->getManScoringQuestionGuiList($active_id, $pass);
             $form = $this->buildManScoringParticipantForm($question_gui_list, $active_id, $pass, true);
         }
 
@@ -210,7 +238,7 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
 
         $pass = $this->fetchPassParameter($active_id);
 
-        $question_gui_list = $this->service->getManScoringQuestionGuiList($active_id, $pass);
+        $question_gui_list = $this->getManScoringQuestionGuiList($active_id, $pass);
         $form = $this->buildManScoringParticipantForm($question_gui_list, $active_id, $pass, false);
 
         $form->setValuesByPost();
@@ -273,7 +301,7 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
                 \ilObjAdvancedEditing::_getUsedHTMLTagsAsString("assessment")
             );
 
-            $this->object->saveManualFeedback(
+            $this->manual_scoring_db->saveManualFeedback(
                 $active_id,
                 $question_id,
                 $pass,
@@ -309,7 +337,7 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
         );
 
         $manScoringDone = $form->getItemByPostVar("manscoring_done")->getChecked();
-        \ilTestService::setManScoringDone($active_id, $manScoringDone);
+        $this->manual_scoring_db->setDone($active_id, $manScoringDone);
 
         $manScoringNotify = $form->getItemByPostVar("manscoring_notify")->getChecked();
         if ($manScoringNotify) {
@@ -460,7 +488,7 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
         $form->addItem($sect);
 
         $check = new \ilCheckboxInputGUI($this->lng->txt('set_manscoring_done'), 'manscoring_done');
-        if ($initValues && \ilTestService::isManScoringDone($active_id)) {
+        if ($initValues && $this->manual_scoring_db->isDone($active_id)) {
             $check->setChecked(true);
         }
         $form->addItem($check);
@@ -500,5 +528,38 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
         }
 
         return $table;
+    }
+
+
+    /**
+     * Returns the list of answers of a users test pass and offers a scoring option
+     */
+    protected function getManScoringQuestionGuiList(int $active_id, int $pass): array
+    {
+        $man_scoring_question_types = \ilObjTestFolder::_getManualScoring();
+
+        $test_result_data = $this->object->getTestResult($active_id, $pass);
+
+        $man_scoring_question_gui_list = [];
+
+        foreach ($test_result_data as $question_data) {
+            if (!isset($question_data['qid'])) {
+                continue;
+            }
+
+            if (!isset($question_data['type'])) {
+                throw new ilTestException('no question type given!');
+            }
+
+            $question_gui = $this->object->createQuestionGUI("", $question_data['qid']);
+
+            if (!in_array($question_gui->getObject()->getQuestionTypeID(), $man_scoring_question_types)) {
+                continue;
+            }
+
+            $man_scoring_question_gui_list[ $question_data['qid'] ] = $question_gui;
+        }
+
+        return $man_scoring_question_gui_list;
     }
 }
