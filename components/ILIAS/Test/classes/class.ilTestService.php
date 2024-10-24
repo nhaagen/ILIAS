@@ -18,7 +18,6 @@
 
 declare(strict_types=1);
 
-use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 
 /**
@@ -145,16 +144,6 @@ class ilTestService
         }
 
         return $man_scoring_question_gui_list;
-    }
-
-    public static function isManScoringDone(int $active_id): bool
-    {
-        return (new TestManScoringDoneHelper())->isDone($active_id);
-    }
-
-    public static function setManScoringDone(int $activeId, bool $manScoringDone): void
-    {
-        (new TestManScoringDoneHelper())->setDone($activeId, $manScoringDone);
     }
 
     public function buildVirtualSequence(ilTestSession $testSession): ilTestVirtualSequence

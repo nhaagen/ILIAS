@@ -20,13 +20,10 @@ declare(strict_types=1);
 
 use ILIAS\Test\TestDIC;
 use ILIAS\Test\RequestDataCollector;
-use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Logging\TestLogViewer;
-
 use ILIAS\TestQuestionPool\Import\TestQuestionsImportTrait;
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
-
 use ILIAS\Test\Logging\TestAdministrationInteractionTypes;
 use ILIAS\Test\Logging\TestScoringInteractionTypes;
 use ILIAS\Test\Logging\AdditionalInformationGenerator;
@@ -34,6 +31,7 @@ use ILIAS\Test\Scoring\Marks\MarksRepository;
 use ILIAS\Test\Scoring\Marks\Mark;
 use ILIAS\Test\Scoring\Marks\MarkSchema;
 use ILIAS\Test\Scoring\Manual\TestScoring;
+use ILIAS\Test\Scoring\Manual\ManualScoringDB;
 use ILIAS\Test\Settings\MainSettings\MainSettingsRepository;
 use ILIAS\Test\Settings\MainSettings\MainSettingsDatabaseRepository;
 use ILIAS\Test\Settings\MainSettings\MainSettings;
@@ -44,7 +42,6 @@ use ILIAS\Test\Settings\ScoreReporting\ScoreSettingsDatabaseRepository;
 use ILIAS\Test\Settings\ScoreReporting\SettingsResultSummary;
 use ILIAS\Test\Settings\ScoreReporting\ScoreSettings;
 use ILIAS\Test\Export\CSVExportTrait;
-
 use ILIAS\Refinery\Factory as Refinery;
 use ILIAS\Filesystem\Filesystem;
 use ILIAS\Filesystem\Stream\Streams;
@@ -126,7 +123,9 @@ class ilObjTest extends ilObject
 
     private ?int $tmpCopyWizardCopyId = null;
 
-    private TestManScoringDoneHelper $test_man_scoring_done_helper;
+    //private TestManScoringDoneHelper $test_man_scoring_done_helper;
+    private ManualScoringDB $test_man_scoring_done_helper;
+
     protected ilCtrlInterface $ctrl;
     protected Refinery $refinery;
     protected ilSetting $settings;
@@ -173,7 +172,10 @@ class ilObjTest extends ilObject
 
         $local_dic = $this->getLocalDIC();
         $this->participant_access_filter = $local_dic['participant.access_filter.factory'];
-        $this->test_man_scoring_done_helper = $local_dic['scoring.manual.done_helper'];
+
+        //$this->test_man_scoring_done_helper = $local_dic['scoring.manual.done_helper'];
+        $this->test_man_scoring_done_helper = $local_dic['scoring.manual.db'];
+
         $this->logger = $local_dic['logging.logger'];
         $this->log_viewer = $local_dic['logging.viewer'];
         $this->marks_repository = $local_dic['marks.repository'];
@@ -6479,7 +6481,9 @@ class ilObjTest extends ilObject
         $feedback = '';
         $row = self::getSingleManualFeedback((int) $active_id, (int) $question_id, (int) $pass);
 
-        if ($row !== [] && ($row['finalized_evaluation'] || \ilTestService::isManScoringDone((int) $active_id))) {
+        $dic = \ILIAS\Test\TestDIC::dic();
+        $done = $dic['scoring.manual.db']->isDone($active_id);
+        if ($row !== [] && ($row['finalized_evaluation'] || $done)) {
             $feedback = $row['feedback'] ?? '';
         }
 

@@ -23,7 +23,6 @@ namespace ILIAS\Test;
 use Pimple\Container as PimpleContainer;
 use ILIAS\DI\Container as ILIASContainer;
 use ILIAS\Data\Factory as DataFactory;
-use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\Test\Scoring\Marks\MarksRepository;
 use ILIAS\Test\Scoring\Marks\MarksDatabaseRepository;
 use ILIAS\Test\Settings\MainSettings\MainSettingsRepository;
@@ -79,9 +78,6 @@ class TestDIC extends PimpleContainer
 
         $dic['participant.access_filter.factory'] = static fn($c): \ilTestParticipantAccessFilterFactory =>
             new \ilTestParticipantAccessFilterFactory($DIC['ilAccess']);
-
-        $dic['scoring.manual.done_helper'] = static fn($c): TestManScoringDoneHelper =>
-            new TestManScoringDoneHelper();
 
         $dic['marks.repository'] = static fn($c): MarksRepository =>
             new MarksDatabaseRepository($DIC['ilDB']);
