@@ -162,12 +162,37 @@ class TestDIC extends PimpleContainer
                     //new \ilTestPassesSelector($DIC['ilDB'], $obj_test)
                 );
 
+        $dic['scoring.manual.gui'] = static fn($c): \Closure =>
+            fn($c, $obj_test): \ILIAS\Test\Scoring\Manual\ManualScoringGUI =>
+                new \ILIAS\Test\Scoring\Manual\ManualScoringGUI(
+                    $DIC['ilCtrl'],
+                    $DIC['tpl'],
+                    $DIC['lng'],
+                    $DIC['ui.factory'],
+                    $DIC['ui.renderer'],
+                    $DIC['refinery'],
+                    new \ILIAS\Data\Factory(),
+                    $DIC->http(),
+                    $c['scoring.manual']($c, $obj_test),
+                    //$c['scoring.manual.player'],
+                    $c['gs.current_context'],
+                );
+
+        /*        $dic['scoring.manual.player'] = static fn($c): \ILIAS\Test\Scoring\Manual\ManualScoringPlayer
+                    => new \ILIAS\Test\Scoring\Manual\ManualScoringPlayer(
+                        $DIC['ui.factory'],
+                        $DIC['lng'],
+                        $c['scoring.manual'],
+                    );
+        */
+
         $dic['scoring.manual.db'] = static fn($c): \ILIAS\Test\Scoring\Manual\ManualScoringDB =>
             new \ILIAS\Test\Scoring\Manual\ManualScoringDB(
                 $DIC['ilDB'],
                 $c['logging.logger'],
                 $DIC['ilUser']->getId()
             );
+
 
         $dic['gs.current_context'] = static fn($c): \ILIAS\GlobalScreen\ScreenContext\ScreenContext
             => $DIC->globalScreen()->tool()->context()->current();

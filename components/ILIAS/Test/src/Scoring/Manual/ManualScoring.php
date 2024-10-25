@@ -80,7 +80,7 @@ class ManualScoring
         return  $this->ui_factory->mainControls()->modeInfo($this->lng->txt('exit'), $exit_url);
     }
 
-    protected function getQuestionSelector(): FormInput
+    public function getQuestionSelector(): FormInput
     {
         $label = $this->lng->txt('questions');
         $options = [];
@@ -90,41 +90,16 @@ class ManualScoring
         return $this->ui_factory->input()->field()->multiSelect($label, $options);
     }
 
-    protected function getUserSelector(): FormInput
+    public function getUserSelector(): FormInput
     {
         $label = $this->lng->txt('participants');
         $options = [];
-        foreach ($this->object->getTestParticipantsForManualScoring() as $usr_active_id => $participant) {
-            $options[$usr_active_id] = $participant['login'];
+        foreach ($this->object->getTestParticipants() as $usr_active_id => $participant) {
+            //foreach ($this->getTestParticipantsForManualScoring() as $usr_active_id => $participant) {
+            $options[$usr_active_id] = $participant['login']; //TODO: anonymity!
         }
         return $this->ui_factory->input()->field()->multiSelect($label, $options);
     }
-
-
-    public function getPlayerSettingsForm(string $action): Form
-    {
-        $inputs = [];
-
-        $inputs[] = $this->ui_factory->input()->field()->section(
-            [
-                $this->ui_factory->input()->field()->radio($this->lng->txt('focus'))
-                    ->withOption('user', $this->lng->txt('user'))
-                    ->withOption('question', $this->lng->txt('question'))
-            ],
-            $this->lng->txt('focus_and_sorting')
-        );
-
-        $inputs[] = $this->ui_factory->input()->field()->section(
-            [
-                $this->getUserSelector(),
-                $this->getQuestionSelector()
-            ],
-            $this->lng->txt('filters')
-        );
-
-        return $this->ui_factory->input()->container()->form()->standard($action, $inputs);
-    }
-
 
 
 

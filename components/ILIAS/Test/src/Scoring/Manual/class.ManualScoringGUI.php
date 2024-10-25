@@ -25,6 +25,7 @@ use ILIAS\UI\Component\Legacy\Legacy;
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
 use ILIAS\Refinery\Factory as Refinery;
+use ILIAS\Data\Factory as DataFactory;
 use ILIAS\HTTP\Services as HTTPServices;
 use ILIAS\HTTP\Wrapper\RequestWrapper;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,22 +39,40 @@ class ManualScoringGUI
 
     private ServerRequestInterface $request;
     private RequestWrapper $query;
+    private ManualScoringPlayer $player;
 
     public function __construct(
         private readonly \ilCtrlInterface $ctrl,
         private readonly \ilGlobalTemplateInterface $tpl,
-        private readonly \ilTabsGUI $tabs,
+        //private readonly \ilTabsGUI $tabs,
         private readonly \ilLanguage $lng,
         private readonly UIFactory $ui_factory,
         private readonly UIRenderer $ui_renderer,
         private readonly Refinery $refinery,
-        private HTTPServices $http,
+        private readonly DataFactory $data_factory,
+        private readonly HTTPServices $http,
         private readonly ManualScoring $scoring,
-        private ScreenContext $gs_current_context
+        //private ManualScoringPlayer $player,
+        private readonly ScreenContext $gs_current_context
     ) {
         $this->request = $http->request();
         $this->query = $http->wrapper()->query();
         //$this->tpl->addCss(\ilUtil::getStyleSheetLocation("output", "test_print.css"), "print");
+
+
+        $here_uri = $this->request->getUri()->__toString();
+        $here_uri = substr($here_uri, 0, strpos($here_uri, '/ilias.php?') + 1)
+            . $ctrl->getLinkTarget($this, self::CMD_VIEW);
+
+        $this->player = new ManualScoringPlayer(
+            $ui_factory,
+            $lng,
+            $scoring,
+            $refinery,
+            $this->request,
+            $this->query,
+            $data_factory->uri($here_uri),
+        );
     }
 
     public function executeCommand()
@@ -77,19 +96,15 @@ class ManualScoringGUI
                 $this->ctrl->forwardCommand($gui);
                 break;
             default:
-                $this->tabs->activateTab(\ilTestTabsManager::TAB_ID_MANUAL_SCORING);
+                //$this->tabs->activateTab(\ilTestTabsManager::TAB_ID_MANUAL_SCORING);
                 switch ($cmd) {
                     case self::CMD_VIEW:
-
-                        $action = $this->ctrl->getFormAction($this, self::CMD_VIEW);
-                        $playersettings = $this->scoring->getPlayerSettingsForm($action)
-                            ->withRequest($this->request);
 
                         $gs_controls = [
                             'modeinfo' => $this->scoring->getModeControl(
                                 $this->ctrl->getLinkTargetByClass('ILIAS\Test\Scoring\Manual\TestScoringByQuestionGUI', 'showManScoringByQuestionParticipantsTable')
                             ),
-                            'playersettings' => $playersettings
+                            'playersettings' => $this->player->getSettingsForm()
                         ];
 
                         $this->gs_current_context->addAdditionalData(
@@ -157,17 +172,23 @@ class ManualScoringGUI
 
     protected function view(): string
     {
-        $out = [];
-        $out[] = $this->scoring->getQuestionRepresentation(1);
-        $out[] = $this->scoringWidget(1, 3, 1);
+        $out = $this->player->view();
 
-        $out[] = $this->scoring->getQuestionRepresentation(2);
-        $out[] = $this->scoringWidget(2, 3, 1);
-
-        $out[] = $this->scoring->getQuestionRepresentation(3);
-        $out[] = $this->scoringWidget(3, 4, 0);
-        $out[] = $this->scoringWidget(3, 3, 1);
-        $out[] = $this->scoringWidget(3, 4, 1);
+        if ($out === []) {
+            $out[] = $this->ui_factory->messageBox()->info('no questions/participants selected');
+        } else {
+            foreach ($this->player->getSequence() as $entry) {
+                list($qid, $usr_active_id, $pass_id) = $entry;
+                if ($this->player->isUserCentric()) {
+                    $out[] = $this->scoring->getQuestionRepresentation($qid);
+                }
+                if ($this->player->isQuestionCentric()) {
+                    $out[] = $this->scoring->getUserRepresentation($usr_active_id, $pass_id);
+                }
+                $out[] = $this->scoringWidget(...$entry);
+                $out[] = $this->ui_factory->divider()->horizontal();
+            }
+        }
         return  $this->ui_renderer->render($out);
     }
 
@@ -212,10 +233,8 @@ class ManualScoringGUI
         );
 
         return [
-            $this->scoring->getUserRepresentation($usr_active_id, $pass_id),
             $this->scoring->getPassSelector($qid, $usr_active_id, $this->getUsrPassAction()),
             $layout,
-            $this->ui_factory->divider()->horizontal()
         ];
     }
 
