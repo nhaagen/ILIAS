@@ -26,6 +26,10 @@ use ILIAS\UI\Component\Modal\RoundTrip;
 use ILIAS\UI\Component\Signal;
 use ILIAS\UI\Component\Dropdown;
 use ILIAS\UI\Component\Link;
+use ILIAS\Data\Factory as DataFactory;
+use ILIAS\UI\URLBuilder;
+use ILIAS\UI\URLBuilderToken;
+use ILIAS\UI\Component\Prompt\State\State;
 
 /**
  * Class ilObjStudyProgrammeAutoMembershipsGUI
@@ -63,15 +67,19 @@ class ilObjStudyProgrammeAutoMembershipsGUI
     public ?int $prg_ref_id;
     protected ilContainerGUI $parent_gui;
 
+
+    protected URLBuilder $url_builder;
+    protected URLBuilderToken $action_token;
+    protected URLBuilderToken $id_token;
+
     public function __construct(
         public ilGlobalTemplateInterface $tpl,
         public ilCtrl $ctrl,
         public ilToolbarGUI $toolbar,
         public ilLanguage $lng,
         public Factory $ui_factory,
-        protected MessageBox\Factory $message_box_factory,
-        protected Button\Factory $button_factory,
         protected Renderer $ui_renderer,
+        protected DataFactory $data_factory,
         protected Psr\Http\Message\ServerRequestInterface $request,
         protected ilTree $tree,
         protected ILIAS\HTTP\Wrapper\RequestWrapper $request_wrapper,
@@ -81,10 +89,34 @@ class ilObjStudyProgrammeAutoMembershipsGUI
         // Add this js manually here because the modal contains a form that is
         // loaded asynchronously later on, and this JS won't be pulled then for
         // some reason.
-        $tpl->addJavaScript("assets/js/Form.js");
+        //$tpl->addJavaScript("assets/js/Form.js");
+
+        $here_uri = $data_factory->uri($this->request->getUri()->__toString());
+        $url_builder = new URLBuilder($here_uri);
+        $namespace = ['prgautomembership'];
+        list($url_builder, $action_token, $id_token) = $url_builder->acquireParameters(
+            $namespace,
+            "table_action",
+            "type_ids"
+        );
+
+        $this->url_builder = $url_builder->withParameter($action_token, self::CMD_GET_ASYNC_MODAL_OUTPUT);
+        $this->action_token = $action_token;
+        $this->id_token = $id_token;
+
     }
     public function executeCommand(): void
     {
+        if ($this->request_wrapper->has($this->action_token->getName())) {
+            $action = $this->request_wrapper->retrieve(
+                $this->action_token->getName(),
+                $this->refinery->kindlyTo()->string()
+            );
+            $id = null;
+            echo $this->ui_renderer->render($this->promptState($action, $id));
+            exit();
+        }
+
         $cmd = $this->ctrl->getCmd();
         switch ($cmd) {
             case self::CMD_VIEW:
@@ -106,6 +138,13 @@ class ilObjStudyProgrammeAutoMembershipsGUI
             default:
                 throw new ilException("ilObjStudyProgrammeAutoMembershipsGUI: Command not supported: $cmd");
         }
+    }
+
+    protected function promptState(string $action, ?int $id = null): State
+    {
+
+        $message = $this->ui_factory->messageBox()->success($action);
+        return $this->ui_factory->prompt()->state()->show($message);
     }
 
     protected function nextStep(): void
@@ -162,10 +201,24 @@ class ilObjStudyProgrammeAutoMembershipsGUI
         if ($profile_not_public) {
             $this->tpl->setOnScreenMessage("info", $this->lng->txt('prg_profile_not_public'));
         }
+
+
+        //$prompt_state = $this->ctrl->getLinkTarget($this, self::CMD_GET_ASYNC_MODAL_OUTPUT, "", true);
+        $prompt_state = $this->url_builder->buildURI();
+
+        $prompt = $this->ui_factory->prompt()->standard($prompt_state);
+        $btn = $this->ui_factory->button()->primary($this->txt('add_automembership_source'), '')
+            ->withOnClick($prompt->getShowSignal());
+        $this->toolbar->addComponent($btn);
+
+
+
+
         $collected_modals = [];
         $modal = $this->getModal();
         $this->getToolbar($modal->getShowSignal());
         $collected_modals[] = $modal;
+
         $data = [];
         foreach ($this->getObject()->getAutomaticMembershipSources() as $ams) {
             $title = $this->getTitleRepresentation($ams);
@@ -189,7 +242,8 @@ class ilObjStudyProgrammeAutoMembershipsGUI
         $table = new ilStudyProgrammeAutoMembershipsTableGUI($this, "view", "");
         $table->setData($data);
         $this->tpl->setContent(
-            $this->ui_renderer->render($collected_modals)
+            //$this->ui_renderer->render($collected_modals)
+            $this->ui_renderer->render($prompt)
             . $table->getHTML()
         );
     }
@@ -264,11 +318,11 @@ class ilObjStudyProgrammeAutoMembershipsGUI
         $this->ctrl->clearParameterByClass(self::class, $field);
 
         $buttons = [
-            $this->button_factory->standard($this->lng->txt('prg_confirm_delete'), $delete),
-            $this->button_factory->standard($this->lng->txt('prg_cancel'), $cancel)
+            $this->ui_factory->button()->standard($this->lng->txt('prg_confirm_delete'), $delete),
+            $this->ui_factory->button()->standard($this->lng->txt('prg_cancel'), $cancel)
         ];
 
-        $message_box = $this->message_box_factory->confirmation($msg)->withButtons($buttons);
+        $message_box = $this->ui_factory->messageBox()->confirmation($msg)->withButtons($buttons);
 
         $this->tpl->setContent($this->ui_renderer->render($message_box));
     }
@@ -634,7 +688,7 @@ class ilObjStudyProgrammeAutoMembershipsGUI
      */
     protected function getToolbar(Signal $add_cat_signal): void
     {
-        $btn = $this->ui_factory->button()->primary($this->txt('add_automembership_source'), '')
+        $btn = $this->ui_factory->button()->primary($this->txt('OLD_add_automembership_source'), '')
             ->withOnClick($add_cat_signal);
         $this->toolbar->addComponent($btn);
     }
@@ -706,7 +760,7 @@ class ilObjStudyProgrammeAutoMembershipsGUI
             case ilStudyProgrammeAutoMembershipSource::TYPE_ROLE:
                 $title = ilObjRole::_lookupTitle($src_id) ?? "-";
 
-                if($this->rbac_review->isGlobalRole($src_id)) {
+                if ($this->rbac_review->isGlobalRole($src_id)) {
                     $parent_ref = self::ROLEFOLDER_REF_ID;
                     $path = ['ilAdministrationGUI'];
                     $this->ctrl->setParameterByClass('ilObjRoleGUI', 'admin_mode', 'settings');
@@ -714,7 +768,7 @@ class ilObjStudyProgrammeAutoMembershipsGUI
                     $parent_ref = $this->rbac_review->getObjectReferenceOfRole($src_id);
                     $parent_type = ilObject::_lookupType($parent_ref, true);
                     $path = ['ilRepositoryGUI','ilObjCategoryGUI'];
-                    if($parent_type == 'orgu') {
+                    if ($parent_type == 'orgu') {
                         $path = ['ilAdministrationGUI','ilObjOrgUnitGUI'];
                     }
                     $path[] = 'ilPermissionGUI';
