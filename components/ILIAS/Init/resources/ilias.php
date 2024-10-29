@@ -28,8 +28,11 @@ if (!file_exists('../ilias.ini.php')) {
 }
 
 require_once '../vendor/composer/vendor/autoload.php';
+require_once __DIR__ . '/../artifacts/bootstrap_default.php';
 
-/** @var \ILIAS\DI\Container $DIC */
+entry_point('ILIAS Legacy Initialisation Adapter');
+
+/** @var $DIC \ILIAS\DI\Container */
 global $DIC;
 
 try {

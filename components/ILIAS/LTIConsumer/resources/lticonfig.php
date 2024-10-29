@@ -18,10 +18,16 @@
 
 declare(strict_types=1);
 
-/** @noRector */
-require_once("../vendor/composer/vendor/autoload.php");
+if (!file_exists('../ilias.ini.php')) {
+    die('The ILIAS setup is not completed. Please run the setup routine.');
+}
 
-ilContext::init(ilContext::CONTEXT_SCORM);
-ilInitialisation::initILIAS();
-header('Content-Type: application/json; charset=utf-8');
-echo json_encode(ilObjLTIConsumer::getOpenidConfig(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+require_once '../vendor/composer/vendor/autoload.php';
+require_once __DIR__ . '/../artifacts/bootstrap_default.php';
+entry_point('ILIAS Legacy Initialisation Adapter');
+
+global $DIC;
+ilStartUpGUI::setForcedCommand('doLogout');
+$DIC->ctrl()->callBaseClass(ilStartUpGUI::class);
+$DIC['ilBench']->save();
+exit();
