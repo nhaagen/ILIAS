@@ -251,6 +251,7 @@ This should be updated to e.g. an event listener attached to the document,
 which either calls the dropdown's show method if the event target is the desired 
 dropdown, or the hide method if the target is something else.
 
+
 ### Remove jQuery from NotificationItem and Counter
 
 The notification-item and counter UI components heavily depend on jQuery, which makes
@@ -282,6 +283,9 @@ There are several occurrences of the `&times;` HTML entity in our templates, whi
 as "close" sign for modals. This character is not suitable for expressing this intent, since
 we are actually using a "multiplication" sign. We should search for a better alternative and
 streamline these usages in order to avoid any A11y implications.
+
+### Move Breadcrumbs into Navigation (beginner, 2h)
+The "breadcrumbs" top section should be moved into navigation.
 
 ## Long Term
 
