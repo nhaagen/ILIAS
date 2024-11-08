@@ -15,9 +15,9 @@
 import il from 'il';
 import $ from 'jquery';
 import filter from './filter.main.js';
-import FilterFactory from './filter.factory';
+import FilterFactory from './filter.factory.js';
 
-il = il || {};
+// let il = il || {};
 il.UI = il.UI || {};
 
 il.UI.filter = filter($);

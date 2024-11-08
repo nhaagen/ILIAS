@@ -36,8 +36,7 @@ function base()
                 "3" => "Pick 3",
             ]
         ),
-
-        'f3' => $factory->input()->field()->checkbox('a checkbox filter'),
+        'f3' => $factory->input()->field()->checkbox('a checkbox filter')->withValue(true),
         $factory->input()->field()->dateTime('a dateTime filter'),
     ];
 

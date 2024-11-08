@@ -26,6 +26,7 @@ use ILIAS\UI\Implementation\Component\Input\Container\Filter;
 use ILIAS\UI\Implementation\Component\SignalGenerator;
 use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
 use ILIAS\UI\Implementation\Render\Template;
+use ILIAS\UI\Implementation\Render\ResourceRegistry;
 use ILIAS\UI\Renderer as RendererInterface;
 use LogicException;
 
@@ -45,6 +46,89 @@ class Renderer extends AbstractComponentRenderer
 
         $this->cannotHandleComponent($component);
     }
+
+
+    protected function renderStandard(Filter\Standard $component, RendererInterface $default_renderer): string
+    {
+        $tpl = $this->getTemplate("tpl.filter_container.html", true, true);
+
+        $input_names = array_keys($component->getComponentInternalValues());
+        $query_params = array_filter(
+            $component->getRequest()?->getQueryParams(),
+            fn($k) => ! in_array($k, $input_names),
+            ARRAY_FILTER_USE_KEY
+        );
+        // The non-filter parameters need to be stuffed into hidden fields,
+        // so the browser passes them as query parameters once the form is submitted.
+        foreach ($query_params as $k => $v) {
+            if (is_array($v)) {
+                foreach (array_values($v) as $arrv) {
+                    $tpl->setCurrentBlock('param');
+                    $tpl->setVariable("PARAM_NAME", $k . '[]');
+                    $tpl->setVariable("VALUE", $arrv);
+                    $tpl->parseCurrentBlock();
+                }
+            } else {
+                $tpl->setCurrentBlock('param');
+                $tpl->setVariable("PARAM_NAME", $k);
+                $tpl->setVariable("VALUE", $v);
+                $tpl->parseCurrentBlock();
+            }
+        }
+
+        foreach ($component->getInputs() as $input) {
+            $tpl->setCurrentBlock('filter');
+            $tpl->setVariable("INPUT", $default_renderer->render($input));
+            $tpl->parseCurrentBlock();
+        }
+
+        $is_active = !array_key_exists(
+            'filter/__filtertoggle',
+            $component->getRequest()?->getQueryParams()
+        ) || in_array(
+            $component->getRequest()?->getQueryParams()['filter/__filtertoggle'],
+            [null, 'true']
+        );
+
+
+        $is_active = $component->isActive();
+
+        $ui_factory = $this->getUIFactory();
+        $expand = $ui_factory->symbol()->glyph()->expand()->withOnClick($component->getExpandSignal(true));
+        $collapse = $ui_factory->symbol()->glyph()->collapse()->withOnClick($component->getExpandSignal(false));
+        $submission_signal = $component->getSubmissionSignal();
+        $toggle = $ui_factory->button()->toggle('', $submission_signal, $submission_signal, $is_active);
+
+        $component = $component->withAdditionalOnLoadCode(
+            static fn($id) => "
+                il.UI.filter.standard.init('{$id}');
+                //$(document).on('{$component->getSubmissionSignal()}', (e,sig)=>console.log(sig));
+                $(document).on(
+                    '{$component->getSubmissionSignal()}', 
+                    (e,sig)=>il.UI.filter.standard.get('{$id}').toggle(sig.event === 'toggle_on')
+                );
+                $(document).on(
+                    '{$component->getExpandSignal()}', 
+                    (e,sig)=>il.UI.filter.standard.get('{$id}').toggleExpand(sig.options.expanded)
+                );
+            "
+        );
+        $id = $this->bindJavaScript($component);
+
+        $tpl->setVariable('EXPAND', $default_renderer->render($expand));
+        $tpl->setVariable('COLLAPSE', $default_renderer->render($collapse));
+        $tpl->setVariable('TOGGLE', $default_renderer->render($toggle));
+        $tpl->setVariable('ID', $id);
+        return $tpl->get();
+    }
+
+
+
+
+
+
+
+
 
     /**
      * Render dprecated filter
@@ -236,5 +320,11 @@ class Renderer extends AbstractComponentRenderer
         $input_group = $input_group->withOnUpdate($component->getUpdateSignal());
 
         $tpl->setVariable("INPUTS", $default_renderer->render($input_group));
+    }
+
+    public function registerResources(ResourceRegistry $registry): void
+    {
+        parent::registerResources($registry);
+        $registry->register('assets/js/filter.js');
     }
 }

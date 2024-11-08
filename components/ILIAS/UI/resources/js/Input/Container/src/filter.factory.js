@@ -13,7 +13,7 @@
  * https://github.com/ILIAS-eLearning
  */
 
-import Filter from './filter.class';
+import Filter from './filter.class.js';
 
 export default class FilterFactory {
   /**
@@ -25,14 +25,26 @@ export default class FilterFactory {
    * @param {string} componentId
    * @return {void}
    * @throws {Error} if the filter was already initialized.
+   * @throws {Error} if DOM element is missing
    */
   init(componentId) {
     if (this.#instances[componentId] !== undefined) {
       throw new Error(`Filter with id '${componentId}' has already been initialized.`);
     }
-
+    const component = document.getElementById(componentId);
+    if (component === null || !component.classList.contains('c-filter__form')) {
+      throw new Error(`Could not find a Filter for id '${componentId}'.`);
+    }
     this.#instances[componentId] = new Filter(
-      componentId,
+      component,
     );
+  }
+
+  /**
+   * @param {string} componentId
+   * @return {Filter|null}
+   */
+  get(componentId) {
+    return this.#instances[componentId] ?? null;
   }
 }

@@ -31,6 +31,7 @@ namespace ILIAS\UI\examples\Button\Toggle;
  */
 function with_tooltip()
 {
+  return '';
     global $DIC;
     $f = $DIC->ui()->factory();
     $renderer = $DIC->ui()->renderer();

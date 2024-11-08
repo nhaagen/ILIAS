@@ -1,33 +1,48 @@
-
-
 <form role="form" class="c-filter__form" method="get" id="{ID}">
 
-    <div class="c-filter__expander">
-        <span class="c-filter__expander-expand">
-            {EXPAND}
-        </span>
-        <span class="c-filter__expander-collapse">
-            {COLLAPSE}
-        </span>
-    </div>
-    <div class="c-filter__toggle">
-        {TOGGLE}
-        {TOGGLE_FIELD}
-    </div>
+    <div class="c-filter__controls l-bar__space-keeper">
 
-
-    <div class="c-filter__filter l-bar__space-keeper">
-        <!-- BEGIN filter -->
-        <div class="c-filter__filter--input l-bar__element">
-            {INPUT}
+        <div class="c-filter__expander l-bar__element">
+            <span class="c-filter__expander-expand hidden">
+                {EXPAND}
+            </span>
+            <span class="c-filter__expander-collapse">
+                {COLLAPSE}
+            </span>
         </div>
-        <!-- END filter -->
+
+        <div class="c-filter__toggle l-bar__element">
+            {TOGGLE}
+        </div>
+
     </div>
 
-    <!-- BEGIN param -->
-    <input  type="hidden" name="{PARAM_NAME}" value="{VALUE}" />
-    <!-- END param -->
 
-    <input type="submit" />
+    <div class="c-filter__filter">
+
+        <div class="c-filter__filter-inputs l-bar__space-keeper">
+            <!-- BEGIN filter -->
+            <div class="c-filter__filter--input l-bar__element">
+                {INPUT}
+            </div>
+            <!-- END filter -->
+        </div>
+
+        <div class="c-filter__filter-shortvalues l-bar__space-keeper hidden">
+            <div class="l-bar__element">
+            shortvalues
+            </div>
+            <div class="l-bar__element">
+            shortvalues
+            </div>
+            
+        </div>
+
+        <!-- BEGIN param -->
+        <input  type="hidden" name="{PARAM_NAME}" value="{VALUE}" />
+        <!-- END param -->
+    
+        <input type="submit" />
+    </div>
 
 </form>

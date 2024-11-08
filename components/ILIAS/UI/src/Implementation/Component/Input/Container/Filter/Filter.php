@@ -32,7 +32,9 @@ use ILIAS\UI\Component as C;
 abstract class Filter extends Container implements I\Filter
 {
     use JavaScriptBindable;
-    public const TOGGLE_FIELD = '__filtertoggle';
+    public const DEDICATED_NAME = 'filter';
+    public const TOGGLE_FIELD = '__toggle';
+    public const EXPAND_FIELD = '__expand';
 
     protected Signal $submit_signal;
     protected Signal $expand_signal;
@@ -55,17 +57,27 @@ abstract class Filter extends Container implements I\Filter
                 [$filter->withLabel('')],
                 $filter->getLabel()
             )
-            ->withValue(null);
+            //->withValue(null)
+            //->withValue([''])
+            //->withValue([true])
+            ;
+            //var_dump($filter->getValue());
+            //die();
         }
-        $filters[] = $field_factory->text('toggle')->withValue('')
-                ->withDedicatedName(self::TOGGLE_FIELD);
+        $filters[self::TOGGLE_FIELD] = $field_factory->text('toggle')
+            ->withDedicatedName(self::TOGGLE_FIELD)
+            ->withValue('true');
+        $filters[self::EXPAND_FIELD] = $field_factory->text('expand')
+            ->withDedicatedName(self::EXPAND_FIELD)
+            ->withValue('true');
+
 
         $this->setInputGroup(
-            $field_factory->group($filters)->withDedicatedName('filter')
+            $field_factory->group($filters)->withDedicatedName(self::DEDICATED_NAME)
         );
         $this->submit_signal = $signal_generator->create();
         $this->expand_signal = $signal_generator->create();
-        $this->stored_input = new Input\ArrayInputData([]);
+        $this->stored_input = new Input\ArrayInputData(['']);
     }
 
     public function getSubmissionSignal(): Signal
@@ -82,7 +94,12 @@ abstract class Filter extends Container implements I\Filter
 
     public function withRequest(ServerRequestInterface $request): Container
     {
-        $clone = parent::withRequest($request);
+        $expected_key = self::DEDICATED_NAME . '/' . self::TOGGLE_FIELD;
+        if (array_key_exists($expected_key, $request->getQueryParams())) {
+            $clone = parent::withRequest($request);
+        } else {
+            $clone = clone $this;
+        }
         $clone->request = $request;
         return $clone;
     }
@@ -97,32 +114,11 @@ abstract class Filter extends Container implements I\Filter
     */
     protected function extractRequestData(ServerRequestInterface $request): C\Input\InputData
     {
-        //return new Input\PostDataFromServerRequest($request);
         $internal_input_data = new Input\ArrayInputData($this->getComponentInternalValues());
-
-        /*
-                var_dump($request->getParsedBody());
-                print '<hr>';
-                var_dump($request->getQueryParams());
-                print '<hr>';
-                var_dump($internal_input_data);
-                print '<hr>';
-                var_dump(new Input\PostDataFromServerRequest($request));
-                print '<hr>';
-                var_dump(
-                    new Input\StackedInputData(
-                        new Input\QueryParamsFromServerRequest($request),
-                        //$this->stored_input,
-                        //$internal_input_data,
-                    )
-                );
-                die();
-        */
-
         return new Input\StackedInputData(
             new Input\QueryParamsFromServerRequest($request),
             $this->stored_input,
-            $internal_input_data,
+            //$internal_input_data,
         );
     }
 
@@ -149,5 +145,41 @@ abstract class Filter extends Container implements I\Filter
         }
 
         return $input_values;
+    }
+
+    public function isActive(
+    ): bool {
+        $key = self::DEDICATED_NAME . '/' . self::TOGGLE_FIELD;
+        return
+            !array_key_exists($key, $this->getRequest()?->getQueryParams())
+            || in_array(
+                $this->getRequest()?->getQueryParams()[$key],
+                [null, 'true']
+            );
+    }
+
+    public function isExpanded(
+    ): bool {
+        $key = self::DEDICATED_NAME . '/' . self::EXPAND_FIELD;
+        return
+            !array_key_exists($key, $this->getRequest()?->getQueryParams())
+            || in_array(
+                $this->getRequest()?->getQueryParams()[$key],
+                [null, 'true']
+            );
+    }
+
+
+    public function getData()
+    {
+        $data = parent::getData();
+        if ($data === null || $data[self::TOGGLE_FIELD] === 'false') {
+            return null;
+        }
+        return array_filter(
+            $data,
+            fn($v, $k) => $k !== self::TOGGLE_FIELD,
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 }
