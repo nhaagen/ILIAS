@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\UI\examples\Input\Container\Filter\Standard;
+namespace ILIAS\UI\examples\Input\Container\Filter\Deprecated;
 
 /**
  * ---

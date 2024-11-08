@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -16,21 +18,13 @@
  *
  *********************************************************************/
 
-declare(strict_types=1);
+namespace ILIAS\UI\Implementation\Component\Input\Container\Filter;
 
-namespace ILIAS\UI\Component\Input\Container\Filter;
-
-use ILIAS\UI\Component\Component;
-use ILIAS\UI\Component\Signal;
-use ILIAS\UI\Component\JavaScriptBindable;
-use ILIAS\UI\Component\Triggerable;
-use ILIAS\UI\Component\Input\Container\Form\FormInput;
-use Psr\Http\Message\ServerRequestInterface;
-use ILIAS\UI\Component\Input\Container\Container;
+use ILIAS\UI\Component as C;
 
 /**
- * This describes commonalities between all filters.
+ * This implements a deprecated Filter.
  */
-interface Filter extends Container, JavaScriptBindable
+class Deprecated extends DeprecatedFilter implements C\Input\Container\Filter\Deprecated
 {
 }

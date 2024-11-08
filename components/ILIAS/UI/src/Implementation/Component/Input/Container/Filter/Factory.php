@@ -23,6 +23,7 @@ namespace ILIAS\UI\Implementation\Component\Input\Container\Filter;
 use ILIAS\UI\Component\Input\Container\Filter as F;
 use ILIAS\UI\Implementation\Component\Input\Field;
 use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
+use ILIAS\UI\Implementation\Component\Input\FormInputNameSource;
 
 class Factory implements F\Factory
 {
@@ -37,7 +38,10 @@ class Factory implements F\Factory
         $this->field_factory = $field_factory;
     }
 
-    public function standard(
+    /**
+     * @inheritdoc
+     */
+    public function deprecated(
         $toggle_action_on,
         $toggle_action_off,
         $expand_action,
@@ -48,8 +52,8 @@ class Factory implements F\Factory
         array $is_input_rendered,
         bool $is_activated = false,
         bool $is_expanded = false
-    ): Standard {
-        return new Standard(
+    ): F\Deprecated {
+        return new Deprecated(
             $this->signal_generator,
             $this->field_factory,
             $toggle_action_on,
@@ -62,6 +66,17 @@ class Factory implements F\Factory
             $is_input_rendered,
             $is_activated,
             $is_expanded
+        );
+    }
+
+    public function standard(
+        array $inputs
+    ): Standard {
+        return new Standard(
+            $this->signal_generator,
+            new FormInputNameSource(),
+            //$this->view_control_factory,
+            $inputs
         );
     }
 }

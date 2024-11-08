@@ -61,7 +61,7 @@ class ilUIFilterRequestAdapter
         return false;
     }
 
-    public function getFilterWithRequest(Filter\Standard $filter): Filter\Standard
+    public function getFilterWithRequest(Filter\Deprecated $filter): Filter\Deprecated
     {
         return $filter->withRequest($this->request);
     }

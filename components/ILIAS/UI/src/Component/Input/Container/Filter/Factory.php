@@ -32,13 +32,8 @@ interface Factory
      * ---
      * description:
      *   purpose: >
-     *      The standard filter is the default filter to be used in ILIAS. If there is no good reason
-     *      using another filter instance in ILIAS, this is the one that should be used.
-     *
-     * rules:
-     *   usage:
-     *     1: Standard filters MUST be used if there is no good reason using another instance.
-     *
+     *      The Deprecated filter used to be  the default filter to be used in ILIAS. If there is no good reason
+     *      using it, you should avoid it.
      * ---
      * @param    string|Signal    $toggle_action_on
      * @param    string|Signal    $toggle_action_off
@@ -50,9 +45,9 @@ interface Factory
      * @param    array<bool>    $is_input_rendered
      * @param    bool    $is_activated
      * @param    bool    $is_expanded
-     * @return    \ILIAS\UI\Component\Input\Container\Filter\Standard
+     * @return    \ILIAS\UI\Component\Input\Container\Filter\Deprecated
      */
-    public function standard(
+    public function deprecated(
         $toggle_action_on,
         $toggle_action_off,
         $expand_action,
@@ -63,5 +58,25 @@ interface Factory
         array $is_input_rendered,
         bool $is_activated = false,
         bool $is_expanded = false
+    ): Deprecated;
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *      The standard filter is the default filter to be used in ILIAS. If there is no good reason
+     *      using another filter instance in ILIAS, this is the one that should be used.
+     *
+     * rules:
+     *   usage:
+     *     1: Standard filters MUST be used if there is no good reason using another instance.
+     *
+     * ---
+     * @param array<FilterInput>    $inputs
+     * @return \ILIAS\UI\Component\Input\Container\Filter\Standard
+     */
+    public function standard(
+        array $inputs
     ): Standard;
+
 }

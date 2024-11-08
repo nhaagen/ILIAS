@@ -29,7 +29,7 @@ class FieldRendererFactory extends Render\DefaultRendererFactory
     {
         if (in_array('DurationFieldInput', $contexts)
             && in_array('DateTimeFieldInput', $contexts)
-            && in_array('StandardFilterContainerInput', $contexts)) {
+            && in_array('DeprecatedFilterContainerInput', $contexts)) {
             return new DateTimeFilterContextRenderer(
                 $this->ui_factory,
                 $this->tpl_factory,
@@ -41,7 +41,7 @@ class FieldRendererFactory extends Render\DefaultRendererFactory
                 $this->upload_limit_resolver
             );
         }
-        if (in_array('StandardFilterContainerInput', $contexts)) {
+        if (in_array('DeprecatedFilterContainerInput', $contexts)) {
             return new FilterContextRenderer(
                 $this->ui_factory,
                 $this->tpl_factory,

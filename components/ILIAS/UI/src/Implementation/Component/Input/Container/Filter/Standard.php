@@ -20,11 +20,23 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Implementation\Component\Input\Container\Filter;
 
-use ILIAS\UI\Component as C;
+use ILIAS\UI\Component\Input\Container\Filter as I;
+use Psr\Http\Message\ServerRequestInterface;
+use ILIAS\UI\Implementation\Component\Input;
 
-/**
- * This implements a Standard Filter.
- */
-class Standard extends Filter implements C\Input\Container\Filter\Standard
+class Standard extends Filter implements I\Standard
 {
+    /**
+    * @inheritDoc
+    */
+    protected function extractRequestData(ServerRequestInterface $request): Input\InputData
+    {
+        $internal_input_data = new Input\ArrayInputData($this->getComponentInternalValues());
+
+        return new StackedInputData(
+            new Input\QueryParamsFromServerRequest($request),
+            $this->stored_input,
+            $internal_input_data,
+        );
+    }
 }

@@ -36,6 +36,9 @@ class Renderer extends AbstractComponentRenderer
      */
     public function render(Component\Component $component, RendererInterface $default_renderer): string
     {
+        if ($component instanceof Filter\Deprecated) {
+            return $this->renderDeprecated($component, $default_renderer);
+        }
         if ($component instanceof Filter\Standard) {
             return $this->renderStandard($component, $default_renderer);
         }
@@ -44,16 +47,16 @@ class Renderer extends AbstractComponentRenderer
     }
 
     /**
-     * Render standard filter
+     * Render dprecated filter
      */
-    protected function renderStandard(Filter\Standard $component, RendererInterface $default_renderer): string
+    protected function renderDeprecated(Filter\Deprecated $component, RendererInterface $default_renderer): string
     {
-        $tpl = $this->getTemplate("tpl.standard_filter.html", true, true);
+        $tpl = $this->getTemplate("tpl.deprecated_filter.html", true, true);
 
         // JavaScript
         $component = $this->registerSignals($component);
         /**
-         * @var $component Filter\Standard
+         * @var $component Filter\Deprecated
          */
         $id = $this->bindJavaScript($component);
         $tpl->setVariable('ID_FILTER', $id);
@@ -73,7 +76,7 @@ class Renderer extends AbstractComponentRenderer
         return $tpl->get();
     }
 
-    protected function registerSignals(Filter\Filter $filter): Filter\Filter
+    protected function registerSignals(Filter\Deprecated $filter): Filter\Deprecated
     {
         $update = $filter->getUpdateSignal();
         return $filter->withAdditionalOnLoadCode(fn($id) => "$(document).on('$update', function(event, signalData) {
@@ -85,12 +88,12 @@ class Renderer extends AbstractComponentRenderer
      * Render expand/collapse section
      *
      * @param Template $tpl
-     * @param Filter\Standard $component
+     * @param Filter\Deprecated $component
      * @param RendererInterface $default_renderer
      */
     protected function renderExpandAndCollapse(
         Template $tpl,
-        Filter\Standard $component,
+        Filter\Deprecated $component,
         RendererInterface $default_renderer
     ): void {
         $f = $this->getUIFactory();
@@ -124,7 +127,7 @@ class Renderer extends AbstractComponentRenderer
      */
     protected function renderApplyAndReset(
         Template $tpl,
-        Filter\Standard $component,
+        Filter\Deprecated $component,
         RendererInterface $default_renderer
     ): void {
         $f = $this->getUIFactory();
@@ -158,7 +161,7 @@ class Renderer extends AbstractComponentRenderer
      */
     protected function renderToggleButton(
         Template $tpl,
-        Filter\Standard $component,
+        Filter\Deprecated $component,
         RendererInterface $default_renderer
     ): void {
         $f = $this->getUIFactory();
@@ -197,8 +200,7 @@ class Renderer extends AbstractComponentRenderer
      */
     protected function renderInputs(
         Template $tpl,
-        Filter\Standard $component,
-        string $component_id,
+        Filter\Deprecated $component,
         RendererInterface $default_renderer
     ): void {
         // pass information on what inputs should be initially rendered

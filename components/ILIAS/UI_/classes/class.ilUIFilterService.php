@@ -51,7 +51,7 @@ class ilUIFilterService
 
 
     /**
-     * Get standard filter instance
+     * Get deprecated filter instance
      *
      * @param string $filter_id
      * @param string $base_action
@@ -59,7 +59,7 @@ class ilUIFilterService
      * @param bool[] $is_input_initially_rendered
      * @param bool $is_activated
      * @param bool $is_expanded
-     * @return Filter\Standard
+     * @return Filter\Deprecated
      */
     public function standard(
         string $filter_id,
@@ -68,7 +68,7 @@ class ilUIFilterService
         array $is_input_initially_rendered,
         bool $is_activated = false,
         bool $is_expanded = false
-    ): Filter\Standard {
+    ): Filter\Deprecated {
         $ui = $this->ui->factory();
 
         // write expand, activation, rendered inputs info to session
@@ -110,7 +110,7 @@ class ilUIFilterService
         }
 
         // get the filter
-        $filter = $ui->input()->container()->filter()->standard(
+        $filter = $ui->input()->container()->filter()->deprecated(
             $this->request->getAction($base_action, self::CMD_TOGGLE_ON, true),
             $this->request->getAction($base_action, self::CMD_TOGGLE_OFF, true),
             $this->request->getAction($base_action, self::CMD_EXPAND),
@@ -129,7 +129,7 @@ class ilUIFilterService
         return $filter;
     }
 
-    public function getData(Filter\Standard $filter): ?array
+    public function getData(Filter\Deprecated $filter): ?array
     {
         $filter_data = null;
         if ($filter->isActivated()) {
@@ -199,7 +199,7 @@ class ilUIFilterService
         }
     }
 
-    protected function handleApplyAndToggle(string $filter_id, Filter\Standard $filter): Filter\Standard
+    protected function handleApplyAndToggle(string $filter_id, Filter\Deprecated $filter): Filter\Deprecated
     {
         if ((in_array(
             $this->request->getFilterCmd(),
