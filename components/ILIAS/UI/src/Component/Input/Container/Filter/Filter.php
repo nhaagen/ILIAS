@@ -20,17 +20,9 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Input\Container\Filter;
 
-use ILIAS\UI\Component\Component;
-use ILIAS\UI\Component\Signal;
 use ILIAS\UI\Component\JavaScriptBindable;
-use ILIAS\UI\Component\Triggerable;
-use ILIAS\UI\Component\Input\Container\Form\FormInput;
-use Psr\Http\Message\ServerRequestInterface;
 use ILIAS\UI\Component\Input\Container\Container;
 
-/**
- * This describes commonalities between all filters.
- */
 interface Filter extends Container, JavaScriptBindable
 {
 }

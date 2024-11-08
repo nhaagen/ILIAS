@@ -27,15 +27,10 @@ use ILIAS\UI\Implementation\Component\Input\FormInputNameSource;
 
 class Factory implements F\Factory
 {
-    protected SignalGeneratorInterface $signal_generator;
-    protected Field\Factory $field_factory;
-
     public function __construct(
-        SignalGeneratorInterface $signal_generator,
-        Field\Factory $field_factory
+        protected SignalGeneratorInterface $signal_generator,
+        protected Field\Factory $field_factory
     ) {
-        $this->signal_generator = $signal_generator;
-        $this->field_factory = $field_factory;
     }
 
     /**
@@ -69,13 +64,16 @@ class Factory implements F\Factory
         );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function standard(
         array $inputs
     ): Standard {
         return new Standard(
             $this->signal_generator,
             new FormInputNameSource(),
-            //$this->view_control_factory,
+            $this->field_factory,
             $inputs
         );
     }

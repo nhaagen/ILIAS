@@ -201,6 +201,7 @@ class Renderer extends AbstractComponentRenderer
     protected function renderInputs(
         Template $tpl,
         Filter\Deprecated $component,
+        string $component_id,
         RendererInterface $default_renderer
     ): void {
         // pass information on what inputs should be initially rendered

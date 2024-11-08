@@ -1,5 +1,3 @@
-<?php
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -13,20 +11,14 @@
  * us at:
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
- *
- *********************************************************************/
-
-declare(strict_types=1);
-
-namespace ILIAS\UI\Component\Input\Container\Filter;
-
-use ILIAS\UI\Component\Input\Container\Form\FormInput;
-use ILIAS\UI\Component\Input\Input;
-use ILIAS\UI\Component\Triggerer;
-
-/**
- * This interface must be implemented by all Inputs used in Filter Containers.
  */
-interface FilterInput extends Input, Triggerer
-{
+
+export default class Filter {
+  /**
+   * @param {string} componentId
+   * @throws {Error} if DOM element is missing
+   */
+  constructor(componentId) {
+
+  }
 }
