@@ -41,4 +41,9 @@ class Factory implements C\Legacy\Factory
     {
         return new LatexContent($content, $this->signal_generator);
     }
+
+    public function legacySegment(string $title, string $content): C\Legacy\LegacySegment
+    {
+        return new LegacySegment($title, $content);
+    }
 }

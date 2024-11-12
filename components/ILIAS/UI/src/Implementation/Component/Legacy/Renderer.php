@@ -36,10 +36,20 @@ class Renderer extends AbstractComponentRenderer
      */
     public function render(Component\Component $component, RendererInterface $default_renderer): string
     {
-        if (!$component instanceof Component\Legacy\Content) {
-            $this->cannotHandleComponent($component);
+
+        if ($component instanceof Component\Legacy\Content) {
+            return $this->renderLegacyContent($component, $default_renderer);
+        }
+        if ($component instanceof Component\Legacy\LegacySegment) {
+            return $this->renderLegacySegment($component, $default_renderer);
         }
 
+        $this->cannotHandleComponent($component);
+
+    }
+
+    protected function renderLegacyContent(LegacyContent $component, RendererInterface $default_renderer): string
+    {
         $component = $this->registerSignals($component);
         $this->bindJavaScript($component);
 
@@ -68,7 +78,6 @@ class Renderer extends AbstractComponentRenderer
         });
     }
 
-
     /**
      * Register additional resources which are needed for the LatexContent component
      */
@@ -77,5 +86,10 @@ class Renderer extends AbstractComponentRenderer
         parent::registerResources($registry);
         $registry->register('assets/js/mathjax_config.js');
         $registry->register('node_modules/mathjax/es5/tex-chtml-full.js');
+    }
+
+    protected function renderLegacySegment(LegacySegment $component, RendererInterface $default_renderer): string
+    {
+        return 'a legacy segment is not rendered by itself, it\'s used with sequence navigation';
     }
 }
