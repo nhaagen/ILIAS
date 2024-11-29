@@ -79,7 +79,7 @@ class UI implements Component\Component
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\ComponentJS($this, "js/Page/stdpage.js");
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
-            new Component\Resource\ComponentJS($this, "js/Popover/popover.js");
+            new Component\Resource\ComponentJS($this, "js/Popover/dist/popover.min.js");
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\ComponentJS($this, "js/Table/dist/table.min.js");
         $contribute[Component\Resource\PublicAsset::class] = fn() =>

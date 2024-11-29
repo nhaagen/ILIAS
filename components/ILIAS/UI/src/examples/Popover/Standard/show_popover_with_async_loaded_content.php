@@ -45,5 +45,7 @@ function show_popover_with_async_loaded_content()
     $button = $factory->button()->standard('Show Popover', '#')
         ->withOnClick($popover->getShowSignal());
 
-    return $renderer->render([$popover, $button]);
+    if (!$DIC->http()->wrapper()->query()->has('page')) {
+        return $renderer->render([$popover, $button]);
+    }
 }

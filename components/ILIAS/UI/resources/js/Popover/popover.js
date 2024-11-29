@@ -3,7 +3,7 @@ il.UI = il.UI || {};
 
 (function($, UI) {
 
-    UI.popover = (function ($) {
+    UI.Xpopover = (function ($) {
 
         var defaultOptions = {
             // Title of the popover

@@ -54,5 +54,7 @@ function show_popover_with_vertical_scrollbars()
     $button = $factory->button()->standard('Show me some Series', '#')
         ->withOnClick($popover->getShowSignal());
 
-    return $renderer->render([$popover, $button]);
+    if (!$DIC->http()->wrapper()->query()->has('page')) {
+        return $renderer->render([$popover, $button]);
+    }
 }

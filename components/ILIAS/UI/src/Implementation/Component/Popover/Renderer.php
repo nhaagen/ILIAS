@@ -42,64 +42,44 @@ class Renderer extends AbstractComponentRenderer
             $this->cannotHandleComponent($component);
         }
 
-        $tpl = $this->getTemplate('tpl.popover.html', true, true);
-        $tpl->setVariable('FORCE_RENDERING', '');
-
-        $replacement = array(
-            '"' => '\"',
-            "\n" => "",
-            "\t" => "",
-            "\r" => "",
-        );
-
         $options = array(
             'title' => $this->escape($component->getTitle()),
             'placement' => $component->getPosition(),
             'multi' => true,
-            'template' => str_replace(array_keys($replacement), array_values($replacement), $tpl->get()),
+            'url' => $component->getAsyncContentUrl() ?? 'null'
         );
 
         if ($component->isFixedPosition()) {
             $options['style'] = "fixed";
         }
 
-        $is_async = $component->getAsyncContentUrl();
-        if ($is_async) {
-            $options['type'] = 'async';
-            $options['url'] = $component->getAsyncContentUrl();
-        }
-
         $show = $component->getShowSignal();
         $replace = $component->getReplaceContentSignal();
 
-        $component = $component->withAdditionalOnLoadCode(function ($id) use ($options, $show, $replace, $is_async) {
-            if (!$is_async) {
-                $options["url"] = "#$id";
-            }
+        $component = $component->withAdditionalOnLoadCode(function ($id) use ($options, $show, $replace) {
             $options = json_encode($options);
 
             return
+                "il.UI.popover.init('$id', JSON.parse('$options'));" .
                 "$(document).on('$show', function(event, signalData) {
-					il.UI.popover.showFromSignal(signalData, JSON.parse('$options'));
+                    il.UI.popover.get('$id').showPopover(signalData, JSON.parse('$options'));
 				});" .
                 "$(document).on('$replace', function(event, signalData) {
-					il.UI.popover.replaceContentFromSignal('$show', signalData);
-				});";
+					il.UI.popover.get('$id').replaceContentFromSignal(signalData);
+				});"
+            ;
         });
 
+
+        $tpl = $this->getTemplate('tpl.popover.html', true, true);
         $id = $this->bindJavaScript($component);
+        $tpl->setVariable('ID', $id);
+        $tpl->setVariable('TITLE', $component->getTitle());
+        $tpl->setVariable('CONTENT', $default_renderer->render($component->getContent()));
 
-        if ($component->getAsyncContentUrl()) {
-            return '';
-        }
 
-        if ($component instanceof Component\Popover\Standard) {
-            return $this->renderStandardPopover($component, $default_renderer, $id);
-        } elseif ($component instanceof Component\Popover\Listing) {
-            return $this->renderListingPopover($component, $default_renderer, $id);
-        }
+        return $tpl->get();
 
-        $this->cannotHandleComponent($component);
     }
 
     /**
@@ -108,8 +88,7 @@ class Renderer extends AbstractComponentRenderer
     public function registerResources(ResourceRegistry $registry): void
     {
         parent::registerResources($registry);
-        $registry->register('assets/js/jquery.webui-popover.min.js');
-        $registry->register('assets/js/popover.js');
+        $registry->register('assets/js/popover.min.js');
     }
 
     protected function renderStandardPopover(

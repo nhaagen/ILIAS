@@ -33,5 +33,7 @@ function show_card_in_popover()
     $button = $factory->button()->standard('Show Card', '#')
         ->withOnClick($popover->getShowSignal());
 
-    return $renderer->render([$popover, $button]);
+    if (!$DIC->http()->wrapper()->query()->has('page')) {
+        return $renderer->render([$popover, $button]);
+    }
 }

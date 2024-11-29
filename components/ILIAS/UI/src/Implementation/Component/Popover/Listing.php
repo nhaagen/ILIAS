@@ -55,4 +55,9 @@ class Listing extends Popover implements C\Popover\Listing
     {
         return $this->items;
     }
+    public function getContent(): array
+    {
+        return $this->items;
+
+    }
 }

@@ -45,5 +45,7 @@ function show_popover_with_different_positions()
 
     $buttons = implode(' ', [$renderer->render($button), $renderer->render($button2), $renderer->render($button3)]);
 
-    return $buttons . $renderer->render([$popover, $popover2, $popover3]);
+    if (!$DIC->http()->wrapper()->query()->has('page')) {
+        return $buttons . $renderer->render([$popover, $popover2, $popover3]);
+    }
 }
