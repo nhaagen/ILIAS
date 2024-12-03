@@ -36,11 +36,7 @@ export default class Popover {
     this.#component = component;
     this.#options = options;
     this.#anchorId = component.getAttribute('anchor');
-    this.#component.style.positionAnchor = this.#anchorId;
 
-    // move to CSS
-    this.#component.style.margin = 0;
-    this.#component.style.padding = 0;
   }
 
   /**
@@ -75,15 +71,9 @@ export default class Popover {
    * @return void
    */
   #show(anchor) {
-    anchor.style.anchorName = this.#anchorId;
-    // options/css ?
-    this.#component.style.top = `anchor(${this.#anchorId} bottom)`;
-    this.#component.style.left = `anchor(${this.#anchorId} right)`;
-
     if (this.#options.url) {
       this.#replaceContent(this.#options.url);
     }
-
     this.#component.showPopover();
     this.#position(anchor);
   }
@@ -93,10 +83,102 @@ export default class Popover {
    * @return void
    */
   #position(anchor) {
-    console.log(this.#options);
     /*
-    const offset = this.#component.offsetHeight / -2;
+    anchor.style.anchorName = this.#anchorId;
+    this.#component.style.positionAnchor = this.#anchorId;
+    this.#component.style.top = `anchor(${this.#anchorId} bottom)`;
+    this.#component.style.left = `anchor(${this.#anchorId} right)`;
+    */
+    console.log(this.#options);
+    const cWidth = this.#component.offsetWidth;
+    const cHeight = this.#component.offsetHeight;
+    
+    const aWidth = anchor.offsetWidth;
+    const aHeight = anchor.offsetHeight;
+
+
+    const placement = this.#options.placement;
+    const aRect = anchor.getBoundingClientRect();
+    const pRect = this.#component.getBoundingClientRect();
+    const dpRect = this.getDisplayRect();
+
+    
+    console.log(aRect);
+    console.log(pRect);
+
+    // move to CSS
+    this.#component.style.margin = 0;
+    this.#component.style.padding = 0;
+    this.#component.style.position = 'absolute';
+    
+
+
+    if(placement === 'horizontal') {
+      const anchorMiddleVert = aRect.top  + aRect.height / 2;
+      this.#component.style.top = anchorMiddleVert - (pRect.height / 2)+ 'px';
+    
+    } else {
+      const anchorMiddleHor = aRect.left  + aRect.width / 2;
+      console.log(anchorMiddleHor);
+      this.#component.style.left = anchorMiddleHor - (pRect.width / 2) + 'px';
+
+    }
+
+
+
+
+
+
+    //this.checkVerticalBounds();
+    //this.checkHorizontalBounds();
+    /*
     this.#component.style.marginTop = `${offset}px)`;
     */
   }
+
+/**
+   * @returns {undefined}
+   */
+  checkVerticalBounds() {
+    const ttRect = this.#component.getBoundingClientRect();
+    const dpRect = this.getDisplayRect();
+
+    if (ttRect.bottom > (dpRect.top + dpRect.height)) {
+      this.#component.classList.add('c-tooltip--top');
+      //this.#container.classList.add('c-tooltip--top');
+    }
+  }
+
+  /**
+   * @returns {undefined}
+   */
+  checkHorizontalBounds() {
+    const ttRect = this.#component.getBoundingClientRect();
+    const dpRect = this.getDisplayRect();
+
+    if ((dpRect.width - dpRect.left) < ttRect.right) {
+      this.#component.style.transform = `translateX(${(dpRect.width - dpRect.left) - ttRect.right}px)`;
+    }
+    if (ttRect.left < dpRect.left) {
+      this.#component.style.transform = `translateX(${(dpRect.left - ttRect.left) - ttRect.width / 2}px)`;
+    }
+  }
+  /**
+   * @returns {{left: number, top: number, width: number, height: number}}
+   */
+  getDisplayRect() {
+    return  document.getElementsByTagName('main')[0].getBoundingClientRect();
+    /*if (this.#main !== null) {
+      //return this.#main.getBoundingClientRect();
+    }
+    */
+
+    return {
+      left: 0,
+      top: 0,
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+  }
+
 }

@@ -43,9 +43,7 @@ class Renderer extends AbstractComponentRenderer
         }
 
         $options = array(
-            'title' => $this->escape($component->getTitle()),
             'placement' => $component->getPosition(),
-            'multi' => true,
             'url' => $component->getAsyncContentUrl() ?? 'null'
         );
 
@@ -61,12 +59,8 @@ class Renderer extends AbstractComponentRenderer
 
             return
                 "il.UI.popover.init('$id', JSON.parse('$options'));" .
-                "$(document).on('$show', function(event, signalData) {
-                    il.UI.popover.get('$id').showPopover(signalData, JSON.parse('$options'));
-				});" .
-                "$(document).on('$replace', function(event, signalData) {
-					il.UI.popover.get('$id').replaceContentFromSignal(signalData);
-				});"
+                "$(document).on('$show', (event, signalData) => il.UI.popover.get('$id').showPopover(signalData));" .
+                "$(document).on('$replace', (event, signalData) => il.UI.popover.get('$id').replaceContentFromSignal(signalData));"
             ;
         });
 
