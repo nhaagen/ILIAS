@@ -1,22 +1,16 @@
-<div popover id="{ID}" anchor="--anchor_{ID}" class="il-popover" role="tooltip">
-	<div class="il-popover-arrow"></div>
-	<div class="il-popover-inner">
-		<a href="#" class="close"></a>
+<div popover id="{ID}" anchor="--anchor_{ID}" class="c-popover" role="tooltip">
 
-	<!--
-		<div class="il-popover-title-container"><h4 class="webui-popover-title il-popover-title"></h4></div>
-		<div class="il-popover-content webui-popover-content" data-replace-marker="content"><p><i class="icon-refresh"></i><br>&nbsp;</p></div>
-	-->
-		<div class="il-popover-title-container">
-			<div class="il-popover-title">
-				{TITLE}
-			</div>
+	<div class="c-popover__arrow"></div>
+
+	<div class="c-popover__inner">
+		<div class="c-popover__title">
+			<span>{TITLE}</span>
 		</div>
-		<div class="il-popover-content" id="content_{ID}">
+		<div class="c-popover__content" id="content_{ID}">
 			<div data-replace-marker="content">
 				{CONTENT}
 			</div>
 		</div>
-
 	</div>
+
 </div>

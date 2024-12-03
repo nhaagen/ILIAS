@@ -36,7 +36,6 @@ export default class Popover {
     this.#component = component;
     this.#options = options;
     this.#anchorId = component.getAttribute('anchor');
-
   }
 
   /**
@@ -76,8 +75,10 @@ export default class Popover {
     }
     this.#component.showPopover();
     this.#position(anchor);
+    //this.#component.ownerDocument.querySelector('main').addEventListener('scroll', (e)=>this.#position(anchor));
+    
   }
-  
+
   /**
    * @param {HTMLElement} anchor
    * @return void
@@ -89,96 +90,47 @@ export default class Popover {
     this.#component.style.top = `anchor(${this.#anchorId} bottom)`;
     this.#component.style.left = `anchor(${this.#anchorId} right)`;
     */
-    console.log(this.#options);
-    const cWidth = this.#component.offsetWidth;
-    const cHeight = this.#component.offsetHeight;
-    
-    const aWidth = anchor.offsetWidth;
-    const aHeight = anchor.offsetHeight;
+    const { placement } = this.#options;
+    const anchorRect = anchor.getBoundingClientRect();
+    const componentRect = this.#component.getBoundingClientRect();
+    const displayRect = this.#getDisplayRect();
 
+    if (placement === 'horizontal') {
+      const anchorMiddleVert = anchorRect.top + (anchorRect.height / 2);
+      this.#component.style.top = `${anchorMiddleVert - (componentRect.height / 2)}px`;
 
-    const placement = this.#options.placement;
-    const aRect = anchor.getBoundingClientRect();
-    const pRect = this.#component.getBoundingClientRect();
-    const dpRect = this.getDisplayRect();
+      if(anchorRect.left + componentRect.width > displayRect.width) {
+        this.#component.classList.add('c-popover--left');
+        this.#component.style.right = `${anchorRect.left}px`;
+      } else {
+        this.#component.classList.add('c-popover--right');
+        this.#component.style.left = `${anchorRect.right}px`;
+      }
 
-    
-    console.log(aRect);
-    console.log(pRect);
-
-    // move to CSS
-    this.#component.style.margin = 0;
-    this.#component.style.padding = 0;
-    this.#component.style.position = 'absolute';
-    
-
-
-    if(placement === 'horizontal') {
-      const anchorMiddleVert = aRect.top  + aRect.height / 2;
-      this.#component.style.top = anchorMiddleVert - (pRect.height / 2)+ 'px';
-    
     } else {
-      const anchorMiddleHor = aRect.left  + aRect.width / 2;
-      console.log(anchorMiddleHor);
-      this.#component.style.left = anchorMiddleHor - (pRect.width / 2) + 'px';
 
+      const anchorMiddleHor = anchorRect.left + (anchorRect.width / 2);
+      this.#component.style.left = `${anchorMiddleHor - (componentRect.width / 2)}px`;
+
+      if(anchorRect.top - componentRect.height < 0) {
+        this.#component.classList.add('c-popover--bottom');
+        this.#component.style.top = `${anchorRect.bottom}px`;
+      } else {
+        this.#component.classList.add('c-popover--top');
+        this.#component.style.top = `${anchorRect.top - componentRect.height}px`;
+      }
     }
 
-
-
-
-
-
-    //this.checkVerticalBounds();
-    //this.checkHorizontalBounds();
-    /*
-    this.#component.style.marginTop = `${offset}px)`;
-    */
-  }
-
-/**
-   * @returns {undefined}
-   */
-  checkVerticalBounds() {
-    const ttRect = this.#component.getBoundingClientRect();
-    const dpRect = this.getDisplayRect();
-
-    if (ttRect.bottom > (dpRect.top + dpRect.height)) {
-      this.#component.classList.add('c-tooltip--top');
-      //this.#container.classList.add('c-tooltip--top');
-    }
   }
 
   /**
-   * @returns {undefined}
+   * @returns {DOMRect}
    */
-  checkHorizontalBounds() {
-    const ttRect = this.#component.getBoundingClientRect();
-    const dpRect = this.getDisplayRect();
-
-    if ((dpRect.width - dpRect.left) < ttRect.right) {
-      this.#component.style.transform = `translateX(${(dpRect.width - dpRect.left) - ttRect.right}px)`;
-    }
-    if (ttRect.left < dpRect.left) {
-      this.#component.style.transform = `translateX(${(dpRect.left - ttRect.left) - ttRect.width / 2}px)`;
-    }
+  #getDisplayRect() {
+    const mainElements = this.#component.ownerDocument.getElementsByTagName('main');
+    const visibleMain = Array.from(mainElements).find(
+      (element) => Object.prototype.hasOwnProperty.call(element, 'hidden') === false,
+    );
+    return visibleMain.getBoundingClientRect();
   }
-  /**
-   * @returns {{left: number, top: number, width: number, height: number}}
-   */
-  getDisplayRect() {
-    return  document.getElementsByTagName('main')[0].getBoundingClientRect();
-    /*if (this.#main !== null) {
-      //return this.#main.getBoundingClientRect();
-    }
-    */
-
-    return {
-      left: 0,
-      top: 0,
-      width: window.innerWidth,
-      height: window.innerHeight,
-    };
-  }
-
 }
