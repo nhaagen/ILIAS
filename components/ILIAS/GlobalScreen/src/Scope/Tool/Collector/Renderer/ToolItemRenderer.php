@@ -43,8 +43,15 @@ class ToolItemRenderer extends BaseTypeRenderer
          */
 
         $symbol = $this->getStandardSymbol($item);
-
-        $slate = $this->ui_factory->mainControls()->slate()->legacy($item->getTitle(), $symbol, $item->getContent());
+        if ($item->getContent() instanceof \ILIAS\UI\Component\MainControls\Slate\Slate) {
+            $slate = $item->getContent();
+        } else {
+            $slate = $this->ui_factory->mainControls()->slate()->legacy(
+                $item->getTitle(),
+                $symbol,
+                $item->getContent()
+            );
+        }
 
         $slate = $this->addOnloadCode($slate, $item);
 
