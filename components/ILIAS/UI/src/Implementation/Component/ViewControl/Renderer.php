@@ -141,6 +141,9 @@ class Renderer extends AbstractComponentRenderer
             $signal = $triggeredSignals[0]->getSignal();
             $component = $component
                 ->withAdditionalOnLoadCode(
+                    fn($id) => "il.UI.viewcontrol.sortation.init('$id');"
+                )
+                ->withAdditionalOnLoadCode(
                     fn($id) => "$(document).on('$internal_signal', function(event, signalData) {
                         il.UI.viewcontrol.sortation.get('$id').onInternalSelect(event, signalData, '$signal');
                         return false;
