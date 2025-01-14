@@ -25,39 +25,16 @@ use ILIAS\FileUpload\Handler\AbstractCtrlAwareUploadHandler;
 
 class ilIndividualAssessmentUserGrading
 {
-    protected string $name;
-    protected string $record;
-    protected string $internal_note;
-    protected ?string $file;
-    protected bool $is_file_visible;
-    protected int $learning_progress;
-    protected string $place;
-    protected ?DateTimeImmutable $event_time;
-    protected bool $notify;
-    protected bool $finalized;
-
     public function __construct(
-        string $name,
-        string $record,
-        string $internal_note,
-        ?string $file,
-        bool $is_file_visible,
-        int $learning_progress,
-        string $place,
-        ?DateTimeImmutable $event_time,
-        bool $notify,
-        bool $finalized = false
+        protected string $name,
+        protected string $record,
+        protected string $internal_note,
+        protected ?string $file,
+        protected int $learning_progress,
+        protected string $place,
+        protected ?DateTimeImmutable $event_time,
+        protected bool $finalized = false
     ) {
-        $this->name = $name;
-        $this->record = $record;
-        $this->internal_note = $internal_note;
-        $this->file = $file;
-        $this->is_file_visible = $is_file_visible;
-        $this->learning_progress = $learning_progress;
-        $this->place = $place;
-        $this->event_time = $event_time;
-        $this->notify = $notify;
-        $this->finalized = $finalized;
     }
 
     public function getName(): string
@@ -85,11 +62,6 @@ class ilIndividualAssessmentUserGrading
         return !empty($this->file);
     }
 
-    public function isFileVisible(): bool
-    {
-        return $this->is_file_visible;
-    }
-
     public function getLearningProgress(): int
     {
         return $this->learning_progress;
@@ -105,10 +77,6 @@ class ilIndividualAssessmentUserGrading
         return $this->event_time;
     }
 
-    public function isNotify(): bool
-    {
-        return $this->notify;
-    }
 
     public function isFinalized(): bool
     {
@@ -166,12 +134,6 @@ class ilIndividualAssessmentUserGrading
             ->withRequired($file_required)
         ;
 
-        $file_visible = $input
-            ->checkbox($lng->txt('iass_file_visible_examinee'))
-            ->withValue($this->isFileVisible())
-            ->withDisabled(!$may_be_edited)
-        ;
-
         $learning_progress = $input
             ->select($lng->txt('grading'), $grading_options)
             ->withValue($this->getLearningProgress() ?: ilIndividualAssessmentMembers::LP_IN_PROGRESS)
@@ -200,22 +162,14 @@ class ilIndividualAssessmentUserGrading
             );
         }
 
-        $notify = $input
-            ->checkbox($lng->txt('iass_notify'), $lng->txt('iass_notify_explanation'))
-            ->withValue($this->isNotify())
-            ->withDisabled(!$may_be_edited)
-        ;
-
         $fields = [
             'name' => $name,
             'record' => $record,
             'internal_note' => $internal_note,
             'file' => $file,
-            'file_visible' => $file_visible,
             'learning_progress' => $learning_progress,
             'place' => $place,
             'event_time' => $event_time,
-            'notify' => $notify
         ];
 
         if (!$amend) {
@@ -251,11 +205,9 @@ class ilIndividualAssessmentUserGrading
                     $values['record'],
                     $values['internal_note'],
                     $file,
-                    $values['file_visible'],
                     (int) $values['learning_progress'],
                     $values['place'],
                     $values['event_time'],
-                    $values['notify'],
                     $finalized
                 );
             })

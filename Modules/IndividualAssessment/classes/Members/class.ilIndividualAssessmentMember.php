@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -17,6 +15,8 @@ declare(strict_types=1);
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=1);
 
 /**
  * Edit the record of a user, set LP.
@@ -55,7 +55,7 @@ class ilIndividualAssessmentMember
         if (!$this->finalized()) {
             throw new ilIndividualAssessmentException('must finalize before notification');
         }
-        if ($this->notify()) {
+        if ($this->iass->getSettings()->isResultVisible()) {
             $notificator = (string) $this->LPStatus() === (string) ilIndividualAssessmentMembers::LP_COMPLETED ?
                 $notificator->withOccasionCompleted() :
                 $notificator->withOccasionFailed();
@@ -150,7 +150,13 @@ class ilIndividualAssessmentMember
 
     public function viewFile(): bool
     {
+        throw new \Exception('viewFile from Member/Grading');
         return $this->grading->isFileVisible();
+    }
+    public function notify(): bool
+    {
+        throw new \Exception('notify from Member/Grading');
+        return $this->grading->isNotify();
     }
 
     public function LPStatus(): int
@@ -166,11 +172,6 @@ class ilIndividualAssessmentMember
     public function eventTime(): ?DateTimeImmutable
     {
         return $this->grading->getEventTime();
-    }
-
-    public function notify(): bool
-    {
-        return $this->grading->isNotify();
     }
 
     public function finalized(): bool

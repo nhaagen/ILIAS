@@ -71,7 +71,7 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
         }
         $res = $this->db->query($sql);
         while ($rec = $this->db->fetchAssoc($res)) {
-            $usr = new ilObjUser((int)$rec["usr_id"]);
+            $usr = new ilObjUser((int) $rec["usr_id"]);
             $members[] = $this->createAssessmentMember($obj, $usr, $rec);
         }
         return $members;
@@ -138,11 +138,9 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
             (string) $record[ilIndividualAssessmentMembers::FIELD_RECORD],
             (string) $record[ilIndividualAssessmentMembers::FIELD_INTERNAL_NOTE],
             (string) $record[ilIndividualAssessmentMembers::FIELD_FILE_NAME],
-            (bool) $record[ilIndividualAssessmentMembers::FIELD_USER_VIEW_FILE],
             (int) $record[ilIndividualAssessmentMembers::FIELD_LEARNING_PROGRESS],
             (string) $record[ilIndividualAssessmentMembers::FIELD_PLACE],
             $event_time,
-            (bool) $record[ilIndividualAssessmentMembers::FIELD_NOTIFY],
             (bool) $record[ilIndividualAssessmentMembers::FIELD_FINALIZED]
         );
     }
@@ -169,11 +167,9 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
             ilIndividualAssessmentMembers::FIELD_INTERNAL_NOTE => ["text", $member->internalNote()],
             ilIndividualAssessmentMembers::FIELD_PLACE => ["text", $member->place()],
             ilIndividualAssessmentMembers::FIELD_EVENTTIME => ["integer", $event_time],
-            ilIndividualAssessmentMembers::FIELD_NOTIFY => ["integer", $member->notify()],
             ilIndividualAssessmentMembers::FIELD_FINALIZED => ["integer", $member->finalized()],
             ilIndividualAssessmentMembers::FIELD_NOTIFICATION_TS => ["integer", $member->notificationTS()],
             ilIndividualAssessmentMembers::FIELD_FILE_NAME => ["text", $member->fileName()],
-            ilIndividualAssessmentMembers::FIELD_USER_VIEW_FILE => ["integer", $member->viewFile()],
             ilIndividualAssessmentMembers::FIELD_CHANGER_ID => ["integer", $member->changerId()],
             ilIndividualAssessmentMembers::FIELD_CHANGE_TIME => ["string", $this->getActualDateTime()]
         ];
@@ -191,8 +187,8 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
      */
     public function deleteMembers(ilObjIndividualAssessment $obj): void
     {
-        foreach($this->loadMembers($obj) as $member) {
-            if($identifier = $member[ilIndividualAssessmentMembers::FIELD_FILE_NAME]) {
+        foreach ($this->loadMembers($obj) as $member) {
+            if ($identifier = $member[ilIndividualAssessmentMembers::FIELD_FILE_NAME]) {
                 $resource_id = $this->irss->manage()->find($identifier);
                 $this->irss->manage()->remove($resource_id, $this->stakeholder);
             }
@@ -266,10 +262,6 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
                 "text",
                 $record[ilIndividualAssessmentMembers::FIELD_LEARNING_PROGRESS]
             ],
-            ilIndividualAssessmentMembers::FIELD_NOTIFY => [
-                "integer",
-                $record[ilIndividualAssessmentMembers::FIELD_NOTIFY] ?? 0
-            ],
             ilIndividualAssessmentMembers::FIELD_FINALIZED => [
                 "integer",
                 0
@@ -322,13 +314,6 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
                     $record[ilIndividualAssessmentMembers::FIELD_FILE_NAME]
                 ];
         }
-        if (isset($record[ilIndividualAssessmentMembers::FIELD_USER_VIEW_FILE])) {
-            $values[ilIndividualAssessmentMembers::FIELD_USER_VIEW_FILE] =
-                [
-                    "integer",
-                    $record[ilIndividualAssessmentMembers::FIELD_USER_VIEW_FILE]
-                ];
-        }
         if (isset($record[ilIndividualAssessmentMembers::FIELD_CHANGER_ID])) {
             $values[ilIndividualAssessmentMembers::FIELD_CHANGER_ID] =
                 [
@@ -353,7 +338,7 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
     public function removeMembersRecord(ilObjIndividualAssessment $iass, array $record): void
     {
 
-        if(array_key_exists(ilIndividualAssessmentMembers::FIELD_FILE_NAME, $record)
+        if (array_key_exists(ilIndividualAssessmentMembers::FIELD_FILE_NAME, $record)
             && $identifier = $record[ilIndividualAssessmentMembers::FIELD_FILE_NAME]) {
             $resource_id = $this->irss->manage()->find($identifier);
             $this->irss->manage()->remove($resource_id, $this->stakeholder);

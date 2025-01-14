@@ -157,7 +157,7 @@ class ilObjIndividualAssessmentGUI extends ilObjectGUI
                         $cmd = 'members';
                     }
                 }
-                if($cmd === 'edit' && $this->object->accessHandler()->simulateMember()) {
+                if ($cmd === 'edit' && $this->object->accessHandler()->simulateMember()) {
                     $cmd = 'view';
                 }
 
@@ -207,13 +207,15 @@ class ilObjIndividualAssessmentGUI extends ilObjectGUI
     protected function addMemberDataToInfo(ilInfoScreenGUI $info): ilInfoScreenGUI
     {
         $member = $this->object->membersStorage()->loadMember($this->object, $this->usr);
+        $settings = $this->object->getSettings();
+        $finalized = $member->getGrading()->isFinalized();
         $info->addSection($this->txt('grading_info'));
-        if ($member->finalized()) {
+        if ($finalized) {
             $info->addProperty($this->txt('grading'), $this->getEntryForStatus($member->LPStatus()));
         }
-        if ($member->notify() && $member->finalized()) {
+        if ($settings->isResultVisible() && $finalized) {
             $info->addProperty($this->txt('grading_record'), nl2br($member->record()));
-            if (($member->viewFile()) && $member->fileName() && $member->fileName() != "") {
+            if (($settings->isFileVisible()) && $member->fileName() && $member->fileName() != "") {
                 $tpl = new ilTemplate("tpl.iass_user_file_download.html", true, true, "Modules/IndividualAssessment");
                 $tpl->setVariable("FILE_NAME", $member->fileName());
                 $tpl->setVariable("HREF", $this->ctrl->getLinkTarget($this, "downloadFile"));
@@ -227,17 +229,18 @@ class ilObjIndividualAssessmentGUI extends ilObjectGUI
     protected function downloadFileObject(): void
     {
         $member = $this->object->membersStorage()->loadMember($this->object, $this->usr);
+        $settings = $this->object->getSettings();
         if (
             $member
-            && $member->notify()
+            && $settings->isResultVisible()
+            && $settings->isFileVisible()
             && $member->finalized()
-            && $member->viewFile()
             && $member->fileName()
             && $member->fileName() != ""
         ) {
             $identifier = $member->getGrading()->getFile();
             $resource_id = $this->irss->manage()->find($identifier);
-            if($resource_id) {
+            if ($resource_id) {
                 $this->irss->consume()->download($resource_id)->run();
             }
         }
