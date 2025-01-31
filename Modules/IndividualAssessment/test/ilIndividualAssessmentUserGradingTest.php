@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -17,6 +15,8 @@ declare(strict_types=1);
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use ILIAS\UI\Component\Input\Field\Section;
@@ -34,7 +34,7 @@ class ilIndividualAssessmentUserGradingTest extends TestCase
         $internal_note = 'This is a node just for me.';
         $file = null;
         $is_file_visible = false;
-        $learning_progress = ilIndividualAssessmentMembers::LP_IN_PROGRESS;
+        $learning_progress = ilLPStatus::LP_STATUS_IN_PROGRESS_NUM;
         $place = 'Area 51';
         $event_time = new DateTimeImmutable();
         $notify = true;
@@ -72,7 +72,7 @@ class ilIndividualAssessmentUserGradingTest extends TestCase
         $internal_note = 'This is a node just for me.';
         $file = 'report.pdf';
         $is_file_visible = true;
-        $learning_progress = ilIndividualAssessmentMembers::LP_IN_PROGRESS;
+        $learning_progress = ilLPStatus::LP_STATUS_IN_PROGRESS_NUM;
         $place = 'Area 51 Underground';
         $event_time = new DateTimeImmutable();
         $notify = false;
@@ -140,7 +140,7 @@ class ilIndividualAssessmentUserGradingTest extends TestCase
         $internal_note = 'This is a node just for me.';
         $file = 'report.pdf';
         $is_file_visible = true;
-        $learning_progress = ilIndividualAssessmentMembers::LP_IN_PROGRESS;
+        $learning_progress = ilLPStatus::LP_STATUS_IN_PROGRESS_NUM;
         $place = 'Area 51 Underground';
         $event_time = new DateTimeImmutable();
         $notify = false;
@@ -166,9 +166,9 @@ class ilIndividualAssessmentUserGradingTest extends TestCase
             $file_handler,
             $df->dateFormat()->standard(),
             [
-                ilIndividualAssessmentMembers::LP_IN_PROGRESS,
-                ilIndividualAssessmentMembers::LP_FAILED,
-                ilIndividualAssessmentMembers::LP_COMPLETED
+                ilLPStatus::LP_STATUS_IN_PROGRESS_NUM,
+                ilLPStatus::LP_STATUS_FAILED_NUM,
+                ilLPStatus::LP_STATUS_COMPLETED_NUM
             ]
         );
 

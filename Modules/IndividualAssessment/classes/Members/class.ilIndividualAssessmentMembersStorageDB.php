@@ -71,7 +71,7 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
         }
         $res = $this->db->query($sql);
         while ($rec = $this->db->fetchAssoc($res)) {
-            $usr = new ilObjUser((int)$rec["usr_id"]);
+            $usr = new ilObjUser((int) $rec["usr_id"]);
             $members[] = $this->createAssessmentMember($obj, $usr, $rec);
         }
         return $members;
@@ -191,8 +191,8 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
      */
     public function deleteMembers(ilObjIndividualAssessment $obj): void
     {
-        foreach($this->loadMembers($obj) as $member) {
-            if($identifier = $member[ilIndividualAssessmentMembers::FIELD_FILE_NAME]) {
+        foreach ($this->loadMembers($obj) as $member) {
+            if ($identifier = $member[ilIndividualAssessmentMembers::FIELD_FILE_NAME]) {
                 $resource_id = $this->irss->manage()->find($identifier);
                 $this->irss->manage()->remove($resource_id, $this->stakeholder);
             }
@@ -353,7 +353,7 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
     public function removeMembersRecord(ilObjIndividualAssessment $iass, array $record): void
     {
 
-        if(array_key_exists(ilIndividualAssessmentMembers::FIELD_FILE_NAME, $record)
+        if (array_key_exists(ilIndividualAssessmentMembers::FIELD_FILE_NAME, $record)
             && $identifier = $record[ilIndividualAssessmentMembers::FIELD_FILE_NAME]) {
             $resource_id = $this->irss->manage()->find($identifier);
             $this->irss->manage()->remove($resource_id, $this->stakeholder);
@@ -374,13 +374,13 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
     protected function getWhereFromFilter($filter): string
     {
         switch ($filter) {
-            case ilIndividualAssessmentMembers::LP_ASSESSMENT_NOT_COMPLETED:
+            case ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM:
                 return "      AND finalized = 0 AND examiner_id IS NULL\n";
-            case ilIndividualAssessmentMembers::LP_IN_PROGRESS:
+            case ilLPStatus::LP_STATUS_IN_PROGRESS_NUM:
                 return "      AND finalized = 0 AND examiner_id IS NOT NULL\n";
-            case ilIndividualAssessmentMembers::LP_COMPLETED:
+            case ilLPStatus::LP_STATUS_COMPLETED_NUM:
                 return "      AND finalized = 1 AND learning_progress = 2\n";
-            case ilIndividualAssessmentMembers::LP_FAILED:
+            case ilLPStatus::LP_STATUS_FAILED_NUM:
                 return "      AND finalized = 1 AND learning_progress = 3\n";
             default:
                 return "";

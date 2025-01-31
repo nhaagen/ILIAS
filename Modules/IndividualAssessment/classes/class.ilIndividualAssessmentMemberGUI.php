@@ -71,6 +71,7 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
         protected ilIndividualAssessmentGradingStakeholder $stakeholder,
     ) {
         parent::__construct();
+        $this->lng->loadLanguageModule('trac');
     }
 
     public function executeCommand(): void
@@ -177,7 +178,7 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
     {
         $identifier = $this->getMember()->getGrading()->getFile();
         $resource_id = $this->irss->manage()->find($identifier);
-        if($resource_id) {
+        if ($resource_id) {
             $this->irss->consume()->download($resource_id)->run();
         }
     }
@@ -323,9 +324,9 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
     protected function getPossibleLPStates(): array
     {
         return [
-            ilIndividualAssessmentMembers::LP_IN_PROGRESS => $this->lng->txt('iass_status_pending'),
-            ilIndividualAssessmentMembers::LP_COMPLETED => $this->lng->txt('iass_status_completed'),
-            ilIndividualAssessmentMembers::LP_FAILED => $this->lng->txt('iass_status_failed')
+            ilLPStatus::LP_STATUS_IN_PROGRESS_NUM => $this->lng->txt(ilLPStatus::LP_STATUS_IN_PROGRESS),
+            ilLPStatus::LP_STATUS_COMPLETED_NUM => $this->lng->txt(ilLPStatus::LP_STATUS_COMPLETED),
+            ilLPStatus::LP_STATUS_FAILED_NUM => $this->lng->txt(ilLPStatus::LP_STATUS_FAILED)
         ];
     }
 
@@ -353,7 +354,7 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
     protected function getRemoveResult(string $identifier): HandlerResult
     {
         $resource_id = $this->irss->manage()->find($identifier);
-        if($resource_id) {
+        if ($resource_id) {
             $this->irss->manage()->remove($resource_id, $this->stakeholder);
             $status = HandlerResult::STATUS_OK;
             $message = $this->lng->txt('iass_file_deleted');
@@ -368,7 +369,7 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
     public function getInfoResult(string $identifier): ?FileInfoResult
     {
         $resource_id = $this->irss->manage()->find($identifier);
-        if(! $resource_id) {
+        if (! $resource_id) {
             return null;
         }
         $resource = $this->irss->manage()->getResource($resource_id);
@@ -388,7 +389,7 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
         $file_ids = array_filter($file_ids, fn($id) => $id !== "");
         return array_map(function ($id) {
             $resource_id = $this->irss->manage()->find($identifier);
-            if(! $resource_id) {
+            if (! $resource_id) {
                 return null;
             }
             $resource = $this->irss->manage()->getResource($resource_id);
