@@ -137,6 +137,7 @@ interface Factory
      */
     public function nullControl(): NullControl;
 
+
     /**
      * ---
      * description:
@@ -162,4 +163,5 @@ interface Factory
      * @return \ILIAS\UI\Component\Input\ViewControl\Mode
      */
     public function mode(array $options): Mode;
+
 }

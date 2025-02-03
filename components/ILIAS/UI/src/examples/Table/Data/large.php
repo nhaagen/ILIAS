@@ -116,7 +116,7 @@ function large()
     };
 
     $target = (new URI((string) $request->getUri()))->withParameter('ordering_example', 4);
-    $table = $f->table()->data('large ids data table', $columns, $data_retrieval)
+    $table = $f->table()->data($data_retrieval, 'large ids data table', $columns)
         ->withActions($actions)
         ->withRequest($request);
 

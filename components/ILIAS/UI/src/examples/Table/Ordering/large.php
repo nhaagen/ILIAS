@@ -76,7 +76,7 @@ function large()
     /**
      * This is the data binding: retrieve rows and write back the order of records.
      */
-    $data_retrieval = new class ($f, $r) implements I\OrderingBinding {
+    $data_retrieval = new class ($f, $r) implements I\OrderingRetrieval {
         protected array $records;
 
         public function __construct(
@@ -125,9 +125,14 @@ function large()
     };
 
     $target = (new URI((string) $request->getUri()))->withParameter('ordering_example', 4);
-    $table = $f->table()->ordering('large ids ordering table', $columns, $data_retrieval, $target)
-        ->withActions($actions)
-        ->withRequest($request);
+    $table = $f->table()->ordering(
+        $data_retrieval,
+        $target,
+        'large ids ordering table',
+        $columns
+    )
+    ->withActions($actions)
+    ->withRequest($request);
 
     $out = [];
     if ($request->getMethod() == "POST"
