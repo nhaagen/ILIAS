@@ -1,44 +1,38 @@
-<div class="c-sequence c-sequence--linear">
-    <div class="c-sequence__header">
-        <div class="c-sequence__header__global">
-            <div class="l-bar__space-keeper">
-                <nav id="{NAVIGATION_ID}" class="l-bar__group" aria-label="{NAVIGATION_LABEL}" aria-describedby="{NAVIGATION_DESCRIPTION_ID}" aria-controls="{CONTENT_REGION_ID}">
-                    <p id="{NAVIGATION_DESCRIPTION_ID}" class="sr-only">{NAVIGATION_DESCRIPTION}</p>
-                    <div class="l-bar__element c-sequence__navigation--back">
-                        {BACK}
-                    </div>
-                    <div class="l-bar__element c-sequence__navigation--next">
-                        {NEXT}
-                    </div>
-                    <!-- BEGIN viewcontrols -->
-                    <div class="l-bar__element c-sequence__navigation--viewcontrols">
-                        {VIEWCONTROLS}
-                    </div>
-                    <!-- END viewcontrols -->
-                </nav>
-                <div class="l-bar__group">
-                    <!-- BEGIN globalactions -->
-                    <div class="l-bar__element c-sequence__global-actions">
-                        {ACTIONS_GLOBAL}
-                    </div>
-                    <!-- END globalactions -->
-                </div>
-            </div>
+<div class="c-sequence c-sequence--linear" id="{ID}">
+    <!-- BEGIN globalactions -->
+    <div class="c-sequence__global-actions">
+        <div class="c-sequence__navigation--actions_external">
+            {ACTIONS_GLOBAL}
         </div>
-        <div class="c-sequence__header__segment">
-            <div class="c-sequence__header__segment__title">
+    </div>
+    <!-- END globalactions -->
+    <div class="c-sequence__segment">
+        <div class="c-sequence__segment__header">
+            <div class="c-sequence__segment__header__title">
                 <h2 id="{HEADLINE_ID}">{SEGMENT_TITLE}</h2>
             </div>
-            <!-- BEGIN segmentactions -->
-            <div class="c-sequence__header__segment__actions">
+            <!-- BEGIN segmentactgions -->
+            <div class="c-sequence__segment__header__actions">
                 {ACTIONS_SEGMENT}
             </div>
-            <!-- END segmentactions -->
+            <!-- END segmentactgions -->
+        </div>
+        <div id="{CONTENT_REGION_ID}" class="c-sequence__segment__contents">
+            {SEGMENT_CONTENTS}
         </div>
     </div>
-    <div id="{CONTENT_REGION_ID}" class="c-sequence__segment" role="region" aria-describedby="{HEADLINE_ID}">
-        {SEGMENT_CONTENTS}
+
+    <div  id="{NAVIGATION_ID}" class="c-sequence__navigation">
+        <div class="c-sequence__navigation--back">
+            {BACK}
+        </div>
+        <!-- BEGIN viewcontrols -->
+        <div class="c-sequence__navigation--viewcontrols">
+            {VIEWCONTROLS}
+        </div>
+        <!-- END viewcontrols -->
+        <div class="c-sequence__navigation--next">
+            {NEXT}
+        </div>
     </div>
 </div>
-
-
