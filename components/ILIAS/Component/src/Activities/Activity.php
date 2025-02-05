@@ -62,7 +62,9 @@ interface Activity
     public function isAllowedToPerform(int $usr_id, mixed $parameters): bool;
 
     /**
-     * This shall perform the activity. This shall not check if a user is allowed to perform the activity.
+     * This shall perform the activity. This shall not check if a user is allowed to
+     * perform the activity. The returned data should match the Description given by
+     * `getOutputDescription`.
      *
      * @throws any SPL Exception (https://www.php.net/manual/en/spl.exceptions.php)
      * @param mixed $parameters whatever the `FormInput` from `getInputDescription` produces.
