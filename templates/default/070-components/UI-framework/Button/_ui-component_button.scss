@@ -107,10 +107,9 @@ input.btn {
                         $button-color: s.$il-btn-ctrl-bg,
                         $border-color: s.$il-btn-ctrl-border,
                         $hover_border-color: s.$il-btn-ctrl-engaged-border,
-                        $disabled_bg-color: s.$il-disabled-btn-bg,
+                        $disabled_bg-color: s.$il-main-darker-bg,
                         $disabled_text-color: s.$il-disabled-btn-color,
-                        $disabled_border-color: s.$il-disabled-btn-border,
-  );
+                        $disabled_border-color: s.$il-main-darker-bg);
   &.engaged,
   .open & {
     border: 1px solid s.$il-btn-ctrl-engaged-border;
