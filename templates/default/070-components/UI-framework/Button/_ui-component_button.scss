@@ -111,7 +111,6 @@ input.btn {
                         $disabled_text-color: s.$il-disabled-btn-color,
                         $disabled_border-color: s.$il-disabled-btn-border,
   );
-
   &.engaged,
   .open & {
     border: 1px solid s.$il-btn-ctrl-engaged-border;
