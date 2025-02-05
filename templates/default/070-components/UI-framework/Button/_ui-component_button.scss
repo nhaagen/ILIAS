@@ -111,6 +111,7 @@ input.btn {
                         $disabled_text-color: s.$il-disabled-btn-color,
                         $disabled_border-color: s.$il-disabled-btn-border,
   );
+
   &.engaged,
   .open & {
     border: 1px solid s.$il-btn-ctrl-engaged-border;
@@ -127,6 +128,11 @@ input.btn {
     @extend .btn-ctrl;
     margin-left: l.$il-margin-xs-horizontal;
   }
+}
+
+.c-sequence__navigation--back > .btn-default,
+.c-sequence__navigation--next > .btn-default {
+  @extend .btn-ctrl;
 }
 
 // ILIAS doesn't use btn-success, btn-info, btn-warning, btn-danger
