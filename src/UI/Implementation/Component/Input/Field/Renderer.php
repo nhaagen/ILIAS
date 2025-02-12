@@ -150,6 +150,9 @@ class Renderer extends AbstractComponentRenderer
             case ($component instanceof F\ColorPicker):
                 return $this->renderColorPickerField($component);
 
+            case ($component instanceof F\DynamicGroup):
+                return $this->renderDynamicGroup($component, $default_renderer);
+
             default:
                 throw new LogicException("Cannot render '" . get_class($component) . "'");
         }
@@ -448,7 +451,7 @@ class Renderer extends AbstractComponentRenderer
             $tpl->setVariable("HIDDEN", "hidden");
         }
 
-        if(!($value && $component->isRequired())) {
+        if (!($value && $component->isRequired())) {
             $tpl->setVariable("VALUE", null);
             $tpl->setVariable("VALUE_STR", $component->isRequired() ? $this->txt('ui_select_dropdown_label') : '-');
             $tpl->parseCurrentBlock();
@@ -912,6 +915,7 @@ class Renderer extends AbstractComponentRenderer
             Component\Input\Field\Hidden::class,
             Component\Input\Field\ColorPicker::class,
             Component\Input\Field\Markdown::class,
+            Component\Input\Field\DynamicGroup::class,
         ];
     }
 
@@ -1068,4 +1072,66 @@ class Renderer extends AbstractComponentRenderer
 
         return $this->wrapInFormContext($component, $tpl->get());
     }
+
+    protected function renderDynamicGroup(F\DynamicGroup $component, RendererInterface $default_renderer): string
+    {
+        $tpl = $this->getTemplate('tpl.dyngroup.html', true, true);
+
+        foreach ($component->getDynamicInputs() as $input) {
+            //render the inputs/values
+            $tpl->setCurrentBlock('block_group');
+            $tpl->setVariable('INPUTS', $default_renderer->render($input));
+            $tpl->setVariable('CONTROLS_REMOVE', $default_renderer->render(
+                $this->getUIFactory()->symbol()->glyph()->close()->withAction("#")
+            ));
+            $tpl->parseCurrentBlock();
+        }
+
+
+        //render template
+        $tpl->setCurrentBlock('block_template');
+        $tpl->setVariable('INPUTS', $default_renderer->render(
+            $component->getTemplateForDynamicInputs()
+        ));
+        $tpl->setVariable('CONTROLS_REMOVE', $default_renderer->render(
+            $this->getUIFactory()->symbol()->glyph()->close()->withAction("#")
+        ));
+        $tpl->parseCurrentBlock();
+
+
+        $dyn_template = $tpl->get('block_template');
+        $component = $this->initClientsideRenderer($component, $dyn_template);
+
+
+        $tpl->setVariable(
+            'CONTROLS_ADD',
+            $default_renderer->render(
+                $this->getUIFactory()->symbol()->glyph()->add()
+                    ->withAction("#")
+                    ->withAdditionalOnLoadCode(
+                        fn($id) => "
+                        $('#$id').click(
+                            function(e) { 
+                                const field = e.target.closest('.ui-input-dyngroup');
+                                const list = field.querySelector('.ui-input-dynamic-inputs-list');
+                                const tpl = field.querySelector('template');
+                                const clone = tpl.content.cloneNode(true);
+                                list.appendChild(clone);
+                            }
+                        );
+                    "
+                    )
+            )
+        );
+
+        $js_id = $this->bindJSandApplyId($component, $tpl);
+        return  $this->wrapInFormContext(
+            $component,
+            $tpl->get(),
+            $js_id,
+            "",
+            false
+        );
+    }
+
 }

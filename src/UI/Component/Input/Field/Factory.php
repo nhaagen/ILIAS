@@ -756,4 +756,35 @@ interface Factory
      * @return \ILIAS\UI\Component\Input\Field\Markdown
      */
     public function markdown(MarkdownRenderer $md_renderer, string $label, string $byline = null): Markdown;
+
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *     Dynamic groups are used to add (or remove) inputs to forms when the
+     *     desired amount of fields cannot be determined initially.
+     *   composition: >
+     *     Dynamic groups are composed of other inputs, with the addition of
+     *     glyphs to add or remove more inputs.
+     *   effect: >
+     *     Clicking the add glyph, a new input will be added to the group.
+     *     This might well be an entire group of inputs, too.
+     *     Added inputs may be removed by clicking the respective remove glyph.
+     *
+     * rules:
+     *   usage:
+     *     1: X
+     *
+     * context:
+     *   - Dynamic groups are used in UI Forms.
+     *
+     * ---
+     * @return \ILIAS\UI\Component\Input\Field\DynamicGroup
+     */
+    public function dynamicGroup(
+        FormInput $template,
+        string $label,
+        ?string $byline = null
+    ): DynamicGroup;
 }

@@ -235,4 +235,20 @@ class Factory implements I\Factory
     {
         return new Markdown($this->data_factory, $this->refinery, $md_renderer, $label, $byline);
     }
+
+    public function dynamicGroup(
+        FormInput $template,
+        string $label,
+        ?string $byline = null
+    ): I\DynamicGroup {
+        return new DynamicGroup(
+            $this->lng,
+            $this->data_factory,
+            $this->refinery,
+            $template,
+            $label,
+            $byline
+        );
+    }
+
 }
