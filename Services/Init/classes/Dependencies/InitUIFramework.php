@@ -125,7 +125,8 @@ class InitUIFramework
         $c["ui.factory.chart"] = function ($c) {
             return new ILIAS\UI\Implementation\Component\Chart\Factory(
                 $c["ui.factory.progressmeter"],
-                $c["ui.factory.bar"]
+                $c["ui.factory.bar"],
+                $c["ui.factory.pie"]
             );
         };
         $c["ui.factory.input"] = function ($c) {
@@ -207,6 +208,10 @@ class InitUIFramework
         $c["ui.factory.bar"] = function ($c) {
             return new ILIAS\UI\Implementation\Component\Chart\Bar\Factory();
         };
+        $c["ui.factory.pie"] = function ($c) {
+            return new ILIAS\UI\Implementation\Component\Chart\Pie\Factory();
+        };
+
         $c["ui.factory.input.field"] = function ($c) {
             return new ILIAS\UI\Implementation\Component\Input\Field\Factory(
                 $c["ui.upload_limit_resolver"],

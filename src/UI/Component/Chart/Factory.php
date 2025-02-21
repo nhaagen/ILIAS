@@ -119,4 +119,16 @@ interface Factory
      * @return \ILIAS\UI\Component\Chart\Bar\Factory
      */
     public function bar(): \ILIAS\UI\Component\Chart\Bar\Factory;
+
+    /**
+     * ---
+     * description:
+     *   purpose: >
+     *      X
+     *   composition: >
+     *      X
+     * ---
+     * @return \ILIAS\UI\Component\Chart\Pie\Factory
+     */
+    public function pie(): \ILIAS\UI\Component\Chart\Pie\Factory;
 }

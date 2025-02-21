@@ -30,13 +30,16 @@ class Factory implements C\Chart\Factory
 {
     protected C\Chart\ProgressMeter\Factory $progressmeter_factory;
     protected C\Chart\Bar\Factory $bar_factory;
+    protected C\Chart\Pie\Factory $pie_factory;
 
     public function __construct(
         C\Chart\ProgressMeter\Factory $progressmeter_factory,
-        C\Chart\Bar\Factory $bar_factory
+        C\Chart\Bar\Factory $bar_factory,
+        C\Chart\Pie\Factory $pie_factory,
     ) {
         $this->progressmeter_factory = $progressmeter_factory;
         $this->bar_factory = $bar_factory;
+        $this->pie_factory = $pie_factory;
     }
 
     /**
@@ -62,4 +65,12 @@ class Factory implements C\Chart\Factory
     {
         return $this->bar_factory;
     }
+    /**
+     * @inheritdoc
+     */
+    public function pie(): C\Chart\Pie\Factory
+    {
+        return $this->pie_factory;
+    }
+
 }
