@@ -26,7 +26,7 @@ use ILIAS\UI\Component\Table\OrderingRowBuilder;
  * Class DataRetrieval
  *
  */
-class DataRetrieval implements I\OrderingBinding
+class DataRetrieval implements I\OrderingRetrieval
 {
     private \ilLanguage $lng;
 

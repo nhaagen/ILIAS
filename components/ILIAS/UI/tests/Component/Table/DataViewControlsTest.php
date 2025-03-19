@@ -66,9 +66,7 @@ class DataViewControlsTest extends TableTestBase
     {
         $factory = $this->getTableFactory();
         $table = $factory->data($this->getDataRetrieval($total_count), 'Table', $columns);
-        return $table
-            ->withRequest($this->getRequestMock([]))
-            ->applyViewControls([], []);
+        return $table->applyViewControls([], []);
     }
 
     public function testDataTableHasViewControls(): void

@@ -166,9 +166,9 @@ class ConditionTriggerTableGUI implements DataRetrieval
         return $this->ui_factory
             ->table()
             ->data(
+                $this,
                 $this->lng->txt('active_preconditions'),
                 $this->getColumns(),
-                $this
             )
             ->withId(self::class)
             ->withActions($this->getActions())

@@ -97,9 +97,9 @@ class LogTable implements Table\DataRetrieval
     public function getTable(): Table\Data
     {
         return $this->ui_factory->table()->data(
+            $this,
             $this->lng->txt('history'),
-            $this->getColumns(),
-            $this
+            $this->getColums(),
         )->withActions($this->getActions());
     }
 

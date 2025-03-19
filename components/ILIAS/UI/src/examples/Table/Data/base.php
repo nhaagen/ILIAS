@@ -240,7 +240,7 @@ function base()
      * with an Id for the table, parameters will be stored throughout url changes
      */
     $table = $f->table()
-            ->data('a data table', $columns, $data_retrieval)
+            ->data($data_retrieval, 'a data table', $columns)
             ->withId('example_base')
             ->withActions($actions)
 

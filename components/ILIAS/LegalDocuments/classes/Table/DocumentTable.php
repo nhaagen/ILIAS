@@ -147,14 +147,6 @@ class DocumentTable implements Table
         return $input;
     }
 
-    public function getTotalRowCount(
-        mixed $additional_viewcontrol_data,
-        mixed $filter_data,
-        mixed $additional_parameters
-    ): ?int {
-        return $this->repository->countAll();
-    }
-
     public function step(): Closure
     {
         $step = 0;
