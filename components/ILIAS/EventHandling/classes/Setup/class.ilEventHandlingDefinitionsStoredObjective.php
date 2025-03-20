@@ -19,73 +19,24 @@
 use ILIAS\Setup;
 use ILIAS\DI;
 
-class ilEventHandlingDefinitionsStoredObjective implements Setup\Objective
+class ilEventHandlingDefinitionsStoredObjective extends Setup\Artifact\BuildArtifactObjective
 {
-    /**
-     * @var	bool
-     */
-    protected $populate_before;
-
-    public function __construct(bool $populate_before = true)
-    {
-        $this->populate_before = $populate_before;
+    public function __construct(
+        protected array $event_definitions
+    ) {
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getHash(): string
+    public function getArtifactName(): string
     {
-        return hash("sha256", self::class);
+        return "event_handling_data";
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getLabel(): string
+    public function build(): Setup\Artifact
     {
-        return "Events are initialized.";
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isNotable(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPreconditions(Setup\Environment $environment): array
-    {
-        return [
-            new \ilDatabaseUpdatedObjective(),
-            new \ilSettingsFactoryExistsObjective(),
-            new \ilComponentDefinitionsStoredObjective()
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function achieve(Setup\Environment $environment): Setup\Environment
-    {
-        $reader = new \ilComponentDefinitionReader(
-            new \ilEventHandlingDefinitionProcessor(),
+        $definitions = array_map(
+            fn($event_def) => $event_def->toArray(),
+            $this->event_definitions
         );
-        $reader->purge();
-        $reader->readComponentDefinitions();
-
-        return $environment;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isApplicable(Setup\Environment $environment): bool
-    {
-        return true;
+        return new Setup\Artifact\ArrayArtifact($definitions);
     }
 }

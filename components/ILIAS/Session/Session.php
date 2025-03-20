@@ -36,5 +36,24 @@ class Session implements Component\Component
             new \ilSessionSetupAgent(
                 $pull[\ILIAS\Refinery\Factory::class]
             );
+
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'raise', 'create');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'raise', 'update');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'raise', 'delete');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'raise', 'addToWaitingList');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'raise', 'addSubscriber');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'raise', 'enter');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'raise', 'register');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'listen', 'components/ILIAS/Session');
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'listen', 'components/ILIAS/AccessControl');
     }
 }

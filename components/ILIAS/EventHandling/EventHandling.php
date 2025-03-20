@@ -32,9 +32,13 @@ class EventHandling implements Component\Component
         array | \ArrayAccess &$pull,
         array | \ArrayAccess &$internal,
     ): void {
+
         $contribute[\ILIAS\Setup\Agent::class] = static fn() =>
             new \ilEventHandlingSetupAgent(
-                $pull[\ILIAS\Refinery\Factory::class]
+                $seek[\ILIAS\Events\Definition::class]
             );
+
+        $contribute[\ILIAS\Events\Definition::class] = static fn() =>
+            new \ILIAS\Events\Definition(self::class, 'listen', 'components/ILIAS/EventHandling');
     }
 }

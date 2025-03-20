@@ -18,12 +18,16 @@
 
 class ilArtifactEventHandlingData
 {
-
     protected array $event_handling_data;
 
     public function __construct()
     {
         $this->event_handling_data = $this->readEventHandlingData();
+        /*
+        print '<pre>';
+        var_dump($this->event_handling_data);
+        die();
+        */
     }
 
     /**
@@ -32,7 +36,7 @@ class ilArtifactEventHandlingData
      */
     protected function readEventHandlingData(): array
     {
-        return require ilEventHandlingBuildEventInfoObjective::PATH();
+        return require ilEventHandlingDefinitionsStoredObjective::PATH();
     }
 
     /**
