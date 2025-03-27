@@ -54,7 +54,7 @@ class ActionResolver
             }
         }
 
-        //make sure our action is callable
+        //make sure our action is resolvable
         if (!is_callable($resolved)) {
             throw new RuntimeException(sprintf(
                 '%s is not resolvable',

@@ -40,6 +40,7 @@ use PHPUnit\Framework\TestCase;
 use ILIAS\UI\Implementation\Component\SignalGenerator;
 use PHPUnit\Framework\MockObject\MockObject;
 use ILIAS\UI\Component\Component;
+use ILIAS\UI\Implementation\Component\ComponentHelper;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\UI\HelpTextRetriever;
 use ILIAS\UI\Help;
@@ -310,6 +311,8 @@ class SignalGeneratorMock extends SignalGenerator
 
 class DummyComponent implements IComponent
 {
+    use ComponentHelper;
+
     public function getCanonicalName(): string
     {
         return "DummyComponent";

@@ -24,6 +24,7 @@ use ilDatabaseException;
 use ILIAS\Component\Activities\ObjectActivity;
 use ILIAS\Component\Activities\Query;
 use ILIAS\Data\Result;
+use ILIAS\Data\Text\SimpleDocumentMarkdown;
 use ILIAS\Specs\Schema\SchemaType;
 use ILIAS\Data\Factory;
 use ilObjectFactory;
@@ -51,9 +52,9 @@ class GetUserQuery extends Query implements ObjectActivity
 
     }
 
-    public function getDescription(): string
+    public function getDescription(): SimpleDocumentMarkdown
     {
-        return 'Returns User data given the user id';
+        return  (new Factory())->text()->markdown()->simpleDocument("Returns user data given a user id");
     }
     public function getName(): \ILIAS\Component\Dependencies\Name
     {
