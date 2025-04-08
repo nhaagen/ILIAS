@@ -92,6 +92,24 @@ class Renderer extends AbstractComponentRenderer
         $tpl->setVariable('SEGMENT_TITLE', $segment->getSegmentTitle());
         $tpl->setVariable('SEGMENT_CONTENTS', $default_renderer->render($segment));
 
+        $content_region_id = $this->createId();
+        $tpl->setVariable('CONTENT_REGION_ID', $content_region_id);
+
+        $headline_id = $this->createId();
+        $tpl->setVariable('HEADLINE_ID', $headline_id);
+
+        $navigation_id = $this->createId();
+        $tpl->setVariable('NAVIGATION_ID', $navigation_id);
+
+        $navigation_description_id = $this->createId();
+        $tpl->setVariable('NAVIGATION_DESCRIPTION_ID', $navigation_description_id);
+
+        $nav_label = $this->txt("ui_nav_sequence_control_label");
+        $tpl->setVariable('NAVIGATION_LABEL', $nav_label);
+
+        $nav_description = $this->txt("ui_nav_sequence_description");
+        $tpl->setVariable('NAVIGATION_DESCRIPTION', $nav_description);
+
         return $tpl->get();
     }
 }
