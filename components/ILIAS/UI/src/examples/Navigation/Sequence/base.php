@@ -18,11 +18,14 @@ use Psr\Http\Message\ServerRequestInterface;
  *   Base example for rendering a sequence navigation.
  *
  * expected output: >
- *   ILIAS shows a group of buttons and a characteristic value listing.
- *   Buttons are "back" and "next", of which the back button is inactive until
- *   the next button was clicked.
- *   A vieww control allows the user to select chunks of data, and an additional
+ *   ILIAS shows a group of buttons and different placeholders for the segment.
+ *   The navigation buttons are "back" and "next". At first, the "back" button is
+ *   inactive until the next button was clicked. On the last segment, the "next"
+ *   button will be inactive.
+ *   A view control allows the user to select chunks of data, and an additional
  *   button (without real function) is labeled "a global action".
+ *   On some segments there is an additional button labeled "a segment action
+ *   for pos x". In this example, these buttons don't trigger a function.
  * ---
  */
 function base()
