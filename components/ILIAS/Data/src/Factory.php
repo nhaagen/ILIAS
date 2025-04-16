@@ -237,4 +237,7 @@ class Factory
         }
         return $this->text_factory;
     }
+    public function emailAddress(string $address): EmailAddress {
+        return new EmailAddress($address);
+    }
 }
