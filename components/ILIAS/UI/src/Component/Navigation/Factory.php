@@ -59,6 +59,9 @@ interface Factory
      *       Use a sequence when the order of presentation is crucial or the
      *       sequencial presentation aids focus. The sequence is not of an
      *       explorative nature but rather instructional.
+     *     2: >
+     *       Sequence MUST be called "withRequest", i.e. the current ServerRequest
+     *       MUST be provided before rendering.
      *   interaction:
      *     1: >
      *       Any actions included/provided by (parts of) a segment MUST NOT leave
@@ -67,6 +70,6 @@ interface Factory
      * @return \ILIAS\UI\Component\Navigation\Sequence\Sequence
      */
     public function sequence(
-        Sequence\Binding $binding
+        Sequence\SegmentRetrieval $segment_retrieval
     ): Sequence\Sequence;
 }
