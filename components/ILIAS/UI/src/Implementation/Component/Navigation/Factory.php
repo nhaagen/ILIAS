@@ -37,13 +37,13 @@ class Factory implements INavigation\Factory
      * @inheritdoc
      */
     public function sequence(
-        INavigation\Sequence\Binding $binding
+        INavigation\Sequence\SegmentRetrieval $segment_retrieval
     ): INavigation\Sequence\Sequence {
         return new Sequence\Sequence(
             $this->data_factory,
             $this->refinery,
             $this->storage,
-            $binding
+            $segment_retrieval
         );
     }
 

@@ -50,13 +50,13 @@ class Sequence implements ISequence\Sequence
         protected DataFactory $data_factory,
         protected Refinery $refinery,
         protected \ArrayAccess $storage,
-        protected ISequence\Binding $binding
+        protected ISequence\SegmentRetrieval $segment_retrieval
     ) {
     }
 
-    public function getBinding(): ISequence\Binding
+    public function getSegmentRetrieval(): ISequence\SegmentRetrieval
     {
-        return $this->binding;
+        return $this->segment_retrieval;
     }
 
     public function getCurrentPosition(): int

@@ -6,7 +6,7 @@ namespace ILIAS\UI\examples\Navigation\Sequence;
 
 use ILIAS\UI\Factory as UIFactory;
 use ILIAS\UI\Renderer as UIRenderer;
-use ILIAS\UI\Component\Navigation\Sequence\Binding;
+use ILIAS\UI\Component\Navigation\Sequence\SegmentRetrieval;
 use ILIAS\UI\Component\Navigation\Sequence\SegmentBuilder;
 use ILIAS\UI\Component\Navigation\Sequence\Segment;
 use ILIAS\UI\URLBuilder;
@@ -37,7 +37,7 @@ function base()
     $refinery = $DIC['refinery'];
     $request = $DIC->http()->request();
 
-    $binding = new class ($f, $r) implements Binding {
+    $binding = new class ($f, $r) implements SegmentRetrieval {
         private array $seq_data;
 
         public function __construct(
@@ -65,7 +65,7 @@ function base()
             ];
         }
 
-        public function getSequencePositions(
+        public function getAllPositions(
             mixed $viewcontrol_values,
             mixed $filter_values
         ): array {

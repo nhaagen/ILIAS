@@ -21,23 +21,23 @@ declare(strict_types=1);
 namespace ILIAS\UI\Component\Navigation\Sequence;
 
 /**
- * The Sequence Binding defines available stops for the sequence and builds
+ * The SegmentRetrieval defines available stops for the sequence and builds
  * it's segments.
  */
-interface Binding
+interface SegmentRetrieval
 {
     /**
      * Provides available positions as an iterable list of (sets of) information
      * necessary to identify and factor a segment.
      * Data provided by a position for a certain index is relayed to getSegment.
      */
-    public function getSequencePositions(
+    public function getAllPositions(
         mixed $viewcontrol_values,
         mixed $filter_values
     ): array;
 
     /**
-     * Receives position data (provided by getSequencePositions) and builds a segment.
+     * Receives position data (provided by getAllPositions) and builds a segment.
      */
     public function getSegment(
         mixed $position_data,
