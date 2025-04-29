@@ -39,54 +39,69 @@ namespace ILIAS\Data;
  */
 class EmailAddress
 {
-    protected string $addressFull;
-    protected string $domainPart;
-    protected string $localPart;
-    protected bool $isAscii;
-    protected bool $isDomainPartAscii;
-    protected bool $isLocalPartAscii;
+    protected string $address_full;
+    protected string $domain_part;
+    protected string $local_part;
+    protected bool $is_ascii;
+    protected bool $is_domainpart_ascii;
+    protected bool $is_localpart_ascii;
 
+    private const INVALID_DOMAIN_PART = '/[\p{C}\p{Z}]/u';
+    private const INVALID_LOCAL_PART = '/[\x00-\x1F\x7F]/';
+    private const SAFE_ASCII = '/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~\.-]+$/';
 
-    public function __construct(string $address_Full)
+    // Check allowed Unicode characters this includes e.g.
+    //      * a-z, A-Z, 0-9
+    //      * Latin accented: é, ñ, ö, č
+    //      * Greek: Α, β, Ω
+    //      * Cyrillic: Б, и, я
+    //      * Arabic letters: ا, ب, خ
+    //      * Hebrew: א, ב, ג
+    //      * East Asian ideographs (CJK): 日, 本, 語, 汉, 字
+    //      * Devanagari (Hindi, Marathi): अ, आ, क
+    //      * Hangul (Korean): 한, 글
+    //      * and more
+    // \p{L} includes all characters Unicode defines as letters
+    // \p{N} includes all characters Unicode defines as numbers
+    // this excludes emojis and control characters which are not allowed in the local part
+    private const ALLOWED_UNICODE = '/^[\p{L}\p{N}!#$%&\'*+\/=?^_`{|}~\.-]+$/u';
+
+    public function __construct(string $address_full)
     {
-        $this->addressFull = $this->digestFullAddress($address_Full);
-        $this->domainPart = $this->digestDomainPart($address_Full);
-        $this->localPart = $this->digestLocalPart($address_Full);
-        if ($this->isDomainPartAscii && $this->isLocalPartAscii) {
-            $this->isAscii = true;
-        } else {
-            $this->isAscii = false;
-        }
+        $this->address_full = $this->digestFullAddress($address_full);
+        $this->domain_part = $this->digestDomainPart($address_full);
+        $this->local_part = $this->digestLocalPart($address_full);
+        $this->is_ascii = ($this->is_domainpart_ascii && $this->is_localpart_ascii);
     }
 
     public function getAddressFull(): string
     {
-        return $this->addressFull;
+        return $this->address_full;
     }
 
     public function getDomainPart(): string
     {
-        return $this->domainPart;
+        return $this->domain_part;
     }
 
     public function getLocalPart(): string
     {
-        return $this->localPart;
+        return $this->local_part;
     }
 
     public function getIsAscii(): bool
     {
-        return $this->isAscii;
+        return $this->is_ascii;
     }
 
     public function getIsDomainPartAscii(): bool
     {
-        return $this->isDomainPartAscii;
+        return $this->is_domainpart_ascii;
     }
 
     public function getIsLocalPartAscii(): bool
     {
-        return $this->isLocalPartAscii;
+        return $this->is_localpart_ascii;
     }
 
     public function __toString(): string
@@ -113,7 +128,7 @@ class EmailAddress
             throw new \InvalidArgumentException("Email must have non-empty local and domain parts.");
         }
 
-        $this->addressFull = $address;
+        $this->address_full = $address;
         return $address;
     }
 
@@ -121,13 +136,13 @@ class EmailAddress
     {
         [, $domain] = explode('@', $address, 2);
 
-        $this->isDomainPartAscii = $this->checkAscii($address);
+        $this->is_domainpart_ascii = $this->checkAscii($address);
 
         if ($domain === 'localhost') {
             return $domain;
         }
 
-        if (preg_match('/[\p{C}\p{Z}]/u', $domain)) {
+        if (preg_match(self::INVALID_DOMAIN_PART, $domain)) {
             throw new \InvalidArgumentException("Domain part contains invalid characters (e.g., whitespace or control).");
         }
 
@@ -186,16 +201,13 @@ class EmailAddress
             $local_strip_quotes = $local;
         }
 
-        if (preg_match('/[\x00-\x1F\x7F]/', $local_strip_quotes)) {
+        if (preg_match(self::INVALID_LOCAL_PART, $local_strip_quotes)) {
             throw new \InvalidArgumentException("Local part contains unsupported control characters or invalid escape sequences.");
         }
 
         // check if safe Ascii
-        if (preg_match('/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~\.-]+$/', $local_strip_quotes)) {
-            $this->isLocalPartAscii = true;
-        } else {
-            $this->isLocalPartAscii = false;
-        }
+        $this->is_localpart_ascii = (bool) preg_match(self::SAFE_ASCII, $local_strip_quotes);
+
         // check if save Unicode
         if (!self::isAllowedIntlUnicode($local_strip_quotes)) {
             throw new \InvalidArgumentException("Local part is not a valid Unicode string.");
@@ -206,24 +218,6 @@ class EmailAddress
 
     protected static function isAllowedIntlUnicode(string $string): bool
     {
-        // Check allowed Unicode characters this includes e.g.
-        //      * a-z, A-Z, 0-9
-        //      * Latin accented: é, ñ, ö, č
-        //      * Greek: Α, β, Ω
-        //      * Cyrillic: Б, и, я
-        //      * Arabic letters: ا, ب, خ
-        //      * Hebrew: א, ב, ג
-        //      * East Asian ideographs (CJK): 日, 本, 語, 汉, 字
-        //      * Devanagari (Hindi, Marathi): अ, आ, क
-        //      * Hangul (Korean): 한, 글
-        //      * and more
-        // \p{L} includes all characters Unicode defines as letters
-        // \p{N} includes all characters Unicode defines as numbers
-        // this excludes emojis and control characters which are not allowed in the local part
-        if (!preg_match('/^[\p{L}\p{N}!#$%&\'*+\/=?^_`{|}~\.-]+$/u', $string)) {
-            return false;
-        } else {
-            return true;
-        }
+        return (bool) preg_match(self::ALLOWED_UNICODE, $string);
     }
 }
