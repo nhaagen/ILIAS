@@ -47,10 +47,16 @@ use ILIAS\TestQuestionPool\RequestDataCollector as QPLRequestDataCollector;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\DI\Container as ILIASContainer;
 use Pimple\Container as PimpleContainer;
+use ILIAS\Test\Scoring\Manual\ConsecutiveScoring;
+use ILIAS\Test\Scoring\Manual\ConsecutiveScoringGUI;
+use ILIAS\Test\Scoring\Manual\ConsecutiveScoringSequenceBinding;
+use ILIAS\Test\Scoring\Manual\ConsecutiveScoringURLs;
+use ILIAS\UI\URLBuilder;
 
 class TestDIC extends PimpleContainer
 {
     protected static ?self $dic = null;
+    protected static ?PimpleContainer $specific_dic = null;
 
     public static function dic(): self
     {
@@ -213,6 +219,88 @@ class TestDIC extends PimpleContainer
 
         $dic['participant.repository'] = static fn($c): ParticipantRepository =>
             new ParticipantRepository($DIC['ilDB']);
+
+        return $dic;
+    }
+
+
+    public static function specificDic(\ilObjTest $object): ILIASContainer
+    {
+        if (!self::$specific_dic) {
+            global $DIC;
+            self::$specific_dic = self::buildSpecificDIC(
+                $DIC,
+                self::dic(),
+                $object
+            );
+        }
+        return self::$specific_dic;
+    }
+
+    protected static function buildSpecificDIC(
+        ILIASContainer $DIC,
+        TestDIC $local_dic,
+        \ilObjTest $object,
+    ): ILIASContainer {
+        $dic = new ILIASContainer();
+
+        $dic['test.access'] = static fn($c): \ilTestAccess =>
+            new \ilTestAccess(
+                $object->getRefId()
+            );
+
+        $dic['manscoring.consecutive'] = static fn($c): ConsecutiveScoring =>
+            new ConsecutiveScoring(
+                $object,
+                $local_dic['question.general_properties.repository'],
+                $local_dic['shuffler'],
+                $local_dic['logging.logger'],
+            );
+
+        $dic['manscoring.consecutive.gui'] = static fn($c): ConsecutiveScoringGUI =>
+            new ConsecutiveScoringGUI(
+                $DIC['ilCtrl'],
+                $DIC['tpl'],
+                $DIC['ilTabs'],
+                $DIC['lng'],
+                $object,
+                $c['test.access'],
+                $DIC['ui.factory'],
+                $DIC['ui.renderer'],
+                $DIC['refinery'],
+                $DIC->http()->request(),
+                $c['manscoring.consecutive'],
+                $c['manscoring.consecutive.binding'],
+                $DIC->uiService()->filter(),
+                $c['urlbuilder.manscoring'],
+            );
+
+        $dic['manscoring.consecutive.binding'] = static fn($c): ConsecutiveScoringSequenceBinding =>
+            new ConsecutiveScoringSequenceBinding(
+                $DIC['ui.factory'],
+                $DIC['ui.renderer'],
+                $DIC['refinery'],
+                new DataFactory(),
+                $DIC['lng'],
+                $c['manscoring.consecutive'],
+                $c['urlbuilder.manscoring'],
+                //$DIC['ilCtrl']->getLinkTargetByClass(ConsecutiveScoringGUI::class, ConsecutiveScoringGUI::CMD_SCORE)
+            );
+
+        $dic['urlbuilder.current'] = function ($c) use ($DIC): URLBuilder {
+            $current_url = (new DataFactory())->uri($DIC->http()->request()->getUri()->__toString());
+            $url_builder = new URLBuilder($current_url);
+            return $url_builder;
+        };
+
+        $dic['urlbuilder.manscoring'] = static fn($c): ConsecutiveScoringURLs =>
+            new ConsecutiveScoringURLs(
+                $c['urlbuilder.current'],
+                ['tams_' . $object->getRefId()],
+                $DIC['refinery'],
+                $DIC['http']->wrapper()->query(),
+                $DIC['ilCtrl'],
+            );
 
         return $dic;
     }
