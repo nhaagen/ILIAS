@@ -112,6 +112,12 @@ class Sequence implements ISequence\Sequence
         return $clone;
     }
 
+    public function getRequest(): ServerRequestInterface
+    {
+        $this->checkRequest();
+        return $this->request;
+    }
+
     protected function initFromRequest(): void
     {
         $base_uri = $this->data_factory->uri($this->request->getUri()->__toString());

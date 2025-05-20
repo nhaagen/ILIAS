@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Navigation\Sequence;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * The SegmentRetrieval defines available stops for the sequence and builds
  * it's segments.
@@ -33,7 +35,8 @@ interface SegmentRetrieval
      */
     public function getAllPositions(
         mixed $viewcontrol_values,
-        mixed $filter_values
+        mixed $filter_values,
+        ServerRequestInterface $request
     ): array;
 
     /**
@@ -42,6 +45,7 @@ interface SegmentRetrieval
     public function getSegment(
         mixed $position_data,
         mixed $viewcontrol_values,
-        mixed $filter_values
+        mixed $filter_values,
+        ServerRequestInterface $request
     ): Segment;
 }
