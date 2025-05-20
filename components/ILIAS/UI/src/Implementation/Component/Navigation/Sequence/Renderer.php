@@ -46,11 +46,13 @@ class Renderer extends AbstractComponentRenderer
         $tpl = $this->getTemplate("tpl.sequence.html", true, true);
 
         $binding = $component->getSegmentRetrieval();
+        $request = $component->getRequest();
         $vc_data = $component->getViewControls()?->getData() ?? [];
         $filter_data = [];
         $positions = $binding->getAllPositions(
             $vc_data,
-            $filter_data
+            $filter_data,
+            $request
         );
 
         $position = $component->getCurrentPosition();
@@ -62,7 +64,8 @@ class Renderer extends AbstractComponentRenderer
         $segment = $binding->getSegment(
             $positions[$position],
             $vc_data,
-            $filter_data
+            $filter_data,
+            $request
         );
 
         $ui_factory = $this->getUIFactory();

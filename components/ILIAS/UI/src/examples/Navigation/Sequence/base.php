@@ -67,7 +67,8 @@ function base()
 
         public function getAllPositions(
             mixed $viewcontrol_values,
-            mixed $filter_values
+            mixed $filter_values,
+            ServerRequestInterface $request
         ): array {
             $chunks = $viewcontrol_values['chunks'] ?? [];
             $chunks[] = 'c0';
@@ -82,7 +83,8 @@ function base()
         public function getSegment(
             mixed $position_data,
             mixed $viewcontrol_values,
-            mixed $filter_values
+            mixed $filter_values,
+            ServerRequestInterface $request
         ): Segment {
             list($chunk, $title, $data) = $position_data;
 
