@@ -125,7 +125,8 @@ class ilIndividualAssessmentUserGrading
         bool $may_be_edited = true,
         bool $place_required = false,
         bool $file_required = false,
-        bool $amend = false
+        bool $amend = false,
+        bool $manual_grading = false
     ): \ILIAS\UI\Component\Input\Container\Form\FormInput {
 
         $name = $input
@@ -186,16 +187,26 @@ class ilIndividualAssessmentUserGrading
             $custom[$cf->getFieldId()] = $cf->toFormInput($input, $refinery, $file_handler, $field_builder);
         }
 
-        $fields = [
-            'name' => $name,
-            'record' => $record,
-            'internal_note' => $internal_note,
-            'file' => $file,
-            'custom' => $input->group($custom),
-            'place' => $place,
-            'event_time' => $event_time,
-            'learning_progress' => $learning_progress,
-        ];
+        if ($custom_fields === []) {
+            $fields = [
+                'name' => $name,
+                'record' => $record,
+                'internal_note' => $internal_note,
+                'file' => $file,
+                'custom' => $input->group($custom),
+                'place' => $place,
+                'event_time' => $event_time,
+            ];
+        } else {
+            $fields = [
+                'name' => $name,
+                'custom' => $input->group($custom),
+            ];
+        }
+
+        if ($manual_grading) {
+            $fields['learning_progress'] = $learning_progress;
+        }
 
         if (!$amend) {
             $disabled = !$may_be_edited;
@@ -215,7 +226,7 @@ class ilIndividualAssessmentUserGrading
             $fields,
             $lng->txt('iass_edit_record')
         )->withAdditionalTransformation(
-            $refinery->custom()->transformation(function ($values) use ($amend, $custom_fields) {
+            $refinery->custom()->transformation(function ($values) use ($amend, $custom_fields, $manual_grading) {
                 $finalized = $this->isFinalized();
                 if (!$amend) {
                     $finalized = $values['finalized'];
@@ -234,17 +245,21 @@ class ilIndividualAssessmentUserGrading
                     $updated_custom[] = $cf->withValue($values['custom'][$cf->getFieldId()]);
                 }
 
+                $learning_progress = 0;
+                if ($manual_grading) {
+                    $learning_progress = (int) $values['learning_progress'];
+                }
+
                 return (new ilIndividualAssessmentUserGrading(
                     $values['name'],
-                    $values['record'],
-                    $values['internal_note'],
-                    $file,
-                    (int) $values['learning_progress'],
-                    $values['place'],
-                    $values['event_time'],
+                    $values['record'] ?? '',
+                    $values['internal_note'] ?? '',
+                    $file ?? null,
+                    $learning_progress,
+                    $values['place'] ?? '',
+                    $values['event_time'] ?? null,
                     $finalized
-                ))
-                ->withCustomFields($updated_custom);
+                ))->withCustomFields($updated_custom);
             })
         );
     }
