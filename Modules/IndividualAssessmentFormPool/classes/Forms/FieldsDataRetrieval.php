@@ -71,7 +71,7 @@ class FieldsDataRetrieval implements DataRetrieval
             $row_id = (string) $field->getFieldId();
             $config = $field->getConfig();
             $default_value = (string) $config->getDefaultValue();
-            if ($config->getType() === FieldType::DATETIME && !is_null($default_value)) {
+            if ($config->getType() === FieldType::DATETIME && $default_value != '') {
                 $default_value = DateTimeImmutable::createFromFormat('U', $config->getDefaultValue())->format('d.m.Y');
             }
             $record = [
