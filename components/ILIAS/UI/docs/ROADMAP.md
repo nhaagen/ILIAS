@@ -251,8 +251,6 @@ This should be updated to e.g. an event listener attached to the document,
 which either calls the dropdown's show method if the event target is the desired 
 dropdown, or the hide method if the target is something else.
 
-<<<<<<< HEAD
-
 ### Remove jQuery from NotificationItem and Counter
 
 The notification-item and counter UI components heavily depend on jQuery, which makes
@@ -267,10 +265,6 @@ The toast component is not yet implemented as an ES6 module, which makes it impo
 test. During the migration of the JavaScript unit tests to the Node.js environment, we
 needed to disable these unit tests for this reason. The issue can be resolved by implementing
 the component as an ES6 module, which can be imported using ES6 import specifiers.
-
-
-### Move Components into Navigation (beginner, 2h)
-The top sections "breadcrumbs" and "menu" should both be moved into navigation.
 
 ## Long Term
 

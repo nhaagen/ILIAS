@@ -933,6 +933,10 @@ assessment#:#min_auto_complete#:#Autovervollständigung
 assessment#:#min_ip_label#:#Kleinste IP mit Zugriff
 assessment#:#min_percentage_ne_0#:#Das Notenschema muss mindestens eine Stufe mit einem minimalen Prozentsatz von 0 Prozent enthalten.
 assessment#:#misc#:#Verschiedene Optionen
+assessment#:#mode_allatonce#:#Alle
+assessment#:#mode_onebyone#:#Nacheinander
+assessment#:#mode_question#:#Nach Frage
+assessment#:#mode_user#:#Nach Teilnehmer
 assessment#:#msg_circle_added#:#Kreis hinzugefügt
 assessment#:#msg_no_questions_selected#:#Keine Fragen ausgewählt.
 assessment#:#msg_number_of_terms_too_low#:#Die Anzahl der Terme muss größer oder gleich der Anzahl der Definitionen sein.
@@ -1596,7 +1600,12 @@ assessment#:#tst_list_of_questions_start#:#Noch vor der ersten Frage anzeigen
 assessment#:#tst_list_of_questions_with_description#:#Fragenbeschreibungen anzeigen
 assessment#:#tst_man_scoring_by_part#:#Bewertung nach Teilnehmer
 assessment#:#tst_man_scoring_by_qst#:#Bewertung nach Frage
+assessment#:#tst_man_scoring_finalized#:#Bewertete Antworten anzeigen
+assessment#:#tst_man_scoring_finalized_hide#:#Bewertete Antworten ausblenden
+assessment#:#tst_man_scoring_finalized_only#:#Nur bewertete Antworten anzeigen
 assessment#:#tst_man_scoring_only_answered#:#Nur beantwortete
+assessment#:#tst_man_scoring_questionselection#:#Fragen
+assessment#:#tst_man_scoring_userselection#:#Teilnehmer
 assessment#:#tst_manage_competence_assigns#:#Kompetenz-Zuordnungen verwalten
 assessment#:#tst_manscoring_input_max_points_for_question#:#Maximale Punktezahl für die Frage
 assessment#:#tst_manscoring_input_question_and_user_solution#:#Frage und Teilnehmerlösung

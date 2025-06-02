@@ -52,6 +52,7 @@ use ILIAS\Test\Scoring\Manual\ConsecutiveScoringGUI;
 use ILIAS\Test\Scoring\Manual\ConsecutiveScoringSequenceBinding;
 use ILIAS\Test\Scoring\Manual\ConsecutiveScoringURLs;
 use ILIAS\UI\URLBuilder;
+use ILIAS\Test\Scoring\Manual\TestScoring;
 
 class TestDIC extends PimpleContainer
 {
@@ -255,6 +256,20 @@ class TestDIC extends PimpleContainer
                 $local_dic['question.general_properties.repository'],
                 $local_dic['shuffler'],
                 $local_dic['logging.logger'],
+                $c['manscoring.testscoring'],
+                $local_dic['scoring.manual.done_helper'],
+                $DIC['ilUser']->getId()
+                //                $local_dic['results.data.factory'],
+                //                $local_dic['results.presentation.factory']
+            );
+
+
+        $dic['manscoring.testscoring'] = static fn($c): TestScoring =>
+            new TestScoring(
+                $object,
+                $DIC['ilUser'],
+                $DIC['ilDB'],
+                $DIC['lng']
             );
 
         $dic['manscoring.consecutive.gui'] = static fn($c): ConsecutiveScoringGUI =>
@@ -270,21 +285,8 @@ class TestDIC extends PimpleContainer
                 $DIC['refinery'],
                 $DIC->http()->request(),
                 $c['manscoring.consecutive'],
-                $c['manscoring.consecutive.binding'],
+                $c['urlbuilder.manscoring'],
                 $DIC->uiService()->filter(),
-                $c['urlbuilder.manscoring'],
-            );
-
-        $dic['manscoring.consecutive.binding'] = static fn($c): ConsecutiveScoringSequenceBinding =>
-            new ConsecutiveScoringSequenceBinding(
-                $DIC['ui.factory'],
-                $DIC['ui.renderer'],
-                $DIC['refinery'],
-                new DataFactory(),
-                $DIC['lng'],
-                $c['manscoring.consecutive'],
-                $c['urlbuilder.manscoring'],
-                //$DIC['ilCtrl']->getLinkTargetByClass(ConsecutiveScoringGUI::class, ConsecutiveScoringGUI::CMD_SCORE)
             );
 
         $dic['urlbuilder.current'] = function ($c) use ($DIC): URLBuilder {

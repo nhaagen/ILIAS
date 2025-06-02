@@ -20,16 +20,11 @@ declare(strict_types=1);
 
 namespace ILIAS\Test\Scoring\Manual;
 
-/*use ILIAS\UI\Factory as UIFactory;
-use ILIAS\UI\Renderer as UIRenderer;
-use ILIAS\Refinery\Factory as Refinery;
-use Psr\Http\Message\ServerRequestInterface;
-use ILIAS\UI\Component\Input\Container\ViewControl\ViewControl as ViewControlContainer;
-use ILIAS\UI\Component\Input\Container\Filter\Standard as FilterContainer;
-*/
-
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\Test\Logging\TestLogger;
+use ILIAS\Test\Logging\TestScoringInteractionTypes;
+use ILIAS\Test\Logging\AdditionalInformationGenerator;
+use ILIAS\Test\TestManScoringDoneHelper;
 
 class ConsecutiveScoring
 {
@@ -38,6 +33,9 @@ class ConsecutiveScoring
         protected readonly GeneralQuestionPropertiesRepository $question_repo,
         protected readonly \ilTesTShuffler $shuffler,
         protected readonly TestLogger $logger,
+        protected TestScoring $scorer,
+        protected TestManScoringDoneHelper $scoring_done_helper,
+        protected int $current_user_id
     ) {
     }
 
@@ -104,6 +102,59 @@ class ConsecutiveScoring
     }
 
 
+    /**
+     * @return array<int, int[]>, uid => [qids]
+     */
+    public function getAnsweredQuestionIds(int ...$usr_active_ids): array
+    {
+        $answered = [];
+        foreach ($usr_active_ids as $usr_active_id) {
+            $answered[$usr_active_id] = [];
+
+            $pass_id = $this->getPassUsedForEvaluation($usr_active_id);
+            $user_results = $this->object->getTestResult(
+                $usr_active_id,
+                $pass_id,
+                false, //$ordered_sequence
+                true,//$settings->getShowHiddenQuestions(),
+                true//$settings->getShowOptionalQuestions()
+            );
+
+            foreach ($user_results as $idx => $qresult) {
+                if (!is_numeric($idx)) {
+                    continue;
+                }
+                if ((bool) $qresult['answered']) {
+                    $answered[$usr_active_id][] = (int) $qresult['qid'];
+                }
+            }
+        }
+        return $answered;
+    }
+
+    /**
+     * @return array<int, int[]>, uid => [qids]
+     */
+    public function getFinalizedFeedbackIds(
+        array $usr_active_ids,
+        array $question_ids
+    ): array {
+        $finalized = [];
+        foreach ($question_ids as $qid) {
+            $feedback = $this->object->getCompleteManualFeedback($qid);
+            foreach ($usr_active_ids as $uid) {
+                if (! array_key_exists($uid, $finalized)) {
+                    $finalized[$uid] = [];
+                }
+                $pass_id = $this->getPassUsedForEvaluation($uid);
+                if ((bool) ($feedback[$uid][$pass_id][$qid]['finalized_evaluation'] ?? false)) {
+                    $finalized[$uid][] = $qid;
+                }
+            }
+        }
+        return $finalized;
+    }
+
     public function store(
         int $qid,
         int $usr_active_id,
@@ -119,14 +170,8 @@ class ConsecutiveScoring
             \ilObjAdvancedEditing::_getUsedHTMLTagsAsString('assessment')
         );
 
-        $this->object->saveManualFeedback(
-            $usr_active_id,
-            $qid,
-            $pass_id,
-            $feedback,
-            $final
-        );
-
+        // fix #35543: save manual points only if they differ from the existing points
+        // this prevents a question being set to "answered" if only feedback is entered
         $previously_reached_points = $this->getQuestionObject($qid)
             ->getReachedPoints($usr_active_id, $pass_id);
         if ($score !== $previously_reached_points) {
@@ -138,29 +183,101 @@ class ConsecutiveScoring
                 $pass_id,
                 true
             );
-            \ilLPStatusWrapper::_updateStatus(
-                $this->object->getId(),
-                \ilObjTestAccess::_getParticipantId($usr_active_id)
-            );
         }
+
+        $this->object->saveManualFeedback(
+            $usr_active_id,
+            $qid,
+            $pass_id,
+            $feedback,
+            $final
+        );
+
+        $this->scorer->setPreserveManualScores(true);
+        $this->scorer->recalculateSolution($usr_active_id, $pass_id);
+
+        \ilLPStatusWrapper::_updateStatus(
+            $this->object->getId(),
+            \ilObjTestAccess::_getParticipantId($usr_active_id)
+        );
 
         if ($this->logger->isLoggingEnabled()) {
             $this->logger->logScoringInteraction(
                 $this->logger->getInteractionFactory()->buildScoringInteraction(
-                    $this->getObject()->getRefId(),
-                    $question_id,
-                    $this->user->getId(),
-                    \ilObjTestAccess::_getParticipantId($active_id),
+                    $this->object->getRefId(),
+                    $qid,
+                    $this->current_user_id,
+                    \ilObjTestAccess::_getParticipantId($usr_active_id),
                     TestScoringInteractionTypes::QUESTION_GRADED,
                     [
-                        AdditionalInformationGenerator::KEY_REACHED_POINTS => $new_reached_points,
-                        AdditionalInformationGenerator::KEY_FEEDBACK => $feedback_text,
+                        AdditionalInformationGenerator::KEY_REACHED_POINTS => $score,
+                        AdditionalInformationGenerator::KEY_FEEDBACK => $feedback,
                         AdditionalInformationGenerator::KEY_EVAL_FINALIZED => $this->logger
-                            ->getAdditionalInformationGenerator()->getTrueFalseTagForBool($finalized)
+                            ->getAdditionalInformationGenerator()->getTrueFalseTagForBool($final)
                     ]
                 )
             );
         }
     }
 
+    public function completeScoring(
+        int $usr_active_id,
+        bool $flag = true
+    ) {
+        $this->scoring_done_helper->setDone($usr_active_id, $flag);
+    }
+
+    public function isScoringComplete(int $usr_active_id): bool
+    {
+        return $this->scoring_done_helper->isDone($usr_active_id);
+    }
+
+    public function notify(int $usr_active_id)
+    {
+        $pass_id = $this->getPassUsedForEvaluation($usr_active_id);
+        $question_gui_list = $this->getManScoringQuestionGuiList($usr_active_id, $pass_id);
+
+        foreach ($question_gui_list as $qid => $question_gui) {
+            $question = $question_gui->getObject();
+            $notification_data[$qid] = [
+                'points' => $question->getReachedPoints($usr_active_id, $pass_id),
+                'feedback' => $this->getSingleManualFeedback($qid, $usr_active_id, $pass_id)['feedback'] ?? ''
+            ];
+        }
+
+        $notification = new \ilTestManScoringParticipantNotification(
+            $this->object->_getUserIdFromActiveId($usr_active_id),
+            $this->object->getRefId()
+        );
+
+        $notification->setAdditionalInformation([
+            'test_title' => $this->object->getTitle(),
+            'test_pass' => $pass_id + 1,
+            'questions_gui_list' => $question_gui_list,
+            'questions_scoring_data' => $notification_data
+        ]);
+
+        $notification->send();
+    }
+
+    protected function getManScoringQuestionGuiList(int $usr_active_id, int $pass_id): array
+    {
+        $test_result_data = $this->object->getTestResult($usr_active_id, $pass_id);
+        $gui_list = [];
+
+        foreach ($test_result_data as $question_data) {
+            if (!isset($question_data['qid'])) {
+                continue;
+            }
+
+            if (!isset($question_data['type'])) {
+                throw new ilTestException('no question type given!');
+            }
+
+            $gui_list[ $question_data['qid'] ] =
+                $this->getUserQuestionGUI($question_data['qid'], $usr_active_id, $pass_id);
+        }
+
+        return $gui_list;
+    }
 }

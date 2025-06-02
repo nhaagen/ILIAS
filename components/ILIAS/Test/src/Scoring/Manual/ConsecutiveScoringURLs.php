@@ -111,12 +111,23 @@ class ConsecutiveScoringURLs
 
     public function withIdParameters(int $qid, int $uid, int $pid): self
     {
-        //$clone = clone $this;
         $this->url_builder = $this->url_builder
             ->withParameter($this->qid_token, (string) $qid)
             ->withParameter($this->uid_token, (string) $uid)
             ->withParameter($this->pid_token, (string) $pid);
         return $this;
+    }
+
+    public function withUserId(int $uid): self
+    {
+        $this->url_builder = $this->url_builder
+            ->withParameter($this->uid_token, (string) $uid);
+        return $this;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->retrieveInt($this->uid_token);
     }
 
     public function redirect(): void
