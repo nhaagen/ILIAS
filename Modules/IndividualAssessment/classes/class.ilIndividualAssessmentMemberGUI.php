@@ -233,14 +233,8 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
         bool $may_be_edited,
         bool $amend = false
     ): ILIAS\UI\Component\Input\Container\Form\Form {
-        $may_publish = false;
-        if ($this->userMayPublish()) {
-            $may_publish = true;
-        }
-        $manual_grading = false;
-        if (ilLPObjSettings::_lookupDBMode($this->getObject()->getId()) === ilLPObjSettings::LP_MODE_INDIVIDUAL_ASSESSMENT) {
-            $manual_grading = true;
-        }
+        $may_publish = $this->userMayPublish();
+        $manual_grading = (ilLPObjSettings::_lookupDBMode($this->getObject()->getId()) === ilLPObjSettings::LP_MODE_INDIVIDUAL_ASSESSMENT);
         $section = $this->getMember()->getGrading()->toFormInput(
             $this->input_factory->field(),
             $this->data_factory,

@@ -248,14 +248,10 @@ class ilIndividualAssessmentAccessHandler implements IndividualAssessmentAccessH
 
     public function mayPublishUser(int $user_id): bool
     {
-        return
-            (count(
-                $this->handler->filterUserIdsByRbacOrPositionOfCurrentUser(
-                    self::RBAC_OP_PUBLISH_RECORDS,
-                    self::ORGU_OP_PUBLISH_RECORDS,
-                    $this->iass->getRefId(),
-                    [$user_id]
-                )
-            ) > 0);
+        return $this->handler->checkRbacOrPositionPermissionAccess(
+            self::RBAC_OP_PUBLISH_RECORDS,
+            self::ORGU_OP_PUBLISH_RECORDS,
+            $this->iass->getRefId()
+        );
     }
 }
