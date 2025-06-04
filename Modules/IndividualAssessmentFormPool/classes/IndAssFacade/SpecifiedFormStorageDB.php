@@ -214,9 +214,6 @@ class SpecifiedFormStorageDB implements SpecifiedFormStorage
             . ' WHERE obj_id = ' . $this->db->quote($obj_id, 'integer');
 
         $result = $this->db->query($query);
-        if ($this->db->fetchAssoc($result) != null) {
-            return true;
-        }
-        return false;
+        return $this->db->numRows($result) != 0;
     }
 }

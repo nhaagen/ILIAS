@@ -240,7 +240,7 @@ class ilIndividualAssessmentUserGrading
                     $updated_custom[] = $cf->withValue($values['custom'][$cf->getFieldId()]);
                 }
 
-                $learning_progress = 0;
+                $learning_progress = $this->getLearningProgress();
                 if ($manual_grading) {
                     $learning_progress = (int) $values['learning_progress'];
                 }
