@@ -51,7 +51,7 @@ trait ilIndividualAssessmentDIC
                 $dic['http']->request(),
                 $dic['ilErr'],
                 $c['ilIndividualAssessmentCommonSettingsGUI'],
-                $c['iass.member.custom_storage']
+                $c['iass.member.custom_storage']->checkForAvailableFormFields($object->getId())
             );
         };
 
