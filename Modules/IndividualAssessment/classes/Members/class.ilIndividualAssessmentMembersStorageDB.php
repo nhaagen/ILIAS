@@ -144,9 +144,9 @@ class ilIndividualAssessmentMembersStorageDB implements ilIndividualAssessmentMe
             (string) $record[ilIndividualAssessmentMembers::FIELD_RECORD],
             (string) $record[ilIndividualAssessmentMembers::FIELD_INTERNAL_NOTE],
             (string) $record[ilIndividualAssessmentMembers::FIELD_FILE_NAME],
-            (int) $record[ilIndividualAssessmentMembers::FIELD_LEARNING_PROGRESS],
             (string) $record[ilIndividualAssessmentMembers::FIELD_PLACE],
             $event_time,
+            (int) $record[ilIndividualAssessmentMembers::FIELD_LEARNING_PROGRESS],
             (bool) $record[ilIndividualAssessmentMembers::FIELD_FINALIZED]
         );
     }

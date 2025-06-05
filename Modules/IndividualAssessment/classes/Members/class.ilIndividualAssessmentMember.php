@@ -134,12 +134,12 @@ class ilIndividualAssessmentMember
         return $clone;
     }
 
-    public function record(): string
+    public function record(): ?string
     {
         return $this->grading->getRecord();
     }
 
-    public function internalNote(): string
+    public function internalNote(): ?string
     {
         return $this->grading->getInternalNote();
     }
@@ -165,7 +165,7 @@ class ilIndividualAssessmentMember
         return $this->grading->getLearningProgress();
     }
 
-    public function place(): string
+    public function place(): ?string
     {
         return $this->grading->getPlace();
     }
