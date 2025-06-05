@@ -50,7 +50,7 @@ class ilIndividualAssessmentSettingsGUI
     protected ilErrorHandling $error_object;
     protected ilIndividualAssessmentCommonSettingsGUI $common_settings_gui;
 
-    protected SpecifiedFormStorage $specified_form_storage;
+    protected bool $form_fields_available;
 
     public function __construct(
         ilObjIndividualAssessment $object,
@@ -64,7 +64,7 @@ class ilIndividualAssessmentSettingsGUI
         $http_request,
         ilErrorHandling $error_object,
         ilIndividualAssessmentCommonSettingsGUI $common_settings_gui,
-        SpecifiedFormStorage $specified_form_storage
+        bool $form_fields_available
     ) {
         $this->ctrl = $ctrl;
         $this->object = $object;
@@ -81,7 +81,7 @@ class ilIndividualAssessmentSettingsGUI
         $this->error_object = $error_object;
         $this->common_settings_gui = $common_settings_gui;
 
-        $this->specified_form_storage = $specified_form_storage;
+        $this->form_fields_available = $form_fields_available;
 
         $this->getSubTabs($this->tabs_gui);
         $this->lng->loadLanguageModule('content');
@@ -151,7 +151,7 @@ class ilIndividualAssessmentSettingsGUI
             $this->input_factory->field(),
             $this->lng,
             $this->refinery,
-            $this->specified_form_storage->checkForAvailableFormFields($this->object->getId())
+            $this->form_fields_available
         );
 
         // Use centralized on/offline
