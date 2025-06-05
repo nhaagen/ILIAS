@@ -30,27 +30,27 @@ class ilIndividualAssessmentUserGrading
 
     public function __construct(
         protected string $name,
-        protected string $record,
-        protected string $internal_note,
-        protected ?string $file,
-        protected int $learning_progress,
-        protected string $place,
-        protected ?DateTimeImmutable $event_time,
+        protected ?string $record = null,
+        protected ?string $internal_note = null,
+        protected ?string $file = null,
+        protected ?string $place = null,
+        protected ?DateTimeImmutable $event_time = null,
+        protected int $learning_progress = 0,
         protected bool $finalized = false
     ) {
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getRecord(): string
+    public function getRecord(): ?string
     {
         return $this->record;
     }
 
-    public function getInternalNote(): string
+    public function getInternalNote(): ?string
     {
         return $this->internal_note;
     }
@@ -70,7 +70,7 @@ class ilIndividualAssessmentUserGrading
         return $this->learning_progress;
     }
 
-    public function getPlace(): string
+    public function getPlace(): ?string
     {
         return $this->place;
     }
@@ -175,6 +175,12 @@ class ilIndividualAssessmentUserGrading
             ->withDisabled(!$may_be_edited)
         ;
 
+        $finalized = $input
+            ->checkbox($lng->txt('iass_finalize'), $lng->txt('iass_finalize_info'))
+            ->withValue($this->isFinalized())
+            ->withDisabled(!$may_be_edited)
+        ;
+
         if (!is_null($this->getEventTime())) {
             $event_time = $event_time->withValue(
                 $this->getEventTime()
@@ -187,21 +193,35 @@ class ilIndividualAssessmentUserGrading
             $custom[$cf->getFieldId()] = $cf->toFormInput($input, $refinery, $file_handler, $field_builder);
         }
 
+        $fields = [$name];
         if ($custom_fields === []) {
-            $fields = [
-                'name' => $name,
-                'record' => $record,
-                'internal_note' => $internal_note,
-                'file' => $file,
-                'custom' => $input->group($custom),
-                'place' => $place,
-                'event_time' => $event_time,
-            ];
+            $fields['standard_fields'] = $input->group([
+                $record,
+                $internal_note,
+                $file,
+                $place,
+                $event_time
+            ])->withAdditionalTransformation(
+                $refinery->custom()->transformation(function ($values) {
+                    $values[2] = ($values[2] != []) ? $values[2][0] : null;
+                    return $values;
+                })
+            );
         } else {
-            $fields = [
-                'name' => $name,
-                'custom' => $input->group($custom),
-            ];
+            $fields['custom'] = $input->group($custom)->withAdditionalTransformation(
+                $refinery->custom()->transformation(function ($values) use ($custom_fields) {
+                    $updated_custom = [];
+                    foreach ($custom_fields as $cf) {
+                        $value = $values[$cf->getFieldId()];
+                        if ($cf->hasNotes()) {
+                            list($value, $note) = $value;
+                            $cf = $cf->withNote($note);
+                        }
+                        $updated_custom[] = $cf->withValue($value);
+                    }
+                    return $updated_custom;
+                })
+            );
         }
 
         if ($manual_grading) {
@@ -209,11 +229,6 @@ class ilIndividualAssessmentUserGrading
         }
 
         if (!$amend && $may_publish) {
-            $finalized = $input
-                ->checkbox($lng->txt('iass_finalize'), $lng->txt('iass_finalize_info'))
-                ->withValue($this->isFinalized())
-                ->withDisabled(!$may_be_edited)
-            ;
             $fields['finalized'] = $finalized;
         }
 
@@ -221,45 +236,23 @@ class ilIndividualAssessmentUserGrading
             $fields,
             $lng->txt('iass_edit_record')
         )->withAdditionalTransformation(
-            $refinery->custom()->transformation(function ($values) use ($amend, $custom_fields, $manual_grading, $may_publish) {
-                $finalized = $this->isFinalized();
-                if (!$amend && $may_publish) {
-                    $finalized = $values['finalized'];
-                }
+            $refinery->custom()->transformation(function ($values) {
+                $vals = [$values[0]];
 
-                $file = null;
-                if (
-                    isset($values['file'][0]) &&
-                    trim($values['file'][0]) != ''
-                ) {
-                    $file = $values['file'][0];
-                }
+                $vals = array_key_exists('standard_fields', $values)
+                    ? array_merge($vals, $values['standard_fields'])
+                    : array_merge($vals, [null, null, null, null, null]);
 
-                $updated_custom = [];
-                foreach ($custom_fields as $cf) {
-                    $value = $values['custom'][$cf->getFieldId()];
-                    if ($cf->hasNotes()) {
-                        list($value, $note) = $value;
-                        $cf = $cf->withNote($note);
-                    }
-                    $updated_custom[] = $cf->withValue($value);
-                }
+                array_key_exists('learning_progress', $values)
+                    ? array_push($vals, (int) $values['learning_progress'])
+                    : array_push($vals, $this->getLearningProgress());
 
-                $learning_progress = $this->getLearningProgress();
-                if ($manual_grading) {
-                    $learning_progress = (int) $values['learning_progress'];
-                }
+                array_key_exists('finalized', $values)
+                    ? array_push($vals, (bool) $values['finalized'])
+                    : array_push($vals, $this->isFinalized());
 
-                return (new ilIndividualAssessmentUserGrading(
-                    $values['name'],
-                    $values['record'] ?? '',
-                    $values['internal_note'] ?? '',
-                    $file ?? null,
-                    $learning_progress,
-                    $values['place'] ?? '',
-                    $values['event_time'] ?? null,
-                    $finalized
-                ))->withCustomFields($updated_custom);
+                $result = new ilIndividualAssessmentUserGrading(...array_values($vals));
+                return array_key_exists('custom', $values) ? $result->withCustomFields($values['custom']) : $result;
             })
         );
     }

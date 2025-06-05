@@ -47,9 +47,9 @@ class ilIndividualAssessmentUserGradingTest extends TestCase
             $record,
             $internal_note,
             $file,
-            $learning_progress,
             $place,
             $event_time,
+            $learning_progress,
             $finalized
         );
 
@@ -79,9 +79,9 @@ class ilIndividualAssessmentUserGradingTest extends TestCase
             $record,
             $internal_note,
             $file,
-            $learning_progress,
             $place,
             $event_time,
+            $learning_progress,
             $finalized
         );
 
@@ -140,9 +140,9 @@ class ilIndividualAssessmentUserGradingTest extends TestCase
             $record,
             $internal_note,
             $file,
-            $learning_progress,
             $place,
             $event_time,
+            $learning_progress,
             $finalized
         );
 
