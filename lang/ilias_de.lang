@@ -1598,6 +1598,8 @@ assessment#:#tst_list_of_answers_show#:#Bewertete Antworten
 assessment#:#tst_list_of_questions_end#:#Vor dem Ende des Test anzeigen
 assessment#:#tst_list_of_questions_start#:#Noch vor der ersten Frage anzeigen
 assessment#:#tst_list_of_questions_with_description#:#Fragenbeschreibungen anzeigen
+assessment#:#tst_man_scoring_answered_hide#:#Nur unbeantwortete Fragen
+assessment#:#tst_man_scoring_answered_only#:#Nur beantwortete Fragen
 assessment#:#tst_man_scoring_by_part#:#Bewertung nach Teilnehmer
 assessment#:#tst_man_scoring_by_qst#:#Bewertung nach Frage
 assessment#:#tst_man_scoring_finalized#:#Bewertete Antworten anzeigen

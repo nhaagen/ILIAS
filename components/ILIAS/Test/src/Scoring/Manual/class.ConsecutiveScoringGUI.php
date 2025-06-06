@@ -35,6 +35,8 @@ use ILIAS\UI\Component\Legacy\Content as LegacyContent;
 use ILIAS\UI\Component\Prompt\Prompt;
 use ILIAS\UI\Component\Button\Standard as StdButton;
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionProperties;
+use ILIAS\UI\Component\Panel\Report as ReportPanel;
+use ILIAS\UI\Component\Panel\Sub as SubPanel;
 
 class ConsecutiveScoringGUI implements SegmentRetrieval
 {
@@ -109,7 +111,11 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 $formdata = $form->getData();
                 if ($formdata !== null) {
                     $this->store($formdata);
-                    $msg = $this->lng->txt('tst_saved_manscoring_successfully');
+                    $msg = sprintf(
+                        $this->lng->txt('tst_saved_manscoring_successfully'),
+                        $pid,
+                        $this->scoring->getUserFullName($uid) ?? $uid
+                    );
                     $this->tpl->setOnScreenMessage('success', $msg, true);
                     $url = $this->url_builder->withAction(self::CMD_VIEW)->buildURI();
                     $response = $this->ui_factory->prompt()->state()->redirect($url);
@@ -125,7 +131,11 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 $formdata = $form->getData();
                 if ($formdata !== null) {
                     $this->store($formdata);
-                    $msg = $this->lng->txt('tst_saved_manscoring_successfully');
+                    $msg = sprintf(
+                        $this->lng->txt('tst_saved_manscoring_successfully'),
+                        $pid,
+                        $this->scoring->getUserFullName($uid) ?? $uid
+                    );
                     $this->tpl->setOnScreenMessage('success', $msg, true);
                     $this->url_builder->withAction(self::CMD_VIEW)->redirect();
                 }
@@ -366,7 +376,6 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         return $pivoted;
     }
 
-
     public function getSegment(
         mixed $position_data,
         mixed $viewcontrol_values,
@@ -376,8 +385,8 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
 
         if ($position_data === null) {
             return $this->ui_factory->legacy()->segment(
-                'empty',//$this->ui_renderer->render($title),
-                'no content'//$this->ui_renderer->render($out),
+                '',
+                $this->lng->txt('ui_table_no_records')
             );
         }
         list($usr_active_ids, $question_ids) = $position_data;
@@ -396,12 +405,15 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             $representation = $viewcontrol_values->isUserCentric() ?
                 $this->getQuestionRepresentation(current($question_ids)) :
                 $this->getUserRepresentation(current($usr_active_ids));
+
             $user_answer = $this->getUserAnswer($qid, $usr_active_id, $pass_id);
 
             $out = [
-                $representation,
-                $user_answer,
-                $form,
+                $this->appendSubPanels(
+                    $representation,
+                    $user_answer,
+                    $this->ui_factory->panel()->sub($this->lng->txt('grade'), $form)
+                )
             ];
 
         } else {
@@ -511,55 +523,51 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         );
     }
 
-    /**
-     * @return Component[]
-     */
-    protected function getUserRepresentation(int $usr_active_id): array
+    protected function getUserRepresentation(int $usr_active_id): ReportPanel
     {
         $usr_fullname = $this->scoring->getUserFullName($usr_active_id) ?? $this->lng->txt('anonymous');
-
-        $info = $this->ui_factory->listing()->property()
-            ->withProperty(
-                $this->lng->txt('name'),
-                $usr_fullname
-            );
-
         $pass_info = $this->ui_factory->listing()->property()
             ->withProperty(
                 $this->lng->txt("scored_pass"),
                 (string) $this->scoring->getPassUsedForEvaluation($usr_active_id)
             );
 
-        return [$info, $pass_info];
+        $subs = [
+            $this->ui_factory->panel()->sub('', $pass_info)
+        ];
+        return $this->ui_factory->panel()->report($usr_fullname, $subs);
     }
 
-    /**
-     * @return Component[]
-     */
-    protected function getQuestionRepresentation(int $qid): array
+    protected function getQuestionRepresentation(int $qid): ReportPanel
     {
         $question = $this->scoring->getQuestionObject($qid);
 
-        $info = $this->ui_factory->listing()->property()
-            ->withProperty(
-                $this->lng->txt('question_type'),
-                $this->lng->txt($question->getQuestionType())
-            )
-            ->withProperty(
-                $this->lng->txt('points'),
-                (string) $question->getMaximumPoints()
-            );
-
-        return [
-            $this->ui_factory->legacy()->content('<div style="border: 1px solid">'),
-            $this->ui_factory->legacy()->content($question->getTitle()),
-            $info,
-            $this->ui_factory->legacy()->content($question->getQuestionForHTMLOutput()),
-            $this->ui_factory->legacy()->content('</div><br>'),
+        $info = [
+            $this->ui_factory->listing()->property()
+                ->withProperty(
+                    $this->lng->txt('question_type'),
+                    $this->lng->txt($question->getQuestionType())
+                ),
+            $this->ui_factory->listing()->property()
+                ->withProperty(
+                    $this->lng->txt('points'),
+                    (string) $question->getMaximumPoints()
+                )
         ];
+
+        $subs = [
+            $this->ui_factory->panel()->sub(
+                '',
+                $this->ui_factory->legacy()->content($question->getQuestionForHTMLOutput())
+            )->withFurtherInformation(
+                $this->ui_factory->card()->standard('')->withSections($info)
+            )
+        ];
+
+        return $this->ui_factory->panel()->report($question->getTitle(), $subs);
     }
 
-    protected function getUserAnswer(int $qid, int $usr_active_id, int $pass_id): LegacyContent
+    protected function getUserAnswer(int $qid, int $usr_active_id, int $pass_id): SubPanel
     {
         $question_gui = $this->scoring->getUserQuestionGUI($qid, $usr_active_id, $pass_id);
         $question_solution = $question_gui->getSolutionOutput(
@@ -575,7 +583,10 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             $show_inline_feedback = false
         );
 
-        return $this->ui_factory->legacy()->content($question_solution);
+        return $this->ui_factory->panel()->sub(
+            $this->lng->txt('answer'),
+            $this->ui_factory->legacy()->content($question_solution)
+        );
     }
 
     protected function getScoringForm(string $action, int $qid, int $usr_active_id, int $pass_id): Form
@@ -667,10 +678,19 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         $entries = [];
         foreach ($question_ids as $qid) {
 
+
+            $entries[] = $this->appendSubPanels(
+                $this->getQuestionRepresentation($qid),
+                $this->getUserAnswer($qid, $usr_active_id, $pass_id),
+                $this->ui_factory->panel()->sub('', $this->getSingleFormButton($qid, $usr_active_id, $pass_id))
+            );
+
+            /*
             $entries[] = $this->getQuestionRepresentation($qid);
             $entries[] = $this->getUserAnswer($qid, $usr_active_id, $pass_id);
             $entries[] = $this->getSingleFormButton($qid, $usr_active_id, $pass_id);
             $entries[] = $this->ui_factory->divider()->horizontal();
+            */
         }
         return $entries;
     }
@@ -681,10 +701,17 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         foreach ($usr_active_ids as $usr_active_id) {
             $pass_id = $this->scoring->getPassUsedForEvaluation($usr_active_id);
 
+            $entries[] = $this->appendSubPanels(
+                $this->getUserRepresentation($usr_active_id),
+                $this->getUserAnswer($qid, $usr_active_id, $pass_id),
+                $this->ui_factory->panel()->sub('', $this->getSingleFormButton($qid, $usr_active_id, $pass_id))
+            );
+            /*
             $entries[] = $this->getUserRepresentation($usr_active_id);
             $entries[] = $this->getUserAnswer($qid, $usr_active_id, $pass_id);
             $entries[] = $this->getSingleFormButton($qid, $usr_active_id, $pass_id);
             $entries[] = $this->ui_factory->divider()->horizontal();
+            */
         }
         return $entries;
     }
@@ -738,6 +765,16 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             $data['final'],
             $data['feedback'],
             $data['max_points']
+        );
+    }
+
+    protected function appendSubPanels(ReportPanel $panel, SubPanel ...$subs): ReportPanel
+    {
+        $panel_subs = $panel->getContent();
+        array_push($panel_subs, ...$subs);
+        return $this->ui_factory->panel()->report(
+            $panel->getTitle(),
+            $panel_subs
         );
     }
 }
