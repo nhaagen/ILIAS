@@ -66,11 +66,11 @@ class ilIndividualAssessmentSettingsStorageDB implements ilIndividualAssessmentS
                 '',
                 '',
                 '',
+                false,
                 '',
                 false,
                 false,
-                false,
-                false,
+                false
             );
         }
 
@@ -94,11 +94,11 @@ class ilIndividualAssessmentSettingsStorageDB implements ilIndividualAssessmentS
             $obj->getTitle(),
             $obj->getDescription(),
             $row["content"],
+            (bool) $row['result_visible'],
             $row["record_template"],
             (bool) $row["event_time_place_required"],
             (bool) $row['file_required'],
             (bool) $row["file_visible"],
-            (bool) $row['result_visible'],
             (bool) $row['report'],
             $row['report_from'] ? \DateTimeImmutable::createFromFormat(self::DATE_TIME_FORMAT, $row['report_from']) : null,
             $row['report_to'] ? \DateTimeImmutable::createFromFormat(self::DATE_TIME_FORMAT, $row['report_to']) : null

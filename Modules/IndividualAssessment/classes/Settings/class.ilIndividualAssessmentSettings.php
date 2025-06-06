@@ -32,11 +32,11 @@ class ilIndividualAssessmentSettings
         protected string $title,
         protected string $description,
         protected string $content,
-        protected string $record_template,
-        protected bool $event_time_place_required,
-        protected bool $file_required,
-        protected bool $file_visible,
-        protected bool $result_visible,
+        protected bool $result_visible = false,
+        protected string $record_template = '',
+        protected bool $event_time_place_required = false,
+        protected bool $file_required = false,
+        protected bool $file_visible = false,
         protected bool $available_in_report = true,
         protected ?\DateTimeImmutable $available_in_report_from = null,
         protected ?\DateTimeImmutable $available_in_report_to = null
@@ -135,17 +135,10 @@ class ilIndividualAssessmentSettings
         $notification = $input->checkbox($lng->txt("iass_notify"), $lng->txt("iass_notify_explanation"))
                               ->withValue($this->isResultVisible());
 
-        $fields = [
-            "title" => $title,
-            "description" => $description,
-            "content" => $content
-        ];
+        $fields = [$title, $description, $content];
 
         if (!$specified_form) {
-            $fields['record_template'] = $record_template;
-            $fields['event_time_place_required'] = $time_place_required;
-            $fields['file_required'] = $file_required;
-            $fields['file_visible'] = $file_visible;
+            $fields['specified_form'] = $input->group([$record_template, $time_place_required, $file_required, $file_visible]);
         }
 
         $fields['result_visible'] = $notification;
@@ -155,16 +148,13 @@ class ilIndividualAssessmentSettings
             $lng->txt("settings")
         )->withAdditionalTransformation(
             $refinery->custom()->transformation(function ($value) {
+                $values = [$this->getObjId(), $value[0], $value[1], $value[2], $value['result_visible']];
+                $values = array_key_exists('specified_form', $value)
+                    ? array_merge($values, $value['specified_form'])
+                    : array_merge($values, ['', false, false, false]);
+
                 return new ilIndividualAssessmentSettings(
-                    $this->getObjId(),
-                    $value['title'],
-                    $value['description'],
-                    $value['content'],
-                    $value['record_template'] ?? '',
-                    $value['event_time_place_required'] ?? false,
-                    $value['file_required'] ?? false,
-                    $value['file_visible'] ?? false,
-                    $value['result_visible']
+                    ...array_values($values)
                 );
             })
         );

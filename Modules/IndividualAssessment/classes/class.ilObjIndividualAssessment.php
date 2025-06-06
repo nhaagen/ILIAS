@@ -72,8 +72,8 @@ class ilObjIndividualAssessment extends ilObject
             '',
             '',
             '',
-            '',
             false,
+            '',
             false,
             false,
             false
@@ -229,11 +229,11 @@ class ilObjIndividualAssessment extends ilObject
             $new_obj->getTitle(),
             $new_obj->getDescription(),
             $settings->getContent(),
+            $settings->isResultVisible(),
             $settings->getRecordTemplate(),
             $settings->isEventTimePlaceRequired(),
             $settings->isFileRequired(),
-            $settings->isFileVisible(),
-            $settings->isResultVisible()
+            $settings->isFileVisible()
         );
         $new_obj->settings = $new_settings;
 
