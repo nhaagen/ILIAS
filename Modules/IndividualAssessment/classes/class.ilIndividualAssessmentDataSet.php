@@ -141,6 +141,7 @@ class ilIndividualAssessmentDataSet extends ilDataSet
                 $newObj->getTitle(),
                 $newObj->getDescription(),
                 $a_rec["content"],
+                $a_rec["result_visible"],
                 $a_rec["recordTemplate"],
                 $a_rec['eventTimePlaceRequired'] == 1,
                 $a_rec['file_required'] == 1
