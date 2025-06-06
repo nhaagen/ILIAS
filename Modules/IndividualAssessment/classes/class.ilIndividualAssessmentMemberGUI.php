@@ -233,7 +233,6 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
         bool $amend = false
     ): ILIAS\UI\Component\Input\Container\Form\Form {
         $may_publish = $this->userMayPublish();
-        $manual_grading = (ilLPObjSettings::_lookupDBMode($this->getObject()->getId()) === ilLPObjSettings::LP_MODE_INDIVIDUAL_ASSESSMENT);
         $section = $this->getMember()->getGrading()->toFormInput(
             $this->input_factory->field(),
             $this->data_factory,
@@ -248,7 +247,7 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
             $this->getObject()->getSettings()->isEventTimePlaceRequired(),
             $this->getObject()->getSettings()->isFileRequired(),
             $amend,
-            $manual_grading
+            $this->isManualGradingActive()
         );
 
         $form = $this->input_factory->container()->form()->standard($form_action, [$section]);
@@ -269,7 +268,7 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
         }
 
         $member = $this->getMember();
-        if (!$member->mayBeFinalized()) {
+        if (!$member->mayBeFinalized() && $this->isManualGradingActive()) {
             $this->tpl->setOnScreenMessage("failure", $this->lng->txt('iass_may_not_finalize'), true);
             $this->redirect('edit');
             return;
@@ -564,5 +563,10 @@ class ilIndividualAssessmentMemberGUI extends AbstractCtrlAwareUploadHandler
     public function handleAccessViolation(): void
     {
         $this->error_object->raiseError($this->lng->txt("msg_no_perm_read"), $this->error_object->WARNING);
+    }
+
+    public function isManualGradingActive(): bool
+    {
+        return ilIndividualAssessmentLP::getInstance($this->getObject()->getId())->isActive();
     }
 }
