@@ -10498,7 +10498,7 @@ iass#:#iass_internal_note#:#Interne Anmerkungen zur Prüfung
 iass#:#iass_internal_note_info#:#Dieser Text ist nur für Personen sichtbar, die Prüfungsdaten einsehen können. Teilnehmerinnen und Teilnehmer sehen die interne Anmerkung zur Prüfung nicht.
 iass#:#iass_location#:#Ort
 iass#:#iass_mails#:#E-Mail
-iass#:#iass_may_not_finalize#:#Prüfung kann noch nicht abschließend bewertet werden. Bitte geben Sie eine Bewertung ab.
+iass#:#iass_may_not_finalize#:#Prüfung kann noch nicht abschließend bewertet werden. Bitte geben Sie eine Bewertung im Lernfortschritt ab.
 iass#:#iass_membership_finalized#:#Bewertung veröffentlicht.
 iass#:#iass_membership_saved#:#Bewertung wurde gespeichert aber noch nicht veröffentlicht.
 iass#:#iass_mess_notification_completed#:#Sie haben die Prüfung „%s“ bestanden. Beachten Sie bitte auch die folgende Notiz zur Prüfung.
