@@ -43,11 +43,11 @@ class ilIndividualAssessmentSettingsTest extends TestCase
             $title,
             $description,
             $content,
-            $result_visible,
             $record_remplate,
             $event_time_place_required,
             $file_required,
-            $file_visible
+            $file_visible,
+            $result_visible
         );
         $this->assertEquals($obj_id, $settings->getObjId());
         $this->assertEquals($title, $settings->getTitle());
@@ -94,11 +94,11 @@ class ilIndividualAssessmentSettingsTest extends TestCase
             $title,
             $description,
             $content,
-            $result_visible,
             $record_remplate,
             $event_time_place_required,
             $file_required,
-            $file_visible
+            $file_visible,
+            $result_visible
         );
 
         $input = $settings->toFormInput(
@@ -145,11 +145,11 @@ class ilIndividualAssessmentSettingsTest extends TestCase
             $title,
             $description,
             $content,
-            $result_visible,
             $record_remplate,
             $event_time_place_required,
             $file_required,
-            $file_visible
+            $file_visible,
+            $result_visible
         );
 
         $input = $settings->toFormInput(
