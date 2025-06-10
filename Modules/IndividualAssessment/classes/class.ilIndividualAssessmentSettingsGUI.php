@@ -161,6 +161,12 @@ class ilIndividualAssessmentSettingsGUI
             $this->refinery
         );
 
+        $user = $settings->userAvailabilitySettingsToForm(
+            $this->input_factory->field(),
+            $this->lng,
+            $this->refinery
+        );
+
         $report = $settings->reportSettingsToForm(
             $this->input_factory->field(),
             $this->lng,
@@ -170,6 +176,7 @@ class ilIndividualAssessmentSettingsGUI
         $availability = $this->input_factory->field()->section(
             [
                 'online' => $online,
+                'user' => $user,
                 'report' => $report,
             ],
             $this->lng->txt('iass_settings_availability')
@@ -196,9 +203,13 @@ class ilIndividualAssessmentSettingsGUI
         $data = $form->getData();
         if (!is_null($data)) {
             $settings = $data[0];
-            $settings = $settings->withReportSettings(
-                ...$data[1]['report']
-            );
+            $settings = $settings
+                ->withUserAvailabilitySettings(
+                    ...$data[1]['user']
+                )
+                ->withReportSettings(
+                    ...$data[1]['report']
+                );
             $this->object->setSettings($settings);
             $this->object->update();
 
