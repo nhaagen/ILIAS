@@ -72,8 +72,9 @@ class ilObjIndividualAssessment extends ilObject
             '',
             '',
             '',
-            false,
             '',
+            false,
+            false,
             false,
             false,
             false

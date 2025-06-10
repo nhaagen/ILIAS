@@ -47,11 +47,11 @@ class ilIndividualAssessmentSettingsStorageDBTest extends TestCase
             $title,
             $description,
             $content,
-            $result_visible,
             $record_remplate,
             $event_time_place_required,
             $file_required,
-            $file_visible
+            $file_visible,
+            $result_visible
         );
 
         $values1 = [
@@ -102,11 +102,11 @@ class ilIndividualAssessmentSettingsStorageDBTest extends TestCase
             $title,
             $description,
             $content,
-            $result_visible,
             $record_template,
             $event_time_place_required,
             $file_required,
-            $file_visible
+            $file_visible,
+            $result_visible
         );
 
         $values = [
