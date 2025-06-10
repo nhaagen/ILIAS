@@ -32,11 +32,11 @@ class ilIndividualAssessmentSettings
         protected string $title,
         protected string $description,
         protected string $content,
-        protected bool $result_visible = false,
         protected string $record_template = '',
         protected bool $event_time_place_required = false,
         protected bool $file_required = false,
         protected bool $file_visible = false,
+        protected bool $result_visible = false,
         protected bool $available_in_report = true,
         protected ?\DateTimeImmutable $available_in_report_from = null,
         protected ?\DateTimeImmutable $available_in_report_to = null
@@ -116,48 +116,81 @@ class ilIndividualAssessmentSettings
         Refinery $refinery,
         bool $specified_form
     ): \ILIAS\UI\Component\Input\Container\Form\FormInput {
+        $common = $input->group([
+            $input->text($lng->txt("title"))
+               ->withValue($this->getTitle())
+               ->withRequired(true),
+            $input->textarea($lng->txt("description"))
+                ->withValue($this->getDescription()),
+             $input->textarea($lng->txt("iass_content"), $lng->txt("iass_content_explanation"))
+                ->withValue($this->getContent())
+        ]);
 
-        $title = $input->text($lng->txt("title"))
-                       ->withValue($this->getTitle())
-                       ->withRequired(true);
-        $description = $input->textarea($lng->txt("description"))
-                             ->withValue($this->getDescription());
-        $content = $input->textarea($lng->txt("iass_content"), $lng->txt("iass_content_explanation"))
-                         ->withValue($this->getContent());
-        $record_template = $input->textarea($lng->txt("iass_record_template"), $lng->txt("iass_record_template_explanation"))
-                                 ->withValue($this->getRecordTemplate());
-        $time_place_required = $input->checkbox($lng->txt("iass_event_time_place_required"), $lng->txt("iass_event_time_place_required_info"))
-                                     ->withValue($this->isEventTimePlaceRequired());
-        $file_required = $input->checkbox($lng->txt("iass_file_required"), $lng->txt("iass_file_required_info"))
-                               ->withValue($this->isFileRequired());
-        $file_visible = $input->checkbox($lng->txt("iass_file_visible_examinee"), '')
-                              ->withValue($this->isFileVisible());
-        $notification = $input->checkbox($lng->txt("iass_notify"), $lng->txt("iass_notify_explanation"))
-                              ->withValue($this->isResultVisible());
-
-        $fields = [$title, $description, $content];
+        $fields = [
+            'common' => $common
+        ];
 
         if (!$specified_form) {
-            $fields['specified_form'] = $input->group([$record_template, $time_place_required, $file_required, $file_visible]);
-        }
+            $standard_field_config = $input->group([
+                $input->textarea(
+                    $lng->txt("iass_record_template"),
+                    $lng->txt("iass_record_template_explanation")
+                )
+                ->withValue($this->getRecordTemplate()),
+                $input->checkbox(
+                    $lng->txt("iass_event_time_place_required"),
+                    $lng->txt("iass_event_time_place_required_info")
+                )
+                ->withValue($this->isEventTimePlaceRequired()),
+                $input->checkbox(
+                    $lng->txt("iass_file_required"),
+                    $lng->txt("iass_file_required_info")
+                )
+                ->withValue($this->isFileRequired()),
+                $input->checkbox($lng->txt("iass_file_visible_examinee"), '')
+                    ->withValue($this->isFileVisible())
+            ]);
 
-        $fields['result_visible'] = $notification;
+            $fields['standard_form'] = $standard_field_config;
+        }
 
         return $input->section(
             $fields,
             $lng->txt("settings")
         )->withAdditionalTransformation(
-            $refinery->custom()->transformation(function ($value) {
-                $values = [$this->getObjId(), $value[0], $value[1], $value[2], $value['result_visible']];
-                $values = array_key_exists('specified_form', $value)
-                    ? array_merge($values, $value['specified_form'])
-                    : array_merge($values, ['', false, false, false]);
-
+            $refinery->custom()->transformation(function ($values) {
+                $values = array_merge(
+                    [$this->getObjId()],
+                    $values['common'],
+                    array_key_exists('standard_form', $values) ?
+                        $values['standard_form'] : ['', false, false, false]
+                );
                 return new ilIndividualAssessmentSettings(
                     ...array_values($values)
                 );
             })
         );
+    }
+
+    public function userAvailabilitySettingsToForm(
+        Field\Factory $input,
+        ilLanguage $lng,
+        Refinery $refinery
+    ): \ILIAS\UI\Component\Input\Container\Form\FormInput {
+        return $input->group([
+            $input->checkbox(
+                $lng->txt("iass_notify"),
+                $lng->txt("iass_notify_explanation")
+            )
+            ->withValue($this->isResultVisible())
+        ]);
+    }
+
+    public function withUserAvailabilitySettings(bool $result_visible): self
+    {
+        $clone = clone $this;
+        $clone->result_visible = $result_visible;
+        return $clone;
     }
 
     public function withReportSettings(
@@ -191,6 +224,12 @@ class ilIndividualAssessmentSettings
             $lng->txt("setting_report_availability_period_label"),
             $lng->txt("setting_report_availability_period_byline"),
         );
+
+        $notification = $input->checkbox(
+            $lng->txt("iass_notify"),
+            $lng->txt("iass_notify_explanation")
+        )
+        ->withValue($this->isResultVisible());
 
         return $input->optionalGroup(
             [$period],
