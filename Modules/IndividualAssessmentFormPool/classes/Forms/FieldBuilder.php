@@ -71,6 +71,7 @@ class FieldBuilder
 
                 return $factory->datetime($label, $description)
                     ->withTimezone('UTC')
+                    ->withUseTime(true)
                     ->withAdditionalTransformation(
                         $this->refinery->custom()->transformation(
                             fn($v) => (string) $v->format('U')

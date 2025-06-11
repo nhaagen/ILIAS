@@ -132,7 +132,12 @@ class IAFPFieldsGUI
                         $used_ids = $this->forms_repo->getMappedFieldIds();
                         $ids = array_filter($ids, static fn(int $id): bool => !in_array($id, $used_ids));
                         $this->forms_repo->deleteFieldsByIds($ids);
-                        $this->tpl->setOnScreenMessage('success', $this->lng->txt('fields_deleted'), true);
+                        $delete_ids = $this->getDeletableIds($ids);
+                        $msg = $this->lng->txt('fields_deleted');
+                        if ($delete_ids === []) {
+                            $msg = $this->lng->txt('no_entries_deleted');
+                        }
+                        $this->tpl->setOnScreenMessage('success', $msg, true);
                         $this->ctrl->redirect($this, self::CMD_LIST);
 
                         // no break
@@ -173,13 +178,18 @@ class IAFPFieldsGUI
 
     protected function getFieldCreationModal(): RoundTrip
     {
+        $fieldtype = [];
+        foreach (FieldType::toArray() as $key => $type) {
+            $fieldtype[$key] = $this->txt(strtolower($type));
+        }
+
         return $this->ui_factory->modal()->roundtrip(
             $this->txt('new_field'),
             null,
             [
                 $this->ui_factory->input()->field()->select(
                     $this->lng->txt('field_type'),
-                    FieldType::toArray(),
+                    $fieldtype,
                     $this->lng->txt('field_type_byline')
                 )
             ],
@@ -193,6 +203,12 @@ class IAFPFieldsGUI
 
     protected function listFields(): string
     {
+        foreach ($this->forms_repo->getFieldsForObjId($this->iafp_obj_id) as $field) {
+            if ($field->getName() === "") {
+                $this->forms_repo->deleteFieldsByIds([$field->getFieldId()]);
+            }
+        };
+
         $modal = $this->getFieldCreationModal();
         $new_entry = $this->ui_factory->button()->primary(
             $this->txt('new_field'),
@@ -261,11 +277,7 @@ class IAFPFieldsGUI
         };
 
         $msg = '';
-        $used_ids = $this->forms_repo->getMappedFieldIds();
-        $delete_ids = array_filter(
-            $ids,
-            static fn(int $id): bool => !in_array($id, $used_ids)
-        );
+        $delete_ids = $this->getDeletableIds($ids);
         $nodelete_ids = array_diff($ids, $delete_ids);
         if ($nodelete_ids !== []) {
             $msg .= $this->lng->txt('cannot_delete_because_used')
@@ -318,5 +330,14 @@ class IAFPFieldsGUI
     protected function txt(string $code): string
     {
         return $this->lng->txt($code);
+    }
+
+    protected function getDeletableIds(array $ids): array
+    {
+        $used_ids = $this->forms_repo->getMappedFieldIds();
+        return array_filter(
+            $ids,
+            static fn(int $id): bool => !in_array($id, $used_ids)
+        );
     }
 }
