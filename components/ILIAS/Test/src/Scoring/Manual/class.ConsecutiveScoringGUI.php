@@ -209,7 +209,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 $this->scoring->getManuallyScorableQuestionsInTest()
             );
 
-        if ($filter_values[self::F_USER_FINAL] !== '') {
+        if ($filter_values[self::F_USER_FINAL] ?? '' !== '') {
             $usr_active_ids = array_filter(
                 $usr_active_ids,
                 function ($uid) use ($filter_values) {
