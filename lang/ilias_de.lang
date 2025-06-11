@@ -3847,6 +3847,7 @@ common#:#database_version#:#Ihre Datenbankversion
 common#:#dataset#:#Eintrag
 common#:#date#:#Datum
 common#:#dateplaner#:#Kalender
+common#:#datetime#:#Datum und Uhrzeit
 common#:#day#:#Tag
 common#:#days#:#Tage
 common#:#db_host#:#Datenbank-Host
@@ -4588,6 +4589,7 @@ common#:#main_menu#:#Hauptmenü
 common#:#mainbar_aria_label#:#Hauptleiste
 common#:#mainbar_more_label#:#Mehr
 common#:#manage_members#:#Mitglieder verwalten
+common#:#markdown#:#Markdown
 common#:#marked_entries#:#Markierte Einträge
 common#:#matriculation#:#Matrikelnummer
 common#:#max_previews_per_object#:#Anzahl Vorschaubilder
@@ -4811,6 +4813,7 @@ common#:#no_accessibility_control_concept_description#:#Aktuell wird in dieser I
 common#:#no_checkbox#:#Sie haben keine Auswahl getroffen.
 common#:#no_condition_selected#:#Sie haben keine Vorbedingung ausgewählt.
 common#:#no_date#:#Kein Datum
+common#:#no_entries_deleted#:#Kein(e) Feld(er) gelöscht
 common#:#no_gallery_users_available#:#Aktuell befinden sich keine Benutzer in der Galerie.
 common#:#no_global_role_left#:#Jeder Benutzer muss mindestens einer globalen Rolle zugeordnet sein.
 common#:#no_import_file_found#:#Keine Importdatei gefunden
@@ -4936,7 +4939,7 @@ common#:#obj_hlps#:#Online-Hilfe
 common#:#obj_hlps_desc#:#Einstellungen der Online-Hilfe
 common#:#obj_htlm#:#Lernmodul HTML
 common#:#obj_htlm_duplicate#:#HTML Lernmodul kopieren
-common#:#obj_iafp#:#Individuelle Bewertung - Form Pool
+common#:#obj_iafp#:#Formularpool für individuelle Bewertung
 common#:#obj_iarp#:#Report für Individuelle Bewertung
 common#:#obj_iass#:#Individuelle Bewertung
 common#:#obj_iass_duplicate#:#Individuelle Bewertung kopieren
@@ -5374,6 +5377,7 @@ common#:#question#:#Frage
 common#:#question_message#:#Frage
 common#:#quit#:#Logout
 common#:#quote#:#Zitat
+common#:#rating#:#5-Sterne-Bewertung
 common#:#reached_session_limit#:#Die maximale Anzahl von Benutzern, die online sind, ist erreicht. Bitte versuchen Sie es später noch einmal.
 common#:#read#:#Lesezugriff
 common#:#readcount_anonymous_users#:#Lesezugriffe anonymer Benutzer
@@ -5644,6 +5648,7 @@ common#:#show_users_online#:#Aktive Benutzer anzeigen
 common#:#show_who_is_online#:#Zeig wer online ist
 common#:#side_frame#:#Rahmen Baumansicht
 common#:#signature#:#Signatur
+common#:#singleselect#:#Einfachauswahl
 common#:#size#:#Größe
 common#:#skills#:#Kompetenzen
 common#:#skin_style#:#Standard-Skin/-Style
@@ -5719,6 +5724,7 @@ common#:#systemcheck_cron#:#System Check per Cron-Job
 common#:#systemcheck_cronform#:#Aktivierung des System Checks im Cron-Job
 common#:#table_mail_import#:#Import von Mails
 common#:#tabs#:#Reiter
+common#:#tag#:#Schlagwort
 common#:#tagging_my_tags#:#Meine Tags
 common#:#tags#:#Tags
 common#:#take_over_structure#:#Ordnerstruktur des Archivs übernehmen
@@ -17471,7 +17477,7 @@ validation#:#not_min_length#:#Ihre Eingabe hat eine Länge von %d und liegt dami
 validation#:#not_numeric#:#„%s“ ist nicht nummerisch.
 validation#:#not_numeric_empty_string#:#Ihre Eingabe ist nicht numerisch.
 validation#:#numeric_only#:#Bitte geben sie eine ganze Zahl ein.
-validation#:#tag_required#:#Bitte geben sie mindestens ein Tag ein.
+validation#:#tag_required#:#Bitte geben Sie mindestens ein Tag ein.
 violation#:#not_a_string#:#Wert ist keine Zeichenkette
 webr#:#invalid_links_tbl#:#Ungültige Links
 webr#:#webr_active#:#Aktiv

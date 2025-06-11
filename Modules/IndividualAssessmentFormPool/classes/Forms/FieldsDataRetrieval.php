@@ -46,11 +46,12 @@ class FieldsDataRetrieval implements DataRetrieval
         $icon_true = $this->ui_factory->symbol()->icon()->custom('templates/default/images/standard/icon_checked.svg', '', 'small');
         $icon_false = $this->ui_factory->symbol()->icon()->custom('templates/default/images/standard/icon_unchecked.svg', '', 'small');
         return [
-            'type' => $this->ui_factory->table()->column()->text($this->lng->txt('type')),
             'name' => $this->ui_factory->table()->column()->text($this->lng->txt('name')),
             'label' => $this->ui_factory->table()->column()->text($this->lng->txt('label')),
             'description' => $this->ui_factory->table()->column()->text($this->lng->txt('description'))
                 ->withIsSortable(false),
+            'type' => $this->ui_factory->table()->column()->text($this->lng->txt('type'))
+                                       ->withIsSortable(false),
             'default_value' => $this->ui_factory->table()->column()->text($this->lng->txt('default_value')),
             'with_notes' => $this->ui_factory->table()->column()->boolean($this->lng->txt('with_notes'), $icon_true, $icon_false),
             'available_for_examiners' => $this->ui_factory->table()->column()->boolean($this->lng->txt('available_for_examiners'), $icon_true, $icon_false),
@@ -72,13 +73,13 @@ class FieldsDataRetrieval implements DataRetrieval
             $config = $field->getConfig();
             $default_value = (string) $config->getDefaultValue();
             if ($config->getType() === FieldType::DATETIME && $default_value != '') {
-                $default_value = DateTimeImmutable::createFromFormat('U', $config->getDefaultValue())->format('d.m.Y');
+                $default_value = DateTimeImmutable::createFromFormat('U', $config->getDefaultValue())->format('d.m.Y H:m');
             }
             $record = [
-                'type' => $config->getType()->name,
                 'name' => $field->getName(),
                 'label' => $config->getLabel(),
                 'description' => $config->getDescription(),
+                'type' => $this->lng->txt(strtolower($config->getType()->name)),
                 'default_value' => $default_value,
                 'with_notes' => $field->hasNotes(),
                 'available_for_examiners' => $field->isAvailableForExaminers(),

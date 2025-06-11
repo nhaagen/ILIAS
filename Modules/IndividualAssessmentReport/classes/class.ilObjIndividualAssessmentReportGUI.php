@@ -122,7 +122,6 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
                         break;
                     case self::CMD_EDIT:
                         $this->checkPermission('write');
-                        $this->getSubTabs(self::TAB_SETTINGS);
                         $this->tabs_gui->activateTab(self::TAB_SETTINGS);
                         $this->tabs_gui->activateSubTab(self::TAB_SETTINGS);
                         $this->edit();
@@ -164,6 +163,11 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
 
     public function edit(): void
     {
+        if ($this->object === null) {
+            $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_input_not_valid"), true);
+            $this->createObject();
+            return;
+        }
         $form = $this->initSettingsForm();
         $this->tpl->setContent($this->ui_renderer->render($form));
     }
@@ -351,5 +355,10 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
     protected function txt(string $code): string
     {
         return $this->lng->txt($code);
+    }
+
+    protected function getLinkTarget(string $cmd): string
+    {
+        return $this->ctrl->getLinkTarget($this, $cmd);
     }
 }

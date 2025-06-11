@@ -3847,6 +3847,7 @@ common#:#database_version#:#Current Database Version
 common#:#dataset#:#Item
 common#:#date#:#Date
 common#:#dateplaner#:#Calendar
+common#:#datetime#:#Date and Time
 common#:#day#:#Day
 common#:#days#:#Days
 common#:#db_host#:#Database Host
@@ -4587,6 +4588,7 @@ common#:#main_menu#:#Main Menu
 common#:#mainbar_aria_label#:#Mainbar
 common#:#mainbar_more_label#:#More
 common#:#manage_members#:#Manage Members
+common#:#markdown#:#Markdown
 common#:#marked_entries#:#Marked Entries
 common#:#matriculation#:#Matriculation number
 common#:#max_previews_per_object#:#Number of preview images per file
@@ -4810,6 +4812,7 @@ common#:#no_accessibility_control_concept_description#:#There is currently no Ac
 common#:#no_checkbox#:#You did not select any item.
 common#:#no_condition_selected#:#Please select one precondition.
 common#:#no_date#:#No date
+common#:#no_entries_deleted#:#No entry/entries deleted
 common#:#no_gallery_users_available#:#There are currently no users in the gallery.
 common#:#no_global_role_left#:#Every user has to be assigned to one role.
 common#:#no_import_file_found#:#No import file found
@@ -4935,7 +4938,7 @@ common#:#obj_hlps#:#Help System
 common#:#obj_hlps_desc#:#Settings for the online help
 common#:#obj_htlm#:#Learning Module HTML
 common#:#obj_htlm_duplicate#:#Copy HTML Learning Module
-common#:#obj_iafp#:#Individual Assessment Form Pool
+common#:#obj_iafp#:#Form Pool for Individual Assessment
 common#:#obj_iarp#:#Individual Assessment Report
 common#:#obj_iass#:#Individual Assessment
 common#:#obj_iass_duplicate#:#Copy Individual Assessment
@@ -5373,6 +5376,7 @@ common#:#question#:#Question
 common#:#question_message#:#Question
 common#:#quit#:#Quit
 common#:#quote#:#Quote
+common#:#rating#:#5-Star-Rating
 common#:#reached_session_limit#:#The limit of online users is reached. Please try again later.
 common#:#read#:#Read
 common#:#readcount_anonymous_users#:#Number of anonymous read accesses
@@ -5643,6 +5647,7 @@ common#:#show_users_online#:#Show active users
 common#:#show_who_is_online#:#Show who is online
 common#:#side_frame#:#Side Frame
 common#:#signature#:#Signature
+common#:#singleselect#:#Single Select
 common#:#size#:#Size
 common#:#skills#:#Competences
 common#:#skin_style#:#Default Skin / Style
@@ -5718,6 +5723,7 @@ common#:#systemcheck_cron#:#Process System Check in Cron Job
 common#:#systemcheck_cronform#:#Activation of System Check in Cron Job
 common#:#table_mail_import#:#Mail import
 common#:#tabs#:#Tabs
+common#:#tag#:#Tag
 common#:#tagging_my_tags#:#My Tags
 common#:#tags#:#Tags
 common#:#take_over_structure#:#Adopt Structure

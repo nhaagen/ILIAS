@@ -149,6 +149,11 @@ class ilObjIndividualAssessmentFormPoolGUI extends ilObjectGUI
 
     public function edit(): void
     {
+        if ($this->object === null) {
+            $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_input_not_valid"), true);
+            $this->createObject();
+            return;
+        }
         $form = $this->initPropertiesForm();
         $this->tpl->setContent($this->ui_renderer->render($form));
     }
