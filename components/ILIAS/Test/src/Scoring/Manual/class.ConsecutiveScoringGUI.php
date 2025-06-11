@@ -129,7 +129,9 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 $form = $this->getScoringForm(self::ACT_STORE, $qid, $uid, $pid)
                     ->withRequest($this->request);
                 $formdata = $form->getData();
-                if ($formdata !== null) {
+                if ($formdata === null) {
+                    $this->tpl->setContent($this->view());
+                } else {
                     $this->store($formdata);
                     $msg = sprintf(
                         $this->lng->txt('tst_saved_manscoring_successfully'),
@@ -402,6 +404,11 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             $pass_id = $this->scoring->getPassUsedForEvaluation($usr_active_id);
 
             $form = $this->getScoringForm(self::ACT_STORE, $qid, $usr_active_id, $pass_id);
+
+            if ($request->getMethod() === 'POST') {
+                $form = $form->withRequest($request);
+            }
+
             $representation = $viewcontrol_values->isUserCentric() ?
                 $this->getQuestionRepresentation(current($question_ids)) :
                 $this->getUserRepresentation(current($usr_active_ids));
