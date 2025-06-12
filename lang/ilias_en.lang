@@ -10454,8 +10454,8 @@ iafp#:#pick_fields#:#Select Fields
 iafp#:#tab_fields#:#Fields
 iafp#:#tab_forms#:#Forms
 iafp#:#with_notes#:#Notes
-iarp#:#iarp_local#:#Local Report
-iarp#:#iarp_local_desc#:#Include Assessments in or below this folder only.
+iarp#:#iarp_global#:#Global Report
+iarp#:#iarp_global_desc#:#If this is disabled assessments in or below this folder are included only.
 iarp#:#iarp_settings#:#Settings
 iarp#:#iarp_settings_availability#:#Availability
 iarp#:#report#:#Report
@@ -14133,11 +14133,11 @@ rbac#:#iarp_copy#:#Copy an Individual Assessment Report
 rbac#:#iarp_delete#:#Delete an Individual Assessment Report
 rbac#:#iarp_edit_permission#:#Edit permissions of an Individual Assessment Report
 rbac#:#iarp_iarp_view_full_record#:#View whole result of other users
-rbac#:#iarp_iarp_view_general_status#:#View status of other users
+rbac#:#iarp_iarp_view_general_status#:#View other users
 rbac#:#iarp_iarp_view_results#:#View learning progress of other users
 rbac#:#iarp_read#:#Read content of an Individual Assessment Report
 rbac#:#iarp_view_full_record#:#View whole result of other users
-rbac#:#iarp_view_general_status#:#View status of other users
+rbac#:#iarp_view_general_status#:#View other users
 rbac#:#iarp_view_results#:#View learning progress of other users
 rbac#:#iarp_visible#:#Individual Assessment Report is visible
 rbac#:#iarp_write#:#Edit an Individual Assessment Report

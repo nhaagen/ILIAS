@@ -99,6 +99,11 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
                 break;
             case 'iarpreportgui':
                 $this->checkPermission('read');
+                if ($this->object === null) {
+                    $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_input_not_valid"), true);
+                    $this->createObject();
+                    return;
+                }
                 $this->tabs_gui->activateTab(self::TAB_REPORT);
                 $gui = $this->object->getDic()['gui.report'];
                 $this->ctrl->forwardCommand($gui);
@@ -113,12 +118,15 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
                         parent::cancelObject();
                         break;
                     case self::CMD_VIEW:
+                        $this->checkPermission('visible');
+                        $this->tabs_gui->activateTab(self::TAB_REPORT);
+                        $this->ctrl->redirectByClass("iarpreportgui", self::CMD_VIEW);
+                        break;
                     case self::CMD_INFO:
                         $this->checkPermission('visible');
                         $this->tabs_gui->activateTab(self::TAB_INFO);
                         $info = new ilInfoScreenGUI($this);
                         $this->ctrl->forwardCommand($info);
-
                         break;
                     case self::CMD_EDIT:
                         $this->checkPermission('write');
@@ -129,9 +137,7 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
                     case self::CMD_SAVE:
                         if ($this->getCreationMode()) {
                             parent::saveObject();
-                            $this->ctrl->redirectToURL(
-                                $this->getLinkTarget(self::CMD_EDIT)
-                            );
+                            $this->ctrl->redirectByClass("iarpreportgui", self::CMD_VIEW);
                         }
                         $this->checkPermission('write');
                         $this->tabs_gui->activateTab(self::TAB_SETTINGS);
@@ -163,11 +169,6 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
 
     public function edit(): void
     {
-        if ($this->object === null) {
-            $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_input_not_valid"), true);
-            $this->createObject();
-            return;
-        }
         $form = $this->initSettingsForm();
         $this->tpl->setContent($this->ui_renderer->render($form));
     }
@@ -181,10 +182,10 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_input_not_valid"), true);
         } else {
             list($settings, $online) = $data;
-            list($title_and_desc, $local) = $settings;
+            list($title_and_desc, $global) = $settings;
             $this->object->getObjectProperties()->storePropertyTitleAndDescription($title_and_desc);
             $this->object->getObjectProperties()->storePropertyIsOnline($online);
-            $this->object = $this->object->withSettings($this->object->getSettings()->withGlobal(!$local));
+            $this->object = $this->object->withSettings($this->object->getSettings()->withGlobal($global));
             $this->object->update();
             $this->tpl->setOnScreenMessage('success', $this->lng->txt("msg_obj_modified"), true);
         }
@@ -228,15 +229,15 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
             $this->refinery
         );
 
-        $local = $this->ui_factory->input()->field()->checkbox(
-            $this->lng->txt('iarp_local'),
-            $this->lng->txt('iarp_local_desc'),
+        $global = $this->ui_factory->input()->field()->checkbox(
+            $this->lng->txt('iarp_global'),
+            $this->lng->txt('iarp_global_desc'),
         )
-        ->withValue(!$this->object->getSettings()->isGlobal())
+        ->withValue($this->object->getSettings()->isGlobal())
         ->withAdditionalTransformation($this->refinery->kindlyTo()->bool());
 
         $settings = $this->ui_factory->input()->field()->section(
-            [$title_and_description, $local],
+            [$title_and_description, $global],
             $this->lng->txt('iarp_settings')
         );
 
@@ -249,11 +250,7 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
         $availability = $this->ui_factory->input()->field()->section(
             [$online],
             $this->lng->txt('iarp_settings_availability')
-        )->withAdditionalTransformation(
-            $this->refinery->custom()->transformation(
-                fn($v) => array_shift($v)
-            )
-        );
+        )->withAdditionalTransformation($shift);
 
         return $this->ui_factory->input()->container()->form()->standard(
             $this->ctrl->getLinkTargetByClass(self::class, self::CMD_SAVE),
@@ -294,13 +291,16 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
             );
         }
 
-        //        if ($access->mayEdit()) {
-        $this->tabs_gui->addTab(
-            self::TAB_REPORT,
-            $this->txt(self::TAB_REPORT),
-            $this->ctrl->getLinkTargetByClass('iarpreportgui', IARPReportGUI::CMD_VIEW),
-        );
-        //        }
+        if ($this->permissions->mayRead() &&
+            $this->permissions->mayView() &&
+            $this->permissions->mayEdit()
+        ) {
+            $this->tabs_gui->addTab(
+                self::TAB_REPORT,
+                $this->txt(self::TAB_REPORT),
+                $this->ctrl->getLinkTargetByClass('iarpreportgui', IARPReportGUI::CMD_VIEW),
+            );
+        }
 
         if ($this->permissions->mayEditPermissions()) {
             $this->tabs_gui->addTab(
@@ -360,5 +360,13 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
     protected function getLinkTarget(string $cmd): string
     {
         return $this->ctrl->getLinkTarget($this, $cmd);
+    }
+
+    protected function afterSave(ilObject $new_object): void
+    {
+        $new_object->setOfflineStatus(true);
+        $new_object->update();
+        $this->tpl->setOnScreenMessage("success", $this->txt("iarp_added"), true);
+        $this->ctrl->setParameter($this, "ref_id", $new_object->getRefId());
     }
 }
