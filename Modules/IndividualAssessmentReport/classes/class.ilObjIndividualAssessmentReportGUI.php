@@ -369,4 +369,11 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
         $this->tpl->setOnScreenMessage("success", $this->txt("iarp_added"), true);
         $this->ctrl->setParameter($this, "ref_id", $new_object->getRefId());
     }
+
+    protected function initCreationForms(string $new_type): array
+    {
+        return [
+            self::CFORM_NEW => $this->initCreateForm($new_type)
+        ];
+    }
 }

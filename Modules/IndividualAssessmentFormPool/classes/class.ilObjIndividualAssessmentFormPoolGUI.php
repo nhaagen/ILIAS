@@ -341,4 +341,11 @@ class ilObjIndividualAssessmentFormPoolGUI extends ilObjectGUI
     {
         return $this->lng->txt($code);
     }
+
+    protected function initCreationForms(string $new_type): array
+    {
+        return [
+            self::CFORM_NEW => $this->initCreateForm($new_type)
+        ];
+    }
 }

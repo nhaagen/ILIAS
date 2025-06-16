@@ -50,6 +50,7 @@ class ilObjIndividualAssessmentGUI extends ilObjectGUI
     protected ILIAS\Refinery\Factory $refinery;
     protected ILIAS\HTTP\Wrapper\RequestWrapper $request_wrapper;
     protected ILIAS\ResourceStorage\Services $irss;
+    protected SpecifiedFormStorageDB $specified_form_storage;
 
 
     public function __construct($data, int $id = 0, bool $call_by_reference = true, bool $prepare_output = true)
@@ -67,6 +68,7 @@ class ilObjIndividualAssessmentGUI extends ilObjectGUI
         $this->refinery = $DIC->refinery();
         $this->request_wrapper = $DIC->http()->wrapper()->query();
         $this->irss = $DIC['resource_storage'];
+        $this->specified_form_storage = new SpecifiedFormStorageDB($DIC['ilDB']);
 
         parent::__construct($data, $id, $call_by_reference, $prepare_output);
     }
@@ -133,6 +135,11 @@ class ilObjIndividualAssessmentGUI extends ilObjectGUI
                 $this->ctrl->forwardCommand($gui);
                 break;
             case "ilexportgui":
+                $custom_fields_available = $this->specified_form_storage->checkForAvailableFormFields($this->object->getId());
+                if ($custom_fields_available === true) {
+                    $this->tpl->setOnScreenMessage('failure', $this->lng->txt("no_export_for_custom_forms"), true);
+                    $this->ctrl->redirect($this);
+                }
                 $this->tabs_gui->activateTab(self::TAB_EXPORT);
                 $exp_gui = new ilExportGUI($this); // $this is the ilObj...GUI class of the resource
                 $exp_gui->addFormat("xml");
