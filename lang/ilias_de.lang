@@ -4814,6 +4814,7 @@ common#:#no_checkbox#:#Sie haben keine Auswahl getroffen.
 common#:#no_condition_selected#:#Sie haben keine Vorbedingung ausgewählt.
 common#:#no_date#:#Kein Datum
 common#:#no_entries_deleted#:#Kein(e) Feld(er) gelöscht
+common#:#no_export_for_custom_forms#:#Ein Export von benutzerdefinierten Formularen ist derzeit nicht möglich. Diese Funktion wird in einer zukünftigen Implementierung hinzugefügt.
 common#:#no_gallery_users_available#:#Aktuell befinden sich keine Benutzer in der Galerie.
 common#:#no_global_role_left#:#Jeder Benutzer muss mindestens einer globalen Rolle zugeordnet sein.
 common#:#no_import_file_found#:#Keine Importdatei gefunden

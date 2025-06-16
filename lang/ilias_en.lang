@@ -4813,6 +4813,7 @@ common#:#no_checkbox#:#You did not select any item.
 common#:#no_condition_selected#:#Please select one precondition.
 common#:#no_date#:#No date
 common#:#no_entries_deleted#:#No entry/entries deleted
+common#:#no_export_for_custom_forms#:#Export for custom forms is currently not possible. This feature will be implemented in the future.
 common#:#no_gallery_users_available#:#There are currently no users in the gallery.
 common#:#no_global_role_left#:#Every user has to be assigned to one role.
 common#:#no_import_file_found#:#No import file found

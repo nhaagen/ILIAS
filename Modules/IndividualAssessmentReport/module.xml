@@ -23,7 +23,7 @@
 			export="0"
 			orgunit_permissions="1"
 			amet="0"
-			offline_handling="0"
+			offline_handling="1"
 		>
 			<parent id="cat">cat</parent>
 			<parent id="fold">fold</parent>
