@@ -45,7 +45,7 @@ interface FormsStorage
     public function getAllFormIdsForObjId(int $iafp_obj_id): array;
     public function getFormsCountForObjId(int $iafp_obj_id): int;
 
-    public function createField(FieldType $type, int $iafp_obj_id): Field;
+    public function createField(int $iafp_obj_id, string $title, FieldType $type): Field;
     public function storeField(Field $field): Field;
     public function getFieldById(int $field_id): ?Field;
     public function deleteFieldsByIds(array $field_ids): void;
