@@ -104,8 +104,17 @@ class IAFPFieldsGUI
                         break;
 
                     case self::CMD_CREATE:
-                        $type = $this->getFieldCreationModal()->withRequest($this->request)->getData();
-                        $field_id = $this->forms_repo->createField($type, $this->iafp_obj_id)->getFieldId();
+                        $field_creation = $this->getFieldCreationModal()->withRequest($this->request);
+                        $data = $field_creation->getData();
+                        if ($data === null) {
+                            $signal = $field_creation->getShowSignal();
+                            $field_creation = $field_creation->withAdditionalOnLoadCode(
+                                fn($id) => "il.UI.modal.showModal('{$id}', {}, {});"
+                            );
+                            $this->tpl->setContent($this->ui_renderer->render($field_creation) . $this->listFields());
+                            break;
+                        }
+                        $field_id = $this->forms_repo->createField($this->iafp_obj_id, ...$data)->getFieldId();
                         $url = $this->getUrlString(self::CMD_EDIT, $field_id);
                         $this->ctrl->redirectToURL($url);
                         break;
@@ -187,6 +196,9 @@ class IAFPFieldsGUI
             $this->txt('new_field'),
             null,
             [
+                $this->ui_factory->input()->field()->text(
+                    $this->lng->txt('title')
+                )->withRequired(true),
                 $this->ui_factory->input()->field()->select(
                     $this->lng->txt('field_type'),
                     $fieldtype,
@@ -196,19 +208,17 @@ class IAFPFieldsGUI
             $this->ctrl->getLinkTarget($this, self::CMD_CREATE)
         )->withAdditionalTransformation(
             $this->refinery->custom()->transformation(
-                fn($v) => FieldType::from((int) array_shift($v))
+                function ($v) {
+                    list($title, $type) = $v;
+                    $type = FieldType::from((int) $type);
+                    return [$title, $type];
+                }
             )
         );
     }
 
     protected function listFields(): string
     {
-        foreach ($this->forms_repo->getFieldsForObjId($this->iafp_obj_id) as $field) {
-            if ($field->getName() === "") {
-                $this->forms_repo->deleteFieldsByIds([$field->getFieldId()]);
-            }
-        };
-
         $modal = $this->getFieldCreationModal();
         $new_entry = $this->ui_factory->button()->primary(
             $this->txt('new_field'),

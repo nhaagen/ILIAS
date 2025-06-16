@@ -138,14 +138,14 @@ class FormsStorageDB implements FormsStorage, \IAFPCollector
         );
     }
 
-    public function createField(FieldType $type, int $iafp_obj_id): Field
+    public function createField(int $iafp_obj_id, string $title, FieldType $type): Field
     {
         $config = new FieldConfig($type);
         $field = new Field(
             $config,
             -1,
             $iafp_obj_id,
-            $name = '',
+            $title,
             $with_notes = false,
             $available_for_examiners = true
         );

@@ -61,11 +61,12 @@ class IAFPFormsStorageTest extends TestCase
      */
     public function testIAFPCreateField(FieldType $type): void
     {
-        $field = $this->db->createField($type, 777);
+        $title = 'New Field Title';
+        $field = $this->db->createField(777, $title, $type);
         $this->assertInstanceOf(FieldConfig::class, $field->getConfig());
         $this->assertEquals(-2, $field->getFieldId()); //next id
         $this->assertEquals(777, $field->getObjId());
         $this->assertEquals($type, $field->getConfig()->getType());
+        $this->assertEquals($title, $field->getName());
     }
-
 }
