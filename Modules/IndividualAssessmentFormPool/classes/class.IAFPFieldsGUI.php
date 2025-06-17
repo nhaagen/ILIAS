@@ -141,9 +141,8 @@ class IAFPFieldsGUI
                         $used_ids = $this->forms_repo->getMappedFieldIds();
                         $ids = array_filter($ids, static fn(int $id): bool => !in_array($id, $used_ids));
                         $this->forms_repo->deleteFieldsByIds($ids);
-                        $delete_ids = $this->getDeletableIds($ids);
                         $msg = $this->lng->txt('fields_deleted');
-                        if ($delete_ids === []) {
+                        if ($ids === []) {
                             $msg = $this->lng->txt('no_entries_deleted');
                         }
                         $this->tpl->setOnScreenMessage('success', $msg, true);
