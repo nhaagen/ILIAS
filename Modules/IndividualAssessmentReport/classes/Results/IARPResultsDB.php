@@ -22,6 +22,7 @@ use ILIAS\IARP\UserInfo;
 use ILIAS\IARP\IASSInfo;
 use ILIAS\IARP\GradingInfo;
 use ILIAS\Data\Order;
+use ILIAS\Data\Range;
 
 class IARPResultsDB
 {
@@ -39,9 +40,10 @@ class IARPResultsDB
         Order $order,
         int $lp_mode,
         array $filter_data,
-        int $contained_in_ref_id
+        int $contained_in_ref_id,
+        ?Range $range = null
     ): \Iterator {
-        foreach ($this->getRecords($usr_ids, $order, $lp_mode, $filter_data, $contained_in_ref_id) as $rec) {
+        foreach ($this->getRecords($usr_ids, $order, $lp_mode, $filter_data, $contained_in_ref_id, $range) as $rec) {
             yield(
                 new IARPResult(
                     $this->getUserInfo($rec),
@@ -117,19 +119,24 @@ class IARPResultsDB
         );
     }
 
-
     protected function getRecords(
         array $usr_ids,
         Order $order,
         int $lp_mode,
         array $filter_data,
-        int $contained_in_ref_id
+        int $contained_in_ref_id,
+        ?Range $range = null
     ): array {
         $sqlpart_users = $usr_ids === [] ? '' : 'AND ' . $this->db->in('ia.usr_id', $usr_ids, false, 'integer');
         $sqlpart_order = $order->join('ORDER BY', fn(...$o) => implode(' ', $o));
         $sqlpart_mode = $lp_mode === -1 ? '' : 'AND learning_progress = ' . $this->db->quote($lp_mode, 'integer');
         $sqlpart_filter = '';
         $sqlpart_tree = '';
+        $sqlpart_range = '';
+
+        if ($range !== null) {
+            $sqlpart_range = sprintf('LIMIT %2$s OFFSET %1$s', ...$range->unpack());
+        }
 
         if ($contained_in_ref_id !== -1) {
             $sqlpart_tree = 'JOIN tree on tree.child = ref.ref_id '
@@ -168,11 +175,11 @@ class IARPResultsDB
             . $sqlpart_users . PHP_EOL
             . $sqlpart_mode . PHP_EOL
             . $sqlpart_filter . PHP_EOL
-            . $sqlpart_order
+            . $sqlpart_order . PHP_EOL
+            . $sqlpart_range . PHP_EOL
         ;
 
         $res = $this->db->query($query);
         return $this->db->fetchAll($res);
     }
-
 }

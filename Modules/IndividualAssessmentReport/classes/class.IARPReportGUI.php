@@ -29,6 +29,8 @@ use ILIAS\UI\Implementation\Component\Table\Presentation;
 use ILIAS\UI\Implementation\Component\Table\PresentationRow;
 use ILIAS\UI\Implementation\Component\Input\Container\Filter\Standard as Filter;
 use ILIAS\ResourceStorage\Services as IRSS;
+use ILIAS\Data\Range;
+use ILIAS\UI\Implementation\Component\ViewControl\Pagination;
 
 /**
  * @ilCtrl_Calls IARPReportGUI: ilIndividualAssessmentMemberGUI
@@ -38,6 +40,7 @@ class IARPReportGUI
     public const CMD_VIEW = 'view';
     protected const F_SORT = 'sort';
     protected const F_MODE = 'mode';
+    protected const F_PAGE = 'page';
 
     public function __construct(
         protected readonly IARPAccessHandler $iafp_access,
@@ -88,13 +91,47 @@ class IARPReportGUI
                             $mode = $this->request_wrapper->retrieve(self::F_MODE, $this->refinery->kindlyTo()->int());
                         }
 
-                        $this->ctrl->setParameter($this, self::F_SORT, $order->join('', fn($_, $a, $o) => implode(':', [$a, $o])));
-                        $this->ctrl->setParameter($this, self::F_MODE, $mode);
+                        $usr_ids = [$this->current_user->getId()];
+                        if ($this->iafp_access->mayViewOthersByPosition()) {
+                            $usr_ids = array_merge(
+                                $usr_ids,
+                                $this->iafp_access->getUserIdsWhereCurrentUserHasAuthority()
+                            );
+                        }
+                        if ($this->iafp_access->mayViewOthersByRBAC()) {
+                            $usr_ids = [];
+                        }
 
                         $filter_data = $this->filter_service->getData($this->getFilters()) ?? [];
 
+                        $page = 0;
+                        $range = null;
+                        $page_size = $this->getUsersHitsPerPage();
+                        $total_entries = count(iterator_to_array(
+                            $this->repo->getResults(
+                                array_unique($usr_ids),
+                                $order,
+                                $mode,
+                                $filter_data,
+                                $this->contained_in_ref_id,
+                                $range
+                            )
+                        ));
+                        if ($total_entries > $page_size) {
+                            $target = $this->ctrl->getLinkTarget($this, self::CMD_VIEW);
+                            if ($this->request_wrapper->has(self::F_PAGE)) {
+                                $page = $this->request_wrapper->retrieve(self::F_PAGE, $this->refinery->kindlyTo()->int());
+                            }
+                            $pagination = $this->getPagination($total_entries, $page_size, $page, $target);
+                            $range = $this->data_factory->range($pagination->getRange()->getStart(), $pagination->getRange()->getLength());
+                        }
+
+                        $this->ctrl->setParameter($this, self::F_SORT, $order->join('', fn($_, $a, $o) => implode(':', [$a, $o])));
+                        $this->ctrl->setParameter($this, self::F_MODE, $mode);
+                        $this->ctrl->setParameter($this, self::F_PAGE, $page);
+
                         $this->tpl->setContent(
-                            $this->report($order, $mode, $filter_data)
+                            $this->report($order, $mode, $filter_data, $usr_ids, $total_entries, $range)
                         );
                         break;
 
@@ -112,32 +149,28 @@ class IARPReportGUI
         }
     }
 
-    protected function report(Order $order, int $mode, array $filter_data): string
-    {
-        $usr_ids = [$this->current_user->getId()];
-        if ($this->iafp_access->mayViewOthersByPosition()) {
-            $usr_ids = array_merge(
-                $usr_ids,
-                $this->iafp_access->getUserIdsWhereCurrentUserHasAuthority()
-            );
-        }
-        if ($this->iafp_access->mayViewOthersByRBAC()) {
-            $usr_ids = [];
-        }
-
+    protected function report(
+        Order $order,
+        int $mode,
+        array $filter_data,
+        array $usr_ids,
+        int $total_entries,
+        ?Range $range = null
+    ): string {
         $data = iterator_to_array(
             $this->repo->getResults(
                 array_unique($usr_ids),
                 $order,
                 $mode,
                 $filter_data,
-                $this->contained_in_ref_id
+                $this->contained_in_ref_id,
+                $range
             )
         );
 
         return $this->ui_renderer->render([
             $this->getFilters(),
-            $this->getTable($mode)->withData($data),
+            $this->getTable($mode, $total_entries)->withData($data),
         ]);
     }
 
@@ -147,7 +180,7 @@ class IARPReportGUI
         $this->irss->consume()->download($resource_id)->run();
     }
 
-    protected function getTable(int $mode): Presentation
+    protected function getTable(int $mode, int $total_entries): Presentation
     {
         $vcf = $this->ui_factory->viewControl();
         $target = $this->ctrl->getLinkTarget($this, self::CMD_VIEW);
@@ -157,6 +190,11 @@ class IARPReportGUI
             $vcf->sortation($this->getSortOptions())
                 ->withTargetURL($target, self::F_SORT),
         ];
+
+        $page_size = $this->getUsersHitsPerPage();
+        if ($total_entries > $page_size) {
+            $view_controls[] = $this->getPagination($total_entries, $page_size, 0, $target);
+        }
 
         return $this->ui_factory->table()->presentation(
             $this->lng->txt('report'),
@@ -253,5 +291,33 @@ class IARPReportGUI
             $this->lng->txt(ilLPStatus::LP_STATUS_FAILED) => $target . ilLPStatus::LP_STATUS_FAILED_NUM,
 
         ];
+    }
+
+    public function getPagination(
+        int $total_entries,
+        int $page_size,
+        int $current_page,
+        string $target
+    ): Pagination {
+        if ($this->request_wrapper->has(self::F_PAGE)) {
+            $current_page = $this->request_wrapper->retrieve(
+                self::F_PAGE,
+                $this->refinery->kindlyTo()->int()
+            );
+        }
+
+        $pagination_url = $this->ctrl->getLinkTarget($this, self::CMD_VIEW);
+        return $this->ui_factory->viewControl()
+                                ->pagination()
+                                ->withTargetURL($target, self::F_PAGE)
+                                ->withTotalEntries($total_entries)
+                                ->withPageSize($page_size)
+                                ->withCurrentPage($current_page)
+        ;
+    }
+
+    protected function getUsersHitsPerPage(): int
+    {
+        return (int) $this->current_user->getPref("hits_per_page");
     }
 }
