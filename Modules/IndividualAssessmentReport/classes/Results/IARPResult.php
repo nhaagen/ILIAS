@@ -36,6 +36,7 @@ class IARPResult
 {
     private bool $perm_view_lp = true;
     private bool $perm_view_full = true;
+    private bool $perm_view_specific = true;
 
     public function __construct(
         protected readonly UserInfo $user_info,
@@ -48,11 +49,13 @@ class IARPResult
         int $current_user_id,
         bool $perm_view_lp,
         bool $perm_view_full,
+        bool $perm_view_specific
     ) {
         $is_own_record = $this->user_info->getUserId() === $current_user_id;
         $clone = clone $this;
         $clone->perm_view_lp = $perm_view_lp || $is_own_record;
         $clone->perm_view_full = $perm_view_full || $is_own_record;
+        $clone->perm_view_specific = $perm_view_specific || $is_own_record;
         return $clone;
     }
 
@@ -95,9 +98,9 @@ class IARPResult
 
     public function getContent(
         ilLanguage $lng,
-        IASSCustomFieldValueRenderer $value_renderer,
+        IASSCustomFieldValueRenderer $value_renderer
     ): array {
-        if (!$this->perm_view_full) {
+        if (!$this->perm_view_full && !$this->perm_view_specific) {
             return [];
         }
 
@@ -110,10 +113,14 @@ class IARPResult
         }
 
         foreach ($this->grading_info->getCustomFields() as $cf) {
-            if ($cf->isAvailableForParticipant()) {
+            if ($this->perm_view_specific && !$cf->isAvailableForParticipant()) {
+                $ret[$cf->getConfig()->getLabel()] = $value_renderer->render($cf);
+            }
+            if ($this->perm_view_full && $cf->isAvailableForParticipant()) {
                 $ret[$cf->getConfig()->getLabel()] = $value_renderer->render($cf);
             }
         }
+
         return $ret;
     }
 
