@@ -210,6 +210,7 @@ class IARPReportGUI
                     $environment['current_user']->getId(),
                     $environment['perm.view_lp'],
                     $environment['perm.view_full'],
+                    $environment['perm.view_specific']
                 );
 
                 return $row
@@ -225,7 +226,7 @@ class IARPReportGUI
                     $ui_factory->listing()->descriptive(
                         $record->getContent(
                             $environment['lng'],
-                            $environment['iass.valuerenderer'],
+                            $environment['iass.valuerenderer']
                         )
                     )
                 )
@@ -252,6 +253,7 @@ class IARPReportGUI
             'current_user' => $this->current_user,
             'perm.view_lp' => $this->iafp_access->mayViewOthersLP(),
             'perm.view_full' => $this->iafp_access->mayViewOthersFull(),
+            'perm.view_specific' => $this->iafp_access->mayViewSpecificRecords()
         ]);
     }
 
