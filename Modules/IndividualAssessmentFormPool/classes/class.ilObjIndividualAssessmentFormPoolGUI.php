@@ -165,14 +165,15 @@ class ilObjIndividualAssessmentFormPoolGUI extends ilObjectGUI
 
         if ($data === null) {
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_input_not_valid"), true);
+            $this->tpl->setContent($this->ui_renderer->render($form));
         } else {
             list($title_and_desc, $online) = $data;
             $this->object->getObjectProperties()->storePropertyTitleAndDescription($title_and_desc);
             $this->object->getObjectProperties()->storePropertyIsOnline($online);
 
             $this->tpl->setOnScreenMessage('success', $this->lng->txt("msg_obj_modified"), true);
+            $this->ctrl->redirect($this, self::CMD_EDIT);
         }
-        $this->tpl->setContent($this->ui_renderer->render($form));
     }
 
     protected function initPropertiesForm(): Form

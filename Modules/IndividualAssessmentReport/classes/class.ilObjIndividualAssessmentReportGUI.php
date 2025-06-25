@@ -180,6 +180,7 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
 
         if ($data === null) {
             $this->tpl->setOnScreenMessage('failure', $this->lng->txt("form_input_not_valid"), true);
+            $this->tpl->setContent($this->ui_renderer->render($form));
         } else {
             list($settings, $online) = $data;
             list($title_and_desc, $global) = $settings;
@@ -188,8 +189,8 @@ class ilObjIndividualAssessmentReportGUI extends ilObjectGUI
             $this->object = $this->object->withSettings($this->object->getSettings()->withGlobal($global));
             $this->object->update();
             $this->tpl->setOnScreenMessage('success', $this->lng->txt("msg_obj_modified"), true);
+            $this->ctrl->redirect($this, self::CMD_EDIT);
         }
-        $this->tpl->setContent($this->ui_renderer->render($form));
     }
 
     public function editAdditional(?ilPropertyFormGUI $form = null): void
