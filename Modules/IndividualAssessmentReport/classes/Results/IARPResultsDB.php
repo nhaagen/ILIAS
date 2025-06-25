@@ -127,6 +127,29 @@ class IARPResultsDB
         int $contained_in_ref_id,
         ?Range $range = null
     ): array {
+        $res = $this->buildQuery($usr_ids, $order, $lp_mode, $filter_data, $contained_in_ref_id, $range);
+        return $this->db->fetchAll($res);
+    }
+
+    public function countResults(
+        array $usr_ids,
+        Order $order,
+        int $lp_mode,
+        array $filter_data,
+        int $contained_in_ref_id
+    ): int {
+        $res = $this->buildQuery($usr_ids, $order, $lp_mode, $filter_data, $contained_in_ref_id);
+        return $this->db->numRows($res);
+    }
+
+    protected function buildQuery(
+        array $usr_ids,
+        Order $order,
+        int $lp_mode,
+        array $filter_data,
+        int $contained_in_ref_id,
+        ?Range $range = null
+    ): ilDBStatement {
         $sqlpart_users = $usr_ids === [] ? '' : 'AND ' . $this->db->in('ia.usr_id', $usr_ids, false, 'integer');
         $sqlpart_order = $order->join('ORDER BY', fn(...$o) => implode(' ', $o));
         $sqlpart_mode = $lp_mode === -1 ? '' : 'AND learning_progress = ' . $this->db->quote($lp_mode, 'integer');
@@ -179,7 +202,6 @@ class IARPResultsDB
             . $sqlpart_range . PHP_EOL
         ;
 
-        $res = $this->db->query($query);
-        return $this->db->fetchAll($res);
+        return $this->db->query($query);
     }
 }
