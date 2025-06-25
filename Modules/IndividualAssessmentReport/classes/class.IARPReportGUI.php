@@ -107,16 +107,14 @@ class IARPReportGUI
                         $page = 0;
                         $range = null;
                         $page_size = $this->getUsersHitsPerPage();
-                        $total_entries = count(iterator_to_array(
-                            $this->repo->getResults(
-                                array_unique($usr_ids),
-                                $order,
-                                $mode,
-                                $filter_data,
-                                $this->contained_in_ref_id,
-                                $range
-                            )
-                        ));
+                        $total_entries = $this->repo->countResults(
+                            array_unique($usr_ids),
+                            $order,
+                            $mode,
+                            $filter_data,
+                            $this->contained_in_ref_id
+                        );
+
                         if ($total_entries > $page_size) {
                             $target = $this->ctrl->getLinkTarget($this, self::CMD_VIEW);
                             if ($this->request_wrapper->has(self::F_PAGE)) {
