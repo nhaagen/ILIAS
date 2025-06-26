@@ -54,6 +54,8 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
     private const F_ANSWERED = 'fanswerd';
     private const F_FINAL = 'ffinal';
     private const F_USER_FINAL = 'fusrfinal';
+    private const F_ONLY = 'only';
+    private const F_HIDE = 'hide';
 
     private ?array $filter_values = null;
     private Prompt $prompt;
@@ -112,7 +114,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                     $this->store($formdata);
                     $msg = sprintf(
                         $this->lng->txt('tst_saved_manscoring_successfully'),
-                        $pid,
+                        $pid + 1,
                         $this->scoring->getUserFullName($uid) ?? $uid
                     );
                     $this->tpl->setOnScreenMessage('success', $msg, true);
@@ -140,7 +142,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                     $this->store($formdata);
                     $msg = sprintf(
                         $this->lng->txt('tst_saved_manscoring_successfully'),
-                        $pid,
+                        $pid + 1,
                         $this->scoring->getUserFullName($uid) ?? $uid
                     );
                     $this->tpl->setOnScreenMessage('success', $msg, true);
@@ -214,8 +216,8 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                     $complete = $this->scoring->isScoringComplete($uid);
                     $filter = $filter_values[self::F_USER_FINAL];
                     return
-                        ($complete && $filter === '1') ||
-                        (!$complete && $filter === '0');
+                        ($complete && $filter === self::F_ONLY) ||
+                        (!$complete && $filter === self::F_HIDE);
                 }
             );
         }
@@ -294,17 +296,17 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         foreach ($usr_active_ids as $uid) {
             $ret[$uid] = $question_ids;
 
-            if ($filter_answered === '0') {
-                $ret[$uid] = array_diff($ret[$uid], $answered[$uid]);
-            }
-            if ($filter_answered === '1') {
+            if ($filter_answered === self::F_ONLY) {
                 $ret[$uid] = array_intersect($ret[$uid], $answered[$uid]);
             }
+            if ($filter_answered === self::F_HIDE) {
+                $ret[$uid] = array_diff($ret[$uid], $answered[$uid]);
+            }
 
-            if ($filter_finalized === '0') {
+            if ($filter_finalized === self::F_ONLY) {
                 $ret[$uid] = array_diff($ret[$uid], $finalized[$uid]);
             }
-            if ($filter_finalized === '1') {
+            if ($filter_finalized === self::F_HIDE) {
                 $ret[$uid] = array_intersect($ret[$uid], $finalized[$uid]);
             }
         }
@@ -345,17 +347,17 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         foreach ($question_ids as $qid) {
             $ret[$qid] = $usr_active_ids;
 
-            if ($filter_answered === '0') {
+            if ($filter_answered === self::F_ONLY) {
                 $ret[$qid] = array_diff($ret[$qid], $answered[$qid] ?? []);
             }
-            if ($filter_answered === '1') {
+            if ($filter_answered === self::F_HIDE) {
                 $ret[$qid] = array_intersect($ret[$qid], $answered[$qid] ?? []);
             }
 
-            if ($filter_finalized === '0') {
+            if ($filter_finalized === self::F_ONLY) {
                 $ret[$qid] = array_diff($ret[$qid], $finalized[$qid] ?? []);
             }
-            if ($filter_finalized === '1') {
+            if ($filter_finalized === self::F_HIDE) {
                 $ret[$qid] = array_intersect($ret[$qid], $finalized[$qid] ?? []);
             }
         }
@@ -482,18 +484,18 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         }
 
         $answered_options = [
-            1 => $this->lng->txt('tst_man_scoring_answered_only'),
-            0 => $this->lng->txt('tst_man_scoring_answered_hide'),
+            self::F_ONLY => $this->lng->txt('tst_man_scoring_answered_only'),
+            self::F_HIDE => $this->lng->txt('tst_man_scoring_answered_hide'),
         ];
 
         $finalized_options = [
-            0 => $this->lng->txt('tst_man_scoring_finalized_hide'),
-            1 => $this->lng->txt('tst_man_scoring_finalized_only'),
+            self::F_ONLY => $this->lng->txt('tst_man_scoring_finalized_hide'),
+            self::F_HIDE => $this->lng->txt('tst_man_scoring_finalized_only'),
         ];
 
         $final_options = [
-            1 => $this->lng->txt('evaluated_users'),
-            0 => $this->lng->txt('not_evaluated_users')
+            self::F_ONLY => $this->lng->txt('evaluated_users'),
+            self::F_HIDE => $this->lng->txt('not_evaluated_users')
         ];
 
         $filter = [
@@ -508,15 +510,15 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             self::F_ANSWERED => $this->ui_factory->input()->field()->select(
                 $this->lng->txt('tst_man_scoring_only_answered'),
                 $answered_options
-            ),
+            )->withValue(null),
             self::F_FINAL => $this->ui_factory->input()->field()->select(
                 $this->lng->txt('tst_man_scoring_finalized'),
                 $finalized_options
-            ),
+            )->withValue(null),
             self::F_USER_FINAL => $this->ui_factory->input()->field()->select(
                 $this->lng->txt('finalized_evaluation'),
                 $final_options
-            ),
+            )->withValue(null),
         ];
         return $this->filter_service->standard(
             'csfilter_' . (string) $this->object->getRefId(),
@@ -531,11 +533,17 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
     protected function getUserRepresentation(int $usr_active_id): ReportPanel
     {
         $usr_fullname = $this->scoring->getUserFullName($usr_active_id) ?? $this->lng->txt('anonymous');
-        $pass_info = $this->ui_factory->listing()->property()
-            ->withProperty(
+        $pass_info = [
+            $this->ui_factory->listing()->property()->withProperty(
                 $this->lng->txt("scored_pass"),
-                (string) $this->scoring->getPassUsedForEvaluation($usr_active_id)
-            );
+                (string) ($this->scoring->getPassUsedForEvaluation($usr_active_id) + 1)
+            ),
+            $this->ui_factory->listing()->property()->withProperty(
+                $this->lng->txt("usr_manscoring_complete"),
+                $this->scoring->isScoringComplete($usr_active_id) ?
+                    $this->lng->txt('yes') : $this->lng->txt('no')
+            ),
+        ];
 
         $subs = [
             $this->ui_factory->panel()->sub('', $pass_info)
@@ -555,7 +563,8 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 ),
             $this->ui_factory->listing()->property()
                 ->withProperty(
-                    $this->lng->txt('points'),
+                    //$this->lng->txt('points'),
+                    $this->lng->txt('tst_manscoring_input_max_points_for_question'),
                     (string) $question->getMaximumPoints()
                 )
         ];
@@ -588,10 +597,30 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             $show_inline_feedback = false
         );
 
+        $usr_question = $question_gui->getObject();
+        $feedback = $this->scoring->getSingleManualFeedback($qid, $usr_active_id, $pass_id);
+        $info = [
+             $this->ui_factory->listing()->property()
+                ->withProperty(
+                    //$this->lng->txt('user_score'),
+                    $this->lng->txt('tst_highscore_score'),
+                    (string) $usr_question->getReachedPoints($usr_active_id, $pass_id)
+                ),
+             $this->ui_factory->listing()->property()
+                ->withProperty(
+                    $this->lng->txt('finalized_evaluation'),
+                    (bool) ($feedback['finalized_evaluation'] ?? false) ?
+                        $this->lng->txt('yes') : $this->lng->txt('no')
+                ),
+        ];
+
         return $this->ui_factory->panel()->sub(
             $this->lng->txt('answer'),
             $this->ui_factory->legacy()->content($question_solution)
-        );
+        )
+            ->withFurtherInformation(
+                $this->ui_factory->card()->standard('')->withSections($info)
+            );
     }
 
     protected function getScoringForm(string $action, int $qid, int $usr_active_id, int $pass_id): Form
@@ -685,7 +714,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
 
 
 
-            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<span id="anchor_%s_%s" />', $qid, $usr_active_id));
             $entries[] = $this->appendSubPanels(
                 $this->getQuestionRepresentation($qid),
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id),
@@ -708,7 +737,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         foreach ($usr_active_ids as $usr_active_id) {
             $pass_id = $this->scoring->getPassUsedForEvaluation($usr_active_id);
 
-            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<span id="anchor_%s_%s"/>', $qid, $usr_active_id));
             $entries[] = $this->appendSubPanels(
                 $this->getUserRepresentation($usr_active_id),
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id),
