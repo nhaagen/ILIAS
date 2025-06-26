@@ -48,7 +48,6 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
     private const ACT_STORE = 'store';
     private const ACT_SCORING_COMPLETE = 'ucomplete';
     private const ACT_SCORING_INCOMPLETE = 'uincomplete';
-    private const ACT_SCORING_NOTIFY = 'notify';
 
     private const F_USERS = 'fusers';
     private const F_QUESTIONS = 'fquestions';
@@ -153,13 +152,6 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             case self::ACT_SCORING_INCOMPLETE:
                 $this->scoring->completeScoring($uid, false);
                 $msg = $this->lng->txt('manscoring_finalized_removed');
-                $this->tpl->setOnScreenMessage('success', $msg, true);
-                $this->url_builder->withAction(self::CMD_VIEW)->redirect();
-                break;
-
-            case self::ACT_SCORING_NOTIFY:
-                $this->scoring->notify($uid);
-                $msg = $this->lng->txt('manscoring_notified');
                 $this->tpl->setOnScreenMessage('success', $msg, true);
                 $this->url_builder->withAction(self::CMD_VIEW)->redirect();
                 break;
@@ -752,14 +744,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 ->withUserId($usr_active_id)
                 ->buildURI()->__toString()
         );
-        $btn_notify = $this->ui_factory->button()->standard(
-            $this->lng->txt('tst_manscoring_user_notification'),
-            $this->url_builder
-                ->withAction(self::ACT_SCORING_NOTIFY)
-                ->withUserId($usr_active_id)
-                ->buildURI()->__toString()
-        );
-        return [$btn_done, $btn_notify];
+        return [$btn_done];
     }
 
     protected function store(array $data)
