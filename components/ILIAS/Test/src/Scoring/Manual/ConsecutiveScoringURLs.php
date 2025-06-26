@@ -100,6 +100,14 @@ class ConsecutiveScoringURLs
         return $this;
     }
 
+    public function withFragment(string $fragment): self
+    {
+        //$clone = clone $this;
+        $this->url_builder = $this->url_builder
+            ->withFragment($fragment);
+        return $this;
+    }
+
     public function getIdParameters(): array
     {
         return [

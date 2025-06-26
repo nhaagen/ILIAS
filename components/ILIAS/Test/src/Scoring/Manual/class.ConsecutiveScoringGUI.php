@@ -116,7 +116,13 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                         $this->scoring->getUserFullName($uid) ?? $uid
                     );
                     $this->tpl->setOnScreenMessage('success', $msg, true);
-                    $url = $this->url_builder->withAction(self::CMD_VIEW)->buildURI();
+
+                    $anchor = sprintf('anchor_%s_%s', $formdata['qid'], $formdata['usr_active_id']);
+                    $url = $this->url_builder
+                        ->withAction(self::CMD_VIEW)
+                        ->withFragment($anchor)
+                        ->buildURI();
+
                     $response = $this->ui_factory->prompt()->state()->redirect($url);
                 } else {
                     $response = $this->ui_factory->prompt()->state()->show($form);
@@ -678,6 +684,8 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         foreach ($question_ids as $qid) {
 
 
+
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
             $entries[] = $this->appendSubPanels(
                 $this->getQuestionRepresentation($qid),
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id),
@@ -700,6 +708,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         foreach ($usr_active_ids as $usr_active_id) {
             $pass_id = $this->scoring->getPassUsedForEvaluation($usr_active_id);
 
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
             $entries[] = $this->appendSubPanels(
                 $this->getUserRepresentation($usr_active_id),
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id),
