@@ -1243,6 +1243,7 @@ assessment#:#selection#:#Auswahl
 assessment#:#set_edit_mode#:#Bearbeitungsmodus setzen
 assessment#:#set_filter#:#Filter setzen
 assessment#:#set_manscoring_done#:#Als bewertet markieren
+assessment#:#set_manscoring_open#:#Als nicht bewertet markieren
 assessment#:#set_manual_feedback#:#Manuelle Rückmeldung
 assessment#:#shape#:#Form
 assessment#:#showSuggestedSolution#:#Art
@@ -2018,6 +2019,7 @@ assessment#:#use_previous_solution_advice#:#Die angezeigte Lösung wurde vormals
 assessment#:#user_has_finished_a_test#:#Ein Teilnehmer hat einen Test beendet.
 assessment#:#user_ip_outside_range#:#Sie dürfen von Ihrer IP aus nicht auf den Test zugreifen.
 assessment#:#user_not_invited#:#Sie sind kein Teilnehmer der Prüfung.
+assessment#:#usr_manscoring_complete#:#Als bewertet markiert
 assessment#:#value_between_x_and_y#:#Der Wert muss zwischen %s und %s liegen
 assessment#:#values#:#Werte
 assessment#:#variable#:#Variable
