@@ -31,11 +31,12 @@ class ConsecutiveScoring
     public function __construct(
         protected readonly \ilObjTest $object,
         protected readonly GeneralQuestionPropertiesRepository $question_repo,
-        protected readonly \ilTesTShuffler $shuffler,
+        protected readonly \ilTestShuffler $shuffler,
         protected readonly TestLogger $logger,
         protected TestScoring $scorer,
         protected TestManScoringDoneHelper $scoring_done_helper,
-        protected int $current_user_id
+        protected int $current_user_id,
+        protected readonly \ilTestAccess $test_access
     ) {
     }
 
@@ -75,15 +76,20 @@ class ConsecutiveScoring
         return $this->object->_getResultPass($usr_active_id);
     }
 
-    public function getUserFullName(int $usr_active_id): ?string
-    {
-        return ($this->object->getAnonymity() === 0) ?
-            null :
-            $this->object->userLookupFullName(
-                $this->object->_getUserIdFromActiveId($usr_active_id),
-                false,
-                true
-            );
+    public function getUserFullName(
+        int $usr_active_id,
+        string $pass
+    ): string {
+        if ($this->object->getAnonymity()
+            || !$this->test_access->checkScoreParticipantsAccess()
+        ) {
+            return \ilObjTest::buildExamId($usr_active_id, $pass, $this->object->getId());
+        }
+        return $this->object->userLookupFullName(
+            $this->object->_getUserIdFromActiveId($usr_active_id),
+            false,
+            true
+        );
     }
 
     public function getSingleManualFeedback(int $qid, int $usr_active_id, int $pass_id): array

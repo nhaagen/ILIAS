@@ -52,8 +52,8 @@ class TestSetupAgent extends NullAgent
                 ['tst']
             ),
             new \ilAccessRBACOperationDeletedObjective('tst', 56)
-            /*
             //not, if done in 10
+            /*
             ,new \ilAccessCustomRBACOperationAddedObjective(
                 'score_anon',
                 'Score Pseudonymously',

@@ -550,7 +550,6 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 if (!$this->access->checkAccess("read", "", $this->testrequest->getRefId())
                     && !$this->access->checkAccess("score_anon", "", $this->testrequest->getRefId())
                 ) {
-                    die('xx');
                     $this->redirectAfterMissingRead();
                 }
                 $this->prepareOutput();
@@ -564,7 +563,6 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 if (!$this->access->checkAccess("read", "", $this->testrequest->getRefId())
                     && !$this->access->checkAccess("score_anon", "", $this->testrequest->getRefId())
                 ) {
-                    die('xx');
                     $this->redirectAfterMissingRead();
                 }
                 $this->prepareOutput();

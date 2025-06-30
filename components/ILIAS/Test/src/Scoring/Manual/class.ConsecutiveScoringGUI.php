@@ -79,7 +79,9 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
     }
     public function executeCommand(): void
     {
-        if (!$this->test_access->checkScoreParticipantsAccess()) {
+        if (!$this->test_access->checkScoreParticipantsAccess()
+            && !$this->test_access->checkScoreParticipantsAccessAnon()
+        ) {
             \ilObjTestGUI::accessViolationRedirect();
         }
 
@@ -115,7 +117,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                     $msg = sprintf(
                         $this->lng->txt('tst_saved_manscoring_successfully'),
                         $pid + 1,
-                        $this->scoring->getUserFullName($uid) ?? $uid
+                        $this->scoring->getUserFullName($uid, (string) $pid)
                     );
                     $this->tpl->setOnScreenMessage('success', $msg, true);
 
@@ -143,7 +145,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                     $msg = sprintf(
                         $this->lng->txt('tst_saved_manscoring_successfully'),
                         $pid + 1,
-                        $this->scoring->getUserFullName($uid) ?? $uid
+                        $this->scoring->getUserFullName($uid, (string) $pid)
                     );
                     $this->tpl->setOnScreenMessage('success', $msg, true);
                     $this->url_builder->withAction(self::CMD_VIEW)->redirect();
@@ -471,7 +473,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
     {
         $user_options = [];
         foreach ($this->scoring->getTestParticipants() as $usr_active_id => $u) {
-            $question_options[$usr_active_id] = $this->scoring->getUserFullName($usr_active_id) ?? $usr_active_id;
+            $question_options[$usr_active_id] = $this->scoring->getUserFullName($usr_active_id, 'x');
         }
 
         $question_options = [];
@@ -532,11 +534,12 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
 
     protected function getUserRepresentation(int $usr_active_id): ReportPanel
     {
-        $usr_fullname = $this->scoring->getUserFullName($usr_active_id) ?? $this->lng->txt('anonymous');
+        $pid = $this->scoring->getPassUsedForEvaluation($usr_active_id);
+        $usr_fullname = $this->scoring->getUserFullName($usr_active_id, (string) $pid);
         $pass_info = [
             $this->ui_factory->listing()->property()->withProperty(
                 $this->lng->txt("scored_pass"),
-                (string) ($this->scoring->getPassUsedForEvaluation($usr_active_id) + 1)
+                (string) ($pid + 1)
             ),
             $this->ui_factory->listing()->property()->withProperty(
                 $this->lng->txt("usr_manscoring_complete"),

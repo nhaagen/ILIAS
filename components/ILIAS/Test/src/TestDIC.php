@@ -258,9 +258,8 @@ class TestDIC extends PimpleContainer
                 $local_dic['logging.logger'],
                 $c['manscoring.testscoring'],
                 $local_dic['scoring.manual.done_helper'],
-                $DIC['ilUser']->getId()
-                //                $local_dic['results.data.factory'],
-                //                $local_dic['results.presentation.factory']
+                $DIC['ilUser']->getId(),
+                $c['test.access']
             );
 
 
