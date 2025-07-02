@@ -48,14 +48,18 @@ abstract class Filter extends Container implements I\Filter
         SignalGeneratorInterface $signal_generator,
         Input\NameSource $name_source,
         Input\Field\Factory $field_factory,
-        array $inputs
+        array $optional_filters,
+        array $fixed_filters = [],
     ) {
         parent::__construct($name_source);
+
+
         $filters = [];
-        foreach ($inputs as $key => $filter) {
+        foreach ($optional_filters as $key => $filter) {
             $filters[$key] = $field_factory->optionalGroup(
-                [$filter->withLabel('')],
-                $filter->getLabel()
+                [$filter->withLabel('')->withByline('')],
+                $filter->getLabel(),
+                $filter->getByline()
             )
             //->withValue(null)
             //->withValue([''])
@@ -64,6 +68,8 @@ abstract class Filter extends Container implements I\Filter
             //var_dump($filter->getValue());
             //die();
         }
+        $filters = array_merge($fixed_filters, $filters);
+
         $filters[self::TOGGLE_FIELD] = $field_factory->text('toggle')
             ->withDedicatedName(self::TOGGLE_FIELD)
             ->withValue('true');

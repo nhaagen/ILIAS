@@ -26,21 +26,25 @@ function base()
     $refinery = $DIC->refinery();
     $request = $DIC->http()->request();
 
-    $filter = [
-        'f1' => $factory->input()->field()->text('a text filter'),
+    $optional_filters = [
+        'f1' => $factory->input()->field()->text('an optional text filter'),
         'f2' => $factory->input()->field()->multiselect(
             "Take your picks",
             [
                 "1" => "Pick 1",
                 "2" => "Pick 2",
                 "3" => "Pick 3",
-            ]
-        ),
-        'f3' => $factory->input()->field()->checkbox('a checkbox filter')->withValue(true),
-        $factory->input()->field()->dateTime('a dateTime filter'),
+            ],
+            '(optionally)'
+        )
     ];
 
-    $container = $factory->input()->container()->filter()->standard($filter)
+    $fixed_filters = [
+        $factory->input()->field()->dateTime('a dateTime filter'),
+        'f3' => $factory->input()->field()->checkbox('a checkbox filter')->withValue(true),
+    ];
+
+    $container = $factory->input()->container()->filter()->standard($optional_filters, $fixed_filters)
         ->withRequest($request);
 
     return $renderer->render([

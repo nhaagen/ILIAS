@@ -68,13 +68,15 @@ class Factory implements F\Factory
      * @inheritdoc
      */
     public function standard(
-        array $inputs
+        array $optional_filters,
+        array $fixed_filters
     ): Standard {
         return new Standard(
             $this->signal_generator,
             new FormInputNameSource(),
             $this->field_factory,
-            $inputs
+            $optional_filters,
+            $fixed_filters
         );
     }
 }

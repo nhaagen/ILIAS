@@ -70,13 +70,16 @@ interface Factory
      * rules:
      *   usage:
      *     1: Standard filters MUST be used if there is no good reason using another instance.
+     *     2: There SHOULD NOT be more than 3 fixed filters.
      *
      * ---
-     * @param array<FilterInput>    $inputs
+     * @param array<FilterInput>    $optional_filters
+     * @param array<FilterInput>    $fixed_filters
      * @return \ILIAS\UI\Component\Input\Container\Filter\Standard
      */
     public function standard(
-        array $inputs
+        array $optional_filters,
+        array $fixed_filters
     ): Standard;
 
 }
