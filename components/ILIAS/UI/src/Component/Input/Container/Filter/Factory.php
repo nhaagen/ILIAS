@@ -67,19 +67,21 @@ interface Factory
      *      The standard filter is the default filter to be used in ILIAS. If there is no good reason
      *      using another filter instance in ILIAS, this is the one that should be used.
      *
+     *   effect: >
+     *      FilterInputs may be set to required; required filters are not optional, i.e. they cannot
+     *      be turned off/hidden. Required FilterInputs are prepended to all others.
+     *
      * rules:
      *   usage:
      *     1: Standard filters MUST be used if there is no good reason using another instance.
-     *     2: There SHOULD NOT be more than 3 fixed filters.
+     *     2: There SHOULD NOT be more than 3 fixed/required filters.
      *
      * ---
-     * @param array<FilterInput>    $optional_filters
-     * @param array<FilterInput>    $fixed_filters
+     * @param array<FilterInput>    $filters
      * @return \ILIAS\UI\Component\Input\Container\Filter\Standard
      */
     public function standard(
-        array $optional_filters,
-        array $fixed_filters
+        array $filters
     ): Standard;
 
 }

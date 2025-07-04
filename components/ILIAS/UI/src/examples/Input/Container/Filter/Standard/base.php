@@ -26,7 +26,7 @@ function base()
     $refinery = $DIC->refinery();
     $request = $DIC->http()->request();
 
-    $optional_filters = [
+    $filters = [
         'f1' => $factory->input()->field()->text('an optional text filter'),
         'f2' => $factory->input()->field()->multiselect(
             "Take your picks",
@@ -36,15 +36,15 @@ function base()
                 "3" => "Pick 3",
             ],
             '(optionally)'
-        )
+        ),
+        $factory->input()->field()->dateTime('a dateTime filter')
+            ->withRequired(true),
+        'f3' => $factory->input()->field()->checkbox('a checkbox filter')
+            ->withValue(true)
+            ->withRequired(true),
     ];
 
-    $fixed_filters = [
-        $factory->input()->field()->dateTime('a dateTime filter'),
-        'f3' => $factory->input()->field()->checkbox('a checkbox filter')->withValue(true),
-    ];
-
-    $container = $factory->input()->container()->filter()->standard($optional_filters, $fixed_filters)
+    $container = $factory->input()->container()->filter()->standard($filters)
         ->withRequest($request);
 
     return $renderer->render([

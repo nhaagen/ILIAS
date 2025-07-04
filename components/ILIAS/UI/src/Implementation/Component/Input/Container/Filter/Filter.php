@@ -28,6 +28,7 @@ use ILIAS\UI\Implementation\Component\JavaScriptBindable;
 use ILIAS\UI\Implementation\Component\Input;
 use ILIAS\UI\Implementation\Component\Input\Container\Container;
 use ILIAS\UI\Component as C;
+use ILIAS\Refinery\Factory as Refinery;
 
 abstract class Filter extends Container implements I\Filter
 {
@@ -48,27 +49,21 @@ abstract class Filter extends Container implements I\Filter
         SignalGeneratorInterface $signal_generator,
         Input\NameSource $name_source,
         Input\Field\Factory $field_factory,
-        array $optional_filters,
-        array $fixed_filters = [],
+        Refinery $refinery,
+        array $filters,
     ) {
         parent::__construct($name_source);
 
+        $required = array_map(
+            fn($filter) => $filter->withRequired(
+                true,
+                $refinery->custom()->constraint(fn() => true, '')
+            ),
+            array_filter($filters, fn($filter) => $filter->isRequired())
+        );
 
-        $filters = [];
-        foreach ($optional_filters as $key => $filter) {
-            $filters[$key] = $field_factory->optionalGroup(
-                [$filter->withLabel('')->withByline('')],
-                $filter->getLabel(),
-                $filter->getByline()
-            )
-            //->withValue(null)
-            //->withValue([''])
-            //->withValue([true])
-            ;
-            //var_dump($filter->getValue());
-            //die();
-        }
-        $filters = array_merge($fixed_filters, $filters);
+        $optional = array_filter($filters, fn($filter) => !$filter->isRequired());
+        $filters = array_merge($required, $optional);
 
         $filters[self::TOGGLE_FIELD] = $field_factory->text('toggle')
             ->withDedicatedName(self::TOGGLE_FIELD)
@@ -76,7 +71,6 @@ abstract class Filter extends Container implements I\Filter
         $filters[self::EXPAND_FIELD] = $field_factory->text('expand')
             ->withDedicatedName(self::EXPAND_FIELD)
             ->withValue('true');
-
 
         $this->setInputGroup(
             $field_factory->group($filters)->withDedicatedName(self::DEDICATED_NAME)
@@ -184,7 +178,7 @@ abstract class Filter extends Container implements I\Filter
         }
         return array_filter(
             $data,
-            fn($v, $k) => $k !== self::TOGGLE_FIELD,
+            fn($v, $k) => !in_array($k, [self::TOGGLE_FIELD, self::EXPAND_FIELD]),
             ARRAY_FILTER_USE_BOTH
         );
     }

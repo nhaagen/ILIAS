@@ -346,6 +346,7 @@ class UI implements Component\Component
             new UI\Implementation\Component\Input\Container\Filter\Factory(
                 $internal[UI\Implementation\Component\SignalGeneratorInterface::class],
                 $internal[UI\Implementation\Component\Input\Field\Factory::class],
+                $pull[Refinery\Factory::class],
             );
         $internal[UI\Implementation\Component\Input\Container\ViewControl\Factory::class] = static fn() =>
             new UI\Implementation\Component\Input\Container\ViewControl\Factory(

@@ -24,12 +24,14 @@ use ILIAS\UI\Component\Input\Container\Filter as F;
 use ILIAS\UI\Implementation\Component\Input\Field;
 use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
 use ILIAS\UI\Implementation\Component\Input\FormInputNameSource;
+use ILIAS\Refinery\Factory as Refinery;
 
 class Factory implements F\Factory
 {
     public function __construct(
         protected SignalGeneratorInterface $signal_generator,
-        protected Field\Factory $field_factory
+        protected Field\Factory $field_factory,
+        private Refinery $refinery
     ) {
     }
 
@@ -68,15 +70,14 @@ class Factory implements F\Factory
      * @inheritdoc
      */
     public function standard(
-        array $optional_filters,
-        array $fixed_filters
+        array $filters
     ): Standard {
         return new Standard(
             $this->signal_generator,
             new FormInputNameSource(),
             $this->field_factory,
-            $optional_filters,
-            $fixed_filters
+            $this->refinery,
+            $filters
         );
     }
 }

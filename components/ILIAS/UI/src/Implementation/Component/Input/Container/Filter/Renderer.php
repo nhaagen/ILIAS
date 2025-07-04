@@ -82,16 +82,8 @@ class Renderer extends AbstractComponentRenderer
             $tpl->parseCurrentBlock();
         }
 
-        $is_active = !array_key_exists(
-            'filter/__filtertoggle',
-            $component->getRequest()?->getQueryParams()
-        ) || in_array(
-            $component->getRequest()?->getQueryParams()['filter/__filtertoggle'],
-            [null, 'true']
-        );
-
-
         $is_active = $component->isActive();
+        $is_expanded = $component->isExpanded();
 
         $ui_factory = $this->getUIFactory();
         $expand = $ui_factory->symbol()->glyph()->expand()->withOnClick($component->getExpandSignal(true));
