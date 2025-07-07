@@ -89,12 +89,12 @@ class Renderer extends AbstractComponentRenderer
         $expand = $ui_factory->symbol()->glyph()->expand()->withOnClick($component->getExpandSignal(true));
         $collapse = $ui_factory->symbol()->glyph()->collapse()->withOnClick($component->getExpandSignal(false));
         $submission_signal = $component->getSubmissionSignal();
+
         $toggle = $ui_factory->button()->toggle('', $submission_signal, $submission_signal, $is_active);
 
         $component = $component->withAdditionalOnLoadCode(
             static fn($id) => "
                 il.UI.filter.standard.init('{$id}');
-                //$(document).on('{$component->getSubmissionSignal()}', (e,sig)=>console.log(sig));
                 $(document).on(
                     '{$component->getSubmissionSignal()}', 
                     (e,sig)=>il.UI.filter.standard.get('{$id}').toggle(sig.event === 'toggle_on')
@@ -105,6 +105,16 @@ class Renderer extends AbstractComponentRenderer
                 );
             "
         );
+        if ($is_expanded) {
+            //$tpl->touchBlock('expanded');
+            $tpl->setVariable('COLLAPSED', 'hidden');
+        } else {
+            $component = $component->withAdditionalOnLoadCode(
+                static fn($id) => "il.UI.filter.standard.get('{$id}').toggleExpand(false);"
+            );
+            $tpl->setVariable('EXPANDED', 'hidden');
+        }
+
         $id = $this->bindJavaScript($component);
 
         $tpl->setVariable('EXPAND', $default_renderer->render($expand));

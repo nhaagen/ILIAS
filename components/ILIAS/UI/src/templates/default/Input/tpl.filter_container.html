@@ -3,10 +3,10 @@
     <div class="c-filter__controls l-bar__space-keeper">
 
         <div class="c-filter__expander l-bar__element">
-            <span class="c-filter__expander-expand hidden">
+            <span class="c-filter__expander-expand {COLLAPSED}">
                 {EXPAND}
             </span>
-            <span class="c-filter__expander-collapse">
+            <span class="c-filter__expander-collapse {EXPANDED}">
                 {COLLAPSE}
             </span>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="c-filter__filter">
 
-        <div class="c-filter__filter-inputs l-bar__space-keeper">
+        <div class="c-filter__filter-inputs l-bar__space-keeper {EXPANDED}">
             <!-- BEGIN filter -->
             <div class="c-filter__filter--input l-bar__element">
                 {INPUT}
@@ -28,7 +28,7 @@
             <!-- END filter -->
         </div>
 
-        <div class="c-filter__filter-shortvalues l-bar__space-keeper hidden">
+        <div class="c-filter__filter-shortvalues l-bar__space-keeper {COLLAPSED}">
             <div class="l-bar__element">
             shortvalues
             </div>
@@ -43,6 +43,7 @@
         <!-- END param -->
     
         <input type="submit" />
+
     </div>
 
 </form>
