@@ -15,9 +15,7 @@
             "second-id details details details details"
             "second-id reaction reaction f-reaction f-reaction";
         grid-template-columns: min-content auto auto min-content min-content;
-        border: s.$il-main-border;
         background-color: s.$il-main-bg;
-        padding: math.div(l.$il-margin-xlarge-vertical, 2) math.div(l.$il-margin-xlarge-horizontal, 2);
         > *:not(:empty) {
             padding: math.div(l.$il-margin-xlarge-vertical, 2) math.div(l.$il-margin-xlarge-horizontal, 2);
         }
@@ -38,6 +36,8 @@
     }
 
     &.__secondary-identifier {
+        grid-area: second-id;
+        padding-left: 0;
         &.--string,
         &.--shy,
         &.--shylink {
@@ -49,7 +49,6 @@
         &.--image {
             width: 15rem;
         }
-        grid-area: second-id;
     }
 
     &.__primary-identifier {

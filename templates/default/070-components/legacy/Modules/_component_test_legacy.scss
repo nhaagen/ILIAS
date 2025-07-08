@@ -414,6 +414,9 @@ table.il_tst_answer_aggregation td.answer_frequency
 
 td.matching {
 	vertical-align: middle;
+	~ td {
+		vertical-align: middle;
+	}
 }
 
 div.term {

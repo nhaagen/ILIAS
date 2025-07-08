@@ -99,6 +99,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Increment Hours";
@@ -110,6 +111,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Increment Minutes";
@@ -121,6 +123,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Decrement Hours";
@@ -132,6 +135,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Decrement Minutes";
@@ -143,6 +147,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Show Hours";
@@ -154,6 +159,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Show Minutes";
@@ -165,6 +171,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Toggle AM/PM";
@@ -176,6 +183,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Clear the picker";
@@ -187,6 +195,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Set the date to today";
@@ -201,6 +210,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Toggle Date and Time Screens";
@@ -245,6 +255,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Previous Month";
@@ -256,6 +267,7 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
   content: "Next Month";
@@ -1791,8 +1803,8 @@ th {
 .l-bar__group > .l-bar__element {
   margin-bottom: var(--l-bar__element__margin-bottom);
 }
-.l-bar__space-keeper > .l-bar__element:last-child,
-.l-bar__group > .l-bar__element:last-child {
+.l-bar__space-keeper > .l-bar__element:last-of-type,
+.l-bar__group > .l-bar__element:last-of-type {
   margin-right: 0;
 }
 
@@ -2834,7 +2846,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .btn-default,
 .il-viewcontrol-mode > .btn-link, .il-viewcontrol-sortation > .btn-default.btn,
 .il-viewcontrol-sortation .dropdown > .btn-default.btn,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn, .c-sequence__navigation--back > .btn-default, .navbar-form.c-sequence__navigation--back > a,
+.c-sequence__navigation--next > .btn-default,
+.navbar-form.c-sequence__navigation--next > a, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a {
   display: inline-flex;
@@ -3004,13 +3018,73 @@ input.btn, input.il-link.link-bulky,
 .il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .il-viewcontrol-pagination .l-bar__element.last > .btn-link + .btn-default.btn,
 .il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.il-viewcontrol-mode > .btn-default + .btn-default.btn,
 .il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.il-viewcontrol-mode > .btn-link + .btn-default.btn,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn + .btn-default.btn, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-ctrl, .ilTableNav > table > tbody > tr > td > .il-viewcontrol-sortation.btn-group > .btn-link + .btn-default,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn + .btn-default.btn, .c-sequence__navigation--back > .btn-default + .btn-ctrl,
+.il-viewcontrol-sortation .dropdown.c-sequence__navigation--back > .btn-default + .btn-default.btn,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.c-sequence__navigation--back > .btn-default + .btn-default.btn, .navbar-form.c-sequence__navigation--back > a + .btn-ctrl, .il-viewcontrol-sortation.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-section.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-section .btn-group.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-pagination__sectioncontrol.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-pagination__num-of-items.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-pagination.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-pagination .dropdown.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-pagination .last.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-mode.navbar-form.c-sequence__navigation--back > a + .btn-link,
+.il-viewcontrol-sortation .dropdown.navbar-form.c-sequence__navigation--back > a + .btn-default.btn,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.navbar-form.c-sequence__navigation--back > a + .btn-default.btn,
+.c-sequence__navigation--next > .btn-default + .btn-ctrl,
+.il-viewcontrol-sortation .dropdown.c-sequence__navigation--next > .btn-default + .btn-default.btn,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.c-sequence__navigation--next > .btn-default + .btn-default.btn,
+.navbar-form.c-sequence__navigation--next > a + .btn-ctrl,
+.il-viewcontrol-sortation.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-section.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-section .btn-group.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-pagination__sectioncontrol.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-pagination__num-of-items.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-pagination.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-pagination .dropdown.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-pagination .last.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-mode.navbar-form.c-sequence__navigation--next > a + .btn-link,
+.il-viewcontrol-sortation .dropdown.navbar-form.c-sequence__navigation--next > a + .btn-default.btn,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.navbar-form.c-sequence__navigation--next > a + .btn-default.btn, .c-sequence__navigation--back > .btn-ctrl + .btn-default,
+.il-viewcontrol-sortation .dropdown.c-sequence__navigation--back > .btn-default.btn + .btn-default,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.c-sequence__navigation--back > .btn-default.btn + .btn-default, .c-sequence__navigation--back > .btn-default + .btn-default, .c-sequence__navigation--back.navbar-form > a + .btn-default, .navbar-form.c-sequence__navigation--back > .btn-ctrl + a, .il-viewcontrol-sortation.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-section.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-section .btn-group.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-pagination__sectioncontrol.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-pagination__num-of-items.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-pagination.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-pagination .dropdown.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-pagination .last.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-mode.navbar-form.c-sequence__navigation--back > .btn-link + a,
+.il-viewcontrol-sortation .dropdown.navbar-form.c-sequence__navigation--back > .btn-default.btn + a,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.navbar-form.c-sequence__navigation--back > .btn-default.btn + a, .navbar-form.c-sequence__navigation--back > .btn-default + a, .navbar-form.c-sequence__navigation--back > a + a,
+.c-sequence__navigation--next > .btn-ctrl + .btn-default,
+.il-viewcontrol-sortation .dropdown.c-sequence__navigation--next > .btn-default.btn + .btn-default,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.c-sequence__navigation--next > .btn-default.btn + .btn-default,
+.c-sequence__navigation--next > .btn-default + .btn-default,
+.c-sequence__navigation--next.navbar-form > a + .btn-default,
+.navbar-form.c-sequence__navigation--next > .btn-ctrl + a,
+.il-viewcontrol-sortation.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-section.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-section .btn-group.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-pagination__sectioncontrol.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-pagination__num-of-items.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-pagination.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-pagination .dropdown.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-pagination .last.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-mode.navbar-form.c-sequence__navigation--next > .btn-link + a,
+.il-viewcontrol-sortation .dropdown.navbar-form.c-sequence__navigation--next > .btn-default.btn + a,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element.navbar-form.c-sequence__navigation--next > .btn-default.btn + a,
+.navbar-form.c-sequence__navigation--next > .btn-default + a,
+.navbar-form.c-sequence__navigation--next > a + a, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-ctrl, .ilTableNav > table > tbody > tr > td > .il-viewcontrol-sortation.btn-group > .btn-link + .btn-default,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-section.btn-group > .btn-link + .btn-default,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-pagination__sectioncontrol.btn-group > .btn-link + .btn-default,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-pagination__num-of-items.btn-group > .btn-link + .btn-default,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-pagination.btn-group > .btn-link + .btn-default,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-mode.btn-group > .btn-link + .btn-default,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .ilTableNav > table > tbody > tr > td > .l-bar__element.btn-group > .btn-link + .btn-default.btn,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .ilTableNav > table > tbody > tr > td > .l-bar__element.btn-group > .btn-link + .btn-default.btn, .ilTableNav > table > tbody > tr > td > .c-sequence__navigation--back.btn-group > .btn-link + .btn-default, .ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--back.btn-group > .btn-link + a,
+.ilTableNav > table > tbody > tr > td > .c-sequence__navigation--next.btn-group > .btn-link + .btn-default,
+.ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--next.btn-group > .btn-link + a,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default + .btn-ctrl,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-sortation.dropdown > .btn-default + .btn-link,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-section.dropdown > .btn-default + .btn-link,
@@ -3033,7 +3107,9 @@ input.btn, input.il-link.link-bulky,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-pagination__num-of-items.btn-group > .btn-default + .btn-link,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-pagination.btn-group > .btn-default + .btn-link,
 .ilTableNav > table > tbody > tr > td > .il-viewcontrol-mode.btn-group > .btn-default + .btn-link,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .ilTableNav > table > tbody > tr > td > .l-bar__element.btn-group > .btn-default.btn + .btn-link, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-link,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .ilTableNav > table > tbody > tr > td > .l-bar__element.btn-group > .btn-default.btn + .btn-link, .ilTableNav > table > tbody > tr > td > .c-sequence__navigation--back.btn-group > .btn-default + .btn-link, .ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--back.btn-group > a + .btn-link,
+.ilTableNav > table > tbody > tr > td > .c-sequence__navigation--next.btn-group > .btn-default + .btn-link,
+.ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--next.btn-group > a + .btn-link, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-link,
 .ilTableNav > table > tbody > tr > td > .btn-group.dropdown > .btn-default + .btn-link,
 .ilTableNav > table > tbody > tr > td > .btn-group.navbar-form.dropdown > a + .btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-ctrl + .btn-default,
@@ -3079,7 +3155,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .btn-default:focus-visible,
 .il-viewcontrol-mode > .btn-link:focus-visible,
 .il-viewcontrol-sortation .dropdown > .btn-default.btn:focus-visible,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:focus-visible, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus-visible,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:focus-visible, .c-sequence__navigation--back > .btn-default:focus-visible, .navbar-form.c-sequence__navigation--back > a:focus-visible,
+.c-sequence__navigation--next > .btn-default:focus-visible,
+.navbar-form.c-sequence__navigation--next > a:focus-visible, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus-visible,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:focus-visible,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:focus-visible {
   outline: 3px solid #0078D7;
@@ -3103,7 +3181,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .btn-default:hover,
 .il-viewcontrol-mode > .btn-link:hover,
 .il-viewcontrol-sortation .dropdown > .btn-default.btn:hover,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:hover, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:hover,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:hover, .c-sequence__navigation--back > .btn-default:hover, .navbar-form.c-sequence__navigation--back > a:hover,
+.c-sequence__navigation--next > .btn-default:hover,
+.navbar-form.c-sequence__navigation--next > a:hover, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:hover,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:hover,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:hover {
   text-decoration: none;
@@ -3131,7 +3211,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .btn-default:active,
 .il-viewcontrol-mode > .btn-link:active,
 .il-viewcontrol-sortation .dropdown > .btn-default.btn:active,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:active, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:active,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:active, .c-sequence__navigation--back > .btn-default:active, .navbar-form.c-sequence__navigation--back > a:active,
+.c-sequence__navigation--next > .btn-default:active,
+.navbar-form.c-sequence__navigation--next > a:active, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:active,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:active,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:active {
   transform: none;
@@ -3159,7 +3241,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .btn-default:focus,
 .il-viewcontrol-mode > .btn-link:focus,
 .il-viewcontrol-sortation .dropdown > .btn-default.btn:focus,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:focus, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn:focus, .c-sequence__navigation--back > .btn-default:focus, .navbar-form.c-sequence__navigation--back > a:focus,
+.c-sequence__navigation--next > .btn-default:focus,
+.navbar-form.c-sequence__navigation--next > a:focus, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:focus,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:focus {
   color: #4c6586;
@@ -3183,7 +3267,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > [disabled].btn-default,
 .il-viewcontrol-mode > [disabled].btn-link,
 .il-viewcontrol-sortation .dropdown > [disabled].btn-default.btn,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > [disabled].btn-default.btn, .ilTableNav > table > tbody > tr > td > .btn-group > [disabled].btn-link,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > [disabled].btn-default.btn, .c-sequence__navigation--back > [disabled].btn-default, .navbar-form.c-sequence__navigation--back > a[disabled],
+.c-sequence__navigation--next > [disabled].btn-default,
+.navbar-form.c-sequence__navigation--next > a[disabled], .ilTableNav > table > tbody > tr > td > .btn-group > [disabled].btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > [disabled].btn-default,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a[disabled],
 .btn-ctrl fieldset[disabled],
@@ -3207,13 +3293,17 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .btn-link fieldset[disabled],
 .il-viewcontrol-sortation .dropdown > .btn-default.btn fieldset[disabled],
 .il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn fieldset[disabled],
+.c-sequence__navigation--back > .btn-default fieldset[disabled],
+.navbar-form.c-sequence__navigation--back > a fieldset[disabled],
+.c-sequence__navigation--next > .btn-default fieldset[disabled],
+.navbar-form.c-sequence__navigation--next > a fieldset[disabled],
 .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link fieldset[disabled],
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default fieldset[disabled],
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a fieldset[disabled] {
-  background-color: #b0b0b0;
+  background-color: #f0f0f0;
   border-width: 1px;
   border-style: solid;
-  border-color: #b0b0b0;
+  border-color: #f0f0f0;
   color: black;
   cursor: not-allowed;
   transform: none;
@@ -3236,7 +3326,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .engaged.btn-default,
 .il-viewcontrol-mode > .engaged.btn-link,
 .il-viewcontrol-sortation .dropdown > .engaged.btn-default.btn,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .engaged.btn-default.btn, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .engaged.btn-default.btn, .c-sequence__navigation--back > .engaged.btn-default, .navbar-form.c-sequence__navigation--back > a.engaged,
+.c-sequence__navigation--next > .engaged.btn-default,
+.navbar-form.c-sequence__navigation--next > a.engaged, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .engaged.btn-default,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a.engaged {
   background-color: white;
@@ -3263,7 +3355,9 @@ input.btn, input.il-link.link-bulky,
 .il-viewcontrol-mode > .engaged.btn-default,
 .il-viewcontrol-mode > .engaged.btn-link,
 .il-viewcontrol-sortation .dropdown > .engaged.btn-default.btn,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .engaged.btn-default.btn, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .engaged.btn-default.btn, .c-sequence__navigation--back > .engaged.btn-default, .navbar-form.c-sequence__navigation--back > a.engaged,
+.c-sequence__navigation--next > .engaged.btn-default,
+.navbar-form.c-sequence__navigation--next > a.engaged, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .engaged.btn-default,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a.engaged, .open .btn-ctrl, .open .il-viewcontrol-sortation > .btn-default, .open .il-viewcontrol-sortation > .btn-link,
 .open .il-viewcontrol-section > .btn-default,
@@ -3291,7 +3385,9 @@ input.btn, input.il-link.link-bulky,
 .open .il-viewcontrol-sortation .dropdown > .btn-default.btn,
 .il-viewcontrol-sortation .open .dropdown > .btn-default.btn,
 .open .il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .open .l-bar__element > .btn-default.btn, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .open .l-bar__element > .btn-default.btn, .open .c-sequence__navigation--back > .btn-default, .open .navbar-form.c-sequence__navigation--back > a,
+.open .c-sequence__navigation--next > .btn-default,
+.open .navbar-form.c-sequence__navigation--next > a, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
 .open .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default,
 .open .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a {
   border: 1px solid #4c6586;
@@ -3323,7 +3419,9 @@ input.btn, input.il-link.link-bulky,
 .open .il-viewcontrol-sortation .dropdown > .btn-default.btn,
 .il-viewcontrol-sortation .open .dropdown > .btn-default.btn,
 .open .il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .l-bar__element > .btn-default.btn,
-.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .open .l-bar__element > .btn-default.btn, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
+.il-table-presentation-viewcontrols .l-bar__space-keeper .l-bar__group .open .l-bar__element > .btn-default.btn, .open .c-sequence__navigation--back > .btn-default, .open .navbar-form.c-sequence__navigation--back > a,
+.open .c-sequence__navigation--next > .btn-default,
+.open .navbar-form.c-sequence__navigation--next > a, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
 .open .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default,
 .open .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a {
   box-shadow: none;
@@ -4127,9 +4225,7 @@ hr.il-divider-with-label {
   display: grid;
   grid-template-areas: "f-blocking f-blocking f-blocking f-blocking actions" "second-id f-prop f-prop f-prop actions" "second-id prim-id prim-id prim-id actions" "second-id status status status status" "second-id f-details f-details f-details f-details" "second-id availab availab availab availab" "second-id details details details details" "second-id reaction reaction f-reaction f-reaction";
   grid-template-columns: min-content auto auto min-content min-content;
-  border: 1px solid #dddddd;
   background-color: white;
-  padding: 4.5px 7.5px;
 }
 .c-entity.__container > *:not(:empty) {
   padding: 4.5px 7.5px;
@@ -4148,6 +4244,7 @@ hr.il-divider-with-label {
 }
 .c-entity.__secondary-identifier {
   grid-area: second-id;
+  padding-left: 0;
 }
 .c-entity.__secondary-identifier.--string, .c-entity.__secondary-identifier.--shy, .c-entity.__secondary-identifier.--shylink {
   width: 10rem;
@@ -5843,6 +5940,10 @@ a[aria-disabled].il-link.link-bulky:hover {
   list-style: none;
   padding-left: 0;
 }
+.c-listing-entity .c-entity {
+  border: 1px solid #dddddd;
+  padding: 4.5px 7.5px;
+}
 
 .il-maincontrols-slate.disengaged {
   display: none;
@@ -6010,6 +6111,7 @@ a[aria-disabled].il-link.link-bulky:hover {
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
@@ -6154,6 +6256,7 @@ a[aria-disabled].il-link.link-bulky:hover {
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
@@ -6534,6 +6637,7 @@ a[aria-disabled].il-link.link-bulky:hover {
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
@@ -7349,7 +7453,9 @@ input.btn, .c-drilldown input.c-drilldown__menulevel--trigger, input.il-link.lin
   color: #161616;
 }
 
-.btn-ctrl, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
+.btn-ctrl, .c-sequence__navigation--back > .btn-default, .navbar-form.c-sequence__navigation--back > a,
+.c-sequence__navigation--next > .btn-default,
+.navbar-form.c-sequence__navigation--next > a, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a {
   display: inline-flex;
@@ -7378,9 +7484,21 @@ input.btn, .c-drilldown input.c-drilldown__menulevel--trigger, input.il-link.lin
   border-radius: 10px;
 }
 
-.btn-ctrl + .btn-ctrl, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-ctrl,
+.btn-ctrl + .btn-ctrl, .c-sequence__navigation--back > .btn-default + .btn-ctrl, .navbar-form.c-sequence__navigation--back > a + .btn-ctrl,
+.c-sequence__navigation--next > .btn-default + .btn-ctrl,
+.navbar-form.c-sequence__navigation--next > a + .btn-ctrl, .c-sequence__navigation--back > .btn-ctrl + .btn-default, .c-sequence__navigation--back > .btn-default + .btn-default, .c-sequence__navigation--back.navbar-form > a + .btn-default, .navbar-form.c-sequence__navigation--back > .btn-ctrl + a, .navbar-form.c-sequence__navigation--back > .btn-default + a, .navbar-form.c-sequence__navigation--back > a + a,
+.c-sequence__navigation--next > .btn-ctrl + .btn-default,
+.c-sequence__navigation--next > .btn-default + .btn-default,
+.c-sequence__navigation--next.navbar-form > a + .btn-default,
+.navbar-form.c-sequence__navigation--next > .btn-ctrl + a,
+.navbar-form.c-sequence__navigation--next > .btn-default + a,
+.navbar-form.c-sequence__navigation--next > a + a, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-ctrl, .ilTableNav > table > tbody > tr > td > .c-sequence__navigation--back.btn-group > .btn-link + .btn-default, .ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--back.btn-group > .btn-link + a,
+.ilTableNav > table > tbody > tr > td > .c-sequence__navigation--next.btn-group > .btn-link + .btn-default,
+.ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--next.btn-group > .btn-link + a,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default + .btn-ctrl,
-.ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a + .btn-ctrl, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-ctrl + .btn-link, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-link,
+.ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a + .btn-ctrl, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-ctrl + .btn-link, .ilTableNav > table > tbody > tr > td > .c-sequence__navigation--back.btn-group > .btn-default + .btn-link, .ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--back.btn-group > a + .btn-link,
+.ilTableNav > table > tbody > tr > td > .c-sequence__navigation--next.btn-group > .btn-default + .btn-link,
+.ilTableNav > table > tbody > tr > td > .navbar-form.c-sequence__navigation--next.btn-group > a + .btn-link, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link + .btn-link,
 .ilTableNav > table > tbody > tr > td > .btn-group.dropdown > .btn-default + .btn-link,
 .ilTableNav > table > tbody > tr > td > .btn-group.navbar-form.dropdown > a + .btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-ctrl + .btn-default,
@@ -7394,14 +7512,18 @@ input.btn, .c-drilldown input.c-drilldown__menulevel--trigger, input.il-link.lin
   margin-left: 3px;
 }
 
-.btn-ctrl:focus-visible, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus-visible,
+.btn-ctrl:focus-visible, .c-sequence__navigation--back > .btn-default:focus-visible, .navbar-form.c-sequence__navigation--back > a:focus-visible,
+.c-sequence__navigation--next > .btn-default:focus-visible,
+.navbar-form.c-sequence__navigation--next > a:focus-visible, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus-visible,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:focus-visible,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:focus-visible {
   outline: 3px solid #0078D7;
   box-shadow: inset 0px 0px 0px 2px #FFFFFF, 0px 0px 0px 5px #FFFFFF;
 }
 
-.btn-ctrl:hover, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:hover,
+.btn-ctrl:hover, .c-sequence__navigation--back > .btn-default:hover, .navbar-form.c-sequence__navigation--back > a:hover,
+.c-sequence__navigation--next > .btn-default:hover,
+.navbar-form.c-sequence__navigation--next > a:hover, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:hover,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:hover,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:hover {
   text-decoration: none;
@@ -7412,7 +7534,9 @@ input.btn, .c-drilldown input.c-drilldown__menulevel--trigger, input.il-link.lin
   border-color: #4c6586;
 }
 
-.btn-ctrl:active, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:active,
+.btn-ctrl:active, .c-sequence__navigation--back > .btn-default:active, .navbar-form.c-sequence__navigation--back > a:active,
+.c-sequence__navigation--next > .btn-default:active,
+.navbar-form.c-sequence__navigation--next > a:active, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:active,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:active,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:active {
   transform: none;
@@ -7423,30 +7547,40 @@ input.btn, .c-drilldown input.c-drilldown__menulevel--trigger, input.il-link.lin
   border-color: white;
 }
 
-.btn-ctrl:focus, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus,
+.btn-ctrl:focus, .c-sequence__navigation--back > .btn-default:focus, .navbar-form.c-sequence__navigation--back > a:focus,
+.c-sequence__navigation--next > .btn-default:focus,
+.navbar-form.c-sequence__navigation--next > a:focus, .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link:focus,
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default:focus,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a:focus {
   color: #4c6586;
   text-decoration: none;
 }
 
-.btn-ctrl[disabled], .ilTableNav > table > tbody > tr > td > .btn-group > [disabled].btn-link,
+.btn-ctrl[disabled], .c-sequence__navigation--back > [disabled].btn-default, .navbar-form.c-sequence__navigation--back > a[disabled],
+.c-sequence__navigation--next > [disabled].btn-default,
+.navbar-form.c-sequence__navigation--next > a[disabled], .ilTableNav > table > tbody > tr > td > .btn-group > [disabled].btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > [disabled].btn-default,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a[disabled],
 .btn-ctrl fieldset[disabled],
+.c-sequence__navigation--back > .btn-default fieldset[disabled],
+.navbar-form.c-sequence__navigation--back > a fieldset[disabled],
+.c-sequence__navigation--next > .btn-default fieldset[disabled],
+.navbar-form.c-sequence__navigation--next > a fieldset[disabled],
 .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link fieldset[disabled],
 .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default fieldset[disabled],
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a fieldset[disabled] {
-  background-color: #b0b0b0;
+  background-color: #f0f0f0;
   border-width: 1px;
   border-style: solid;
-  border-color: #b0b0b0;
+  border-color: #f0f0f0;
   color: black;
   cursor: not-allowed;
   transform: none;
 }
 
-.btn-ctrl.engaged, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
+.btn-ctrl.engaged, .c-sequence__navigation--back > .engaged.btn-default, .navbar-form.c-sequence__navigation--back > a.engaged,
+.c-sequence__navigation--next > .engaged.btn-default,
+.navbar-form.c-sequence__navigation--next > a.engaged, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .engaged.btn-default,
 .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a.engaged {
   background-color: white;
@@ -7456,16 +7590,22 @@ input.btn, .c-drilldown input.c-drilldown__menulevel--trigger, input.il-link.lin
   color: #000;
 }
 
-.btn-ctrl.engaged, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
+.btn-ctrl.engaged, .c-sequence__navigation--back > .engaged.btn-default, .navbar-form.c-sequence__navigation--back > a.engaged,
+.c-sequence__navigation--next > .engaged.btn-default,
+.navbar-form.c-sequence__navigation--next > a.engaged, .ilTableNav > table > tbody > tr > td > .btn-group > .engaged.btn-link,
 .ilTableNav > table > tbody > tr > td > .dropdown > .engaged.btn-default,
-.ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a.engaged, .open .btn-ctrl, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
+.ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a.engaged, .open .btn-ctrl, .open .c-sequence__navigation--back > .btn-default, .open .navbar-form.c-sequence__navigation--back > a,
+.open .c-sequence__navigation--next > .btn-default,
+.open .navbar-form.c-sequence__navigation--next > a, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
 .open .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default,
 .open .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a {
   border: 1px solid #4c6586;
   background-color: white;
 }
 
-.open .btn-ctrl, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
+.open .btn-ctrl, .open .c-sequence__navigation--back > .btn-default, .open .navbar-form.c-sequence__navigation--back > a,
+.open .c-sequence__navigation--next > .btn-default,
+.open .navbar-form.c-sequence__navigation--next > a, .open .ilTableNav > table > tbody > tr > td > .btn-group > .btn-link,
 .open .ilTableNav > table > tbody > tr > td > .dropdown > .btn-default,
 .open .ilTableNav > table > tbody > tr > td > .navbar-form.dropdown > a {
   box-shadow: none;
@@ -8235,6 +8375,63 @@ div.alert ul {
   font-style: italic;
   color: #6f6f6f;
   padding-left: 6px;
+}
+
+.c-sequence {
+  position: relative;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background-color: white;
+  padding: 0 15px;
+}
+.c-sequence__header {
+  position: sticky;
+  top: 0;
+  padding-top: 9px;
+  background-color: white;
+  box-shadow: 0 6px 3px -3px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+.c-sequence__header .c-sequence__navigation {
+  display: grid;
+  grid-template-columns: max-content max-content max-content;
+  grid-template-areas: "back viewctrl next";
+  gap: 12px;
+  align-items: center;
+  margin: 0 auto;
+  width: max-content;
+  padding-bottom: 9px;
+}
+.c-sequence__header .c-sequence__navigation--back {
+  grid-area: back;
+}
+.c-sequence__header .c-sequence__navigation--viewcontrols {
+  grid-area: viewctrl;
+}
+.c-sequence__header .c-sequence__navigation--viewcontrols .l-bar__space-keeper {
+  justify-content: center;
+}
+.c-sequence__header .c-sequence__navigation--next {
+  grid-area: next;
+}
+.c-sequence__header__segment {
+  display: grid;
+  padding: 12px 15px;
+  grid-template-areas: "title actions";
+  grid-template-columns: 1fr max-content;
+}
+.c-sequence__header__segment__title {
+  grid-area: title;
+}
+.c-sequence__header__segment__actions {
+  grid-area: actions;
+}
+.c-sequence__segment__contents {
+  margin: 0 15px;
+}
+
+.il-layout-page-content:has(> .breadcrumbs) .c-sequence__header {
+  top: 33px;
 }
 
 .panel {
@@ -10582,16 +10779,19 @@ th.c-table-data__cell {
   max-height: 85px;
   overflow: hidden;
 }
-.c-table-data__header__resize-wrapper:after {
+.c-table-data__header__resize-wrapper::after {
   content: "";
   bottom: 0;
   left: 0;
+  width: 100%;
   display: block;
   position: absolute;
-  height: 18px;
-  width: calc(100% - 10px);
+  height: 12px;
   background: linear-gradient(360deg, white, transparent);
   pointer-events: none;
+}
+.c-table-data__header__resize-wrapper:after {
+  width: calc(100% - 10px);
 }
 
 .c-table-data__rowselection {
@@ -12550,6 +12750,7 @@ tbody.collapse.in {
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  white-space: nowrap;
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
@@ -14587,6 +14788,9 @@ table.il_tst_answer_aggregation td.answer_frequency {
 td.matching {
   vertical-align: middle;
 }
+td.matching ~ td {
+  vertical-align: middle;
+}
 
 div.term {
   display: inline;
@@ -14928,6 +15132,176 @@ div.ilc_Page.readonly textarea[disabled] {
 
 #tst_pass_details_overview tr {
   scroll-margin-top: 30px;
+}
+
+.c-consecutive-scoring__question__text {
+  margin-bottom: 30px;
+}
+
+.c-consecutive-scoring__answer {
+  display: flex;
+  max-height: 40vh;
+  flex-direction: row;
+}
+.c-consecutive-scoring__answer .l-scroll-fade-container {
+  position: relative;
+}
+.c-consecutive-scoring__answer .l-scroll-fade-container::after {
+  content: "";
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: block;
+  position: absolute;
+  height: 30px;
+  background: linear-gradient(360deg, white, transparent);
+  pointer-events: none;
+}
+.c-consecutive-scoring__answer__scroll-container {
+  width: 60%;
+}
+.c-consecutive-scoring__answer__body {
+  overflow: auto;
+  height: 100%;
+  padding-bottom: 30px;
+}
+.c-consecutive-scoring__answer__body h1:empty {
+  display: none;
+}
+.c-consecutive-scoring__answer__body .ilc_qanswer_Answer.solutionbox {
+  width: auto;
+}
+.c-consecutive-scoring__answer__grade-card {
+  width: 40%;
+  border-left: 1px solid #dddddd;
+  display: grid;
+  grid-template-areas: "properties btn" "feedback feedback";
+  grid-template-columns: 1fr max-content;
+  grid-template-rows: max-content 1fr;
+  margin-left: 30px;
+  padding-left: 30px;
+}
+.c-consecutive-scoring__answer__grade-card__properties {
+  font-size: 1rem;
+  grid-area: properties;
+}
+.c-consecutive-scoring__answer__grade-card__grade-btn {
+  grid-area: btn;
+}
+.c-consecutive-scoring__answer__grade-card__feedback {
+  grid-area: feedback;
+  margin-top: 12px;
+  min-height: 0;
+}
+.c-consecutive-scoring__answer__grade-card__feedback.l-scroll-fade-container::after {
+  content: "";
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: block;
+  position: absolute;
+  height: 30px;
+  background: linear-gradient(360deg, white, transparent);
+  pointer-events: none;
+}
+.c-consecutive-scoring__answer__grade-card__feedback__body {
+  padding-bottom: 30px;
+  height: 100%;
+  overflow: auto;
+}
+
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] {
+  display: grid;
+  grid-template-areas: "answer btn" "answer feedback";
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: 50% 50%;
+  height: 100vh;
+  width: 1200px;
+  overflow: hidden;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] hr {
+  display: none;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header {
+  grid-area: answer;
+  position: relative;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header form {
+  display: none;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header .il-prompt__title {
+  display: flex;
+  flex-direction: column;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header .il-prompt__title,
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header .c-consecutive-scoring_sanswer,
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header .c-consecutive-scoring__answer__scroll-container {
+  height: 100%;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header .c-consecutive-scoring__answer {
+  flex-direction: column-reverse;
+  max-height: unset;
+  min-height: 0;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header .c-consecutive-scoring__answer__scroll-container {
+  min-height: 0;
+  width: 100%;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__header .c-consecutive-scoring__answer__grade-card {
+  padding: 0;
+  margin: 0;
+  margin-top: 15px;
+  margin-bottom: 9px;
+  border: none;
+  width: 100%;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__contents {
+  grid-area: feedback;
+  overflow: auto;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__contents form .c-input[data-il-ui-component=markdown-field-input] {
+  display: block;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__contents form .c-input[data-il-ui-component=markdown-field-input] .c-field-markdown textarea {
+  height: 60vh;
+}
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__buttons {
+  grid-area: btn;
+  justify-self: end;
+}
+
+.c-sequence:has(.c-consecutive-scoring__answer) .c-sequence__segment,
+.c-sequence:has(.c-consecutive-scoring__answer) .c-sequence__header__segment__title {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.c-sequence:has(.c-consecutive-scoring__answer) .c-sequence__segment__contents .panel {
+  margin-top: 18px;
+}
+
+.c-sequence__segment:has(.c-consecutive-scoring__answer),
+.c-sequence:has(.c-consecutive-scoring__answer) .c-sequence__header__segment:has(.c-entity) {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.c-sequence__segment:has(.c-consecutive-scoring__answer) .panel .c-entity {
+  margin-bottom: 6px;
+}
+.c-sequence__segment:has(.c-consecutive-scoring__answer) .panel-heading:has(.panel-title h2:empty) {
+  display: none;
+}
+
+.c-sequence__segment:has(.c-layout-alignment--horizontal-evenly .c-consecutive-scoring__answer) .c-entity.__container {
+  margin-bottom: 6px;
+  margin-top: 12px;
+}
+.c-sequence__segment:has(.c-layout-alignment--horizontal-evenly .c-consecutive-scoring__answer) .c-consecutive-scoring__answer__grade-card {
+  display: none;
+}
+.c-sequence__segment:has(.c-layout-alignment--horizontal-evenly .c-consecutive-scoring__answer) .c-consecutive-scoring__answer__scroll-container {
+  width: 100%;
 }
 
 /* Modules/Wiki */
