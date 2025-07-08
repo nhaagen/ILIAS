@@ -22,11 +22,12 @@ namespace ILIAS\UI\Component\Layout\Alignment;
 
 use ILIAS\UI\Component\Component;
 use ILIAS\UI\Component\Layout\Alignment\Block;
+use ILIAS\UI\Component\Prompt\IsPromptContent;
 
 /**
  * This describes an Alignment.
  */
-interface Alignment extends Component, Block
+interface Alignment extends Component, Block, IsPromptContent
 {
     /**
      * @return Block[]

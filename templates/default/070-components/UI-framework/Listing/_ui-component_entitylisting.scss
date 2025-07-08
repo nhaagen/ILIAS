@@ -1,4 +1,12 @@
+@use "sass:math";
+@use "../../../010-settings/" as s;
+@use "../../../050-layout/basics/" as l;
+
 .c-listing-entity {
     list-style: none;
     padding-left: 0;
+    .c-entity {
+        border: s.$il-main-border;
+        padding: math.div(l.$il-margin-xlarge-vertical, 2) math.div(l.$il-margin-xlarge-horizontal, 2);
+    }
 }

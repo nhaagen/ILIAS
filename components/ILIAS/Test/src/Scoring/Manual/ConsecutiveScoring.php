@@ -25,6 +25,7 @@ use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Logging\TestScoringInteractionTypes;
 use ILIAS\Test\Logging\AdditionalInformationGenerator;
 use ILIAS\Test\TestManScoringDoneHelper;
+use ILIAS\UI\Implementation\Component\Symbol\Avatar\Avatar;
 
 class ConsecutiveScoring
 {
@@ -90,6 +91,18 @@ class ConsecutiveScoring
             false,
             true
         );
+    }
+
+    public function getUserId(
+        int $usr_active_id,
+        string $pass,
+    ) :string {
+        if ($this->object->getAnonymity()
+            || !$this->test_access->checkScoreParticipantsAccess()
+        ) {
+            return \ilObjTest::buildExamId($usr_active_id, $pass, $this->object->getId());
+        }
+        return (string) $this->object->_getUserIdFromActiveId($usr_active_id);
     }
 
     public function getSingleManualFeedback(int $qid, int $usr_active_id, int $pass_id): array

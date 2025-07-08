@@ -5,6 +5,7 @@
 @use "../../../050-layout/standardpage/layout_standardpage" as spage;
 @use "../../../050-layout/layout_grid" as l-grid;
 @use "../../../030-tools/tool_highlighted-box" as box;
+@use "../../../030-tools/tool_fade-edge" as fade;
 @use "../../../050-layout/layout_breakpoints" as brk;
 
 $table-border-color: $il-main-border-color;
@@ -226,16 +227,9 @@ th.c-table-data__cell:after {
     max-height: 85px;
     overflow: hidden;
     //indicate when text is being cut off
+    @include fade.fade-edge($edge: "bottom", $size: $il-padding-xxlarge-vertical, $color: $il-main-bg);
     &:after {
-        content: "";
-        bottom: 0;
-        left: 0;
-        display: block;
-        position: absolute;
-        height: $il-padding-xxlarge-vertical * 1.5;
         width: calc(100% - 10px);
-        background: linear-gradient(360deg, white, transparent);
-        pointer-events: none;
     }
     // actual resize attribute is later added for specific column types only
 }
