@@ -169,6 +169,9 @@ class UI implements Component\Component
             $internal[UI\Implementation\Component\Prompt\State\Factory::class];
         $provide[UI\Implementation\Component\Input\UploadLimitResolver::class] = static fn() =>
             $internal[UI\Implementation\Component\Input\UploadLimitResolver::class];
+        $provide[UI\Implementation\Component\Navigation\Factory::class] = static fn() =>
+            $internal[UI\Implementation\Component\Navigation\Factory::class];
+
         // =================================================================================
 
         $internal[UI\Implementation\Factory::class] = static fn() =>

@@ -66,9 +66,9 @@ function base()
         }
 
         public function getAllPositions(
+            ServerRequestInterface $request,
             mixed $viewcontrol_values,
             mixed $filter_values,
-            ServerRequestInterface $request
         ): array {
             $chunks = $viewcontrol_values['chunks'] ?? [];
             $chunks[] = 'c0';
@@ -81,10 +81,10 @@ function base()
         }
 
         public function getSegment(
+            ServerRequestInterface $request,
             mixed $position_data,
             mixed $viewcontrol_values,
             mixed $filter_values,
-            ServerRequestInterface $request
         ): Segment {
             list($chunk, $title, $data) = $position_data;
 
@@ -111,7 +111,10 @@ function base()
         ->withAdditionalTransformation($refinery->custom()->transformation(
             fn($v) => ['chunks' => $v]
         ))
-    ]);
+    ])
+    ->withAdditionalTransformation(
+        $refinery->custom()->transformation(fn($v) => array_shift($v))
+    );
 
     $global_actions = [
         $f->button()->standard('a global action', '#')

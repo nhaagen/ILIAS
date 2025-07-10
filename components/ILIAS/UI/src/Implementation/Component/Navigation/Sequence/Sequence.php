@@ -28,8 +28,10 @@ use ILIAS\UI\URLBuilderToken;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\Refinery\Factory as Refinery;
 use ILIAS\Data\URI;
-use ILIAS\UI\Component\Input\Container\ViewControl\ViewControl as ViewControlContainer;
+use ILIAS\UI\Component\Input\Container\ViewControl\ViewControl as IViewControlContainer;
+use ILIAS\UI\Implementation\Component\Input\Container\ViewControl\ViewControl as ViewControlContainer;
 use ILIAS\UI\Implementation\Component\Input\ArrayInputData;
+use ILIAS\UI\Storage;
 
 class Sequence implements ISequence\Sequence
 {
@@ -49,7 +51,7 @@ class Sequence implements ISequence\Sequence
     public function __construct(
         protected DataFactory $data_factory,
         protected Refinery $refinery,
-        protected \ArrayAccess $storage,
+        protected Storage $storage,
         protected ISequence\SegmentRetrieval $segment_retrieval
     ) {
     }
@@ -71,12 +73,10 @@ class Sequence implements ISequence\Sequence
         return $clone;
     }
 
-    public function withViewControls(ViewControlContainer $viewcontrols): static
+    public function withViewControls(IViewControlContainer $viewcontrols): static
     {
         $clone = clone $this;
-        $clone->viewcontrols = $viewcontrols->withAdditionalTransformation(
-            $this->refinery->custom()->transformation(fn($v) => array_shift($v))
-        );
+        $clone->viewcontrols = $viewcontrols;
         return $clone;
     }
 
@@ -192,7 +192,7 @@ class Sequence implements ISequence\Sequence
     }
 
     protected function applyValuesToViewcontrols(
-        ViewControlContainer $view_controls,
+        IViewControlContainer $view_controls,
         ServerRequestInterface $request
     ): ViewControlContainer {
         $stored_values = new ArrayInputData($this->getStorageData() ?? []);

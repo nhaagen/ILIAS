@@ -54,9 +54,9 @@ class Segment implements ISegment
         return $clone;
     }
 
-    public function getSegmentActions(): ?array
+    public function getSegmentActions(): array
     {
-        return $this->actions;
+        return $this->actions ?? [];
     }
 
 }

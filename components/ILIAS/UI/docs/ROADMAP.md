@@ -251,8 +251,6 @@ This should be updated to e.g. an event listener attached to the document,
 which either calls the dropdown's show method if the event target is the desired 
 dropdown, or the hide method if the target is something else.
 
-<<<<<<< HEAD
-
 ### Remove jQuery from NotificationItem and Counter
 
 The notification-item and counter UI components heavily depend on jQuery, which makes
@@ -287,6 +285,12 @@ streamline these usages in order to avoid any A11y implications.
 
 ### Move Components into Navigation (beginner, 2h)
 The top sections "breadcrumbs" and "menu" should both be moved into navigation.
+
+### Trait for usage of ILIAS\UI\Storage in Table and Sequence Navigation
+Storage of paramters in DataTable and SequenceNavigation look very much alike;
+in favor of those and further/future components the implementation should be
+realized as a trait to be used by several components.
+
 
 ## Long Term
 

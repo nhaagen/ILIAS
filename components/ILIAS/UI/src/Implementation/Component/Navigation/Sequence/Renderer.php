@@ -40,7 +40,7 @@ class Renderer extends AbstractComponentRenderer
     }
 
     protected function renderSequence(
-        Component\Navigation\Sequence\Sequence $component,
+        Sequence $component,
         RendererInterface $default_renderer
     ): string {
         $tpl = $this->getTemplate("tpl.sequence.html", true, true);
@@ -50,9 +50,9 @@ class Renderer extends AbstractComponentRenderer
         $vc_data = $component->getViewControls()?->getData() ?? [];
         $filter_data = [];
         $positions = $binding->getAllPositions(
+            $request,
             $vc_data,
-            $filter_data,
-            $request
+            $filter_data
         );
 
         $position = $component->getCurrentPosition();
@@ -62,10 +62,10 @@ class Renderer extends AbstractComponentRenderer
         }
 
         $segment = $binding->getSegment(
+            $request,
             $positions[$position],
             $vc_data,
-            $filter_data,
-            $request
+            $filter_data
         );
 
         $ui_factory = $this->getUIFactory();

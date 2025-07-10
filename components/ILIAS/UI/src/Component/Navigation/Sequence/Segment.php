@@ -39,5 +39,5 @@ interface Segment extends Component
      * than changing context entirely (i.e. breaking the sequence).
      * @return Button\Standard[]
      */
-    public function getSegmentActions(): ?array;
+    public function getSegmentActions(): array;
 }

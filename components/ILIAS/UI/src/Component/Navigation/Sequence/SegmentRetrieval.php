@@ -34,18 +34,18 @@ interface SegmentRetrieval
      * Data provided by a position for a certain index is relayed to getSegment.
      */
     public function getAllPositions(
+        ServerRequestInterface $request,
         mixed $viewcontrol_values,
-        mixed $filter_values,
-        ServerRequestInterface $request
+        mixed $filter_values
     ): array;
 
     /**
      * Receives position data (provided by getAllPositions) and builds a segment.
      */
     public function getSegment(
+        ServerRequestInterface $request,
         mixed $position_data,
         mixed $viewcontrol_values,
-        mixed $filter_values,
-        ServerRequestInterface $request
+        mixed $filter_values
     ): Segment;
 }
