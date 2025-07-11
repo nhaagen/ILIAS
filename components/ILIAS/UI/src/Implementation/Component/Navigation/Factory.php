@@ -23,13 +23,14 @@ namespace ILIAS\UI\Implementation\Component\Navigation;
 use ILIAS\UI\Component\Navigation as INavigation;
 use ILIAS\Data\Factory as DataFactory;
 use ILIAS\Refinery\Factory as Refinery;
+use ILIAS\UI\Storage;
 
 class Factory implements INavigation\Factory
 {
     public function __construct(
         protected DataFactory $data_factory,
         protected Refinery $refinery,
-        protected \ArrayAccess $storage,
+        protected Storage $storage,
     ) {
     }
 
