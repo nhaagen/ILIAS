@@ -100,7 +100,7 @@ class Sequence implements ISequence\Sequence
     protected function checkRequest(): void
     {
         if (! $this->request) {
-            throw new LogicException('no request was set on the sequence');
+            throw new \LogicException('no request was set on the sequence');
         }
     }
 
@@ -121,7 +121,7 @@ class Sequence implements ISequence\Sequence
     protected function initFromRequest(): void
     {
         $base_uri = $this->data_factory->uri($this->request->getUri()->__toString());
-        $namespace = ['sequence' . $this->getId() ?? ''];
+        $namespace = ['sequence_' . $this->getId() ?? ''];
         $url_builder = new URLBuilder($base_uri);
         list(
             $this->url_builder,
