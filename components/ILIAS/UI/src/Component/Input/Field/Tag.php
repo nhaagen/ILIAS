@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Input\Field;
 
-use ILIAS\UI\Component\Input\Container\Form\FormInput;
+use ILIAS\UI\Component\Input\Container\Filter\FilterInput;
 use ILIAS\UI\Component\Signal;
 use InvalidArgumentException;
 
@@ -31,7 +31,7 @@ use InvalidArgumentException;
  *
  * @package ILIAS\UI\Component\Input\Field
  */
-interface Tag extends FormInput
+interface Tag extends FilterInput
 {
     /**
      * @return string[] of tags such as [ 'Interesting', 'Boring', 'Animating', 'Repetitious' ]

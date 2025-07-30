@@ -20,9 +20,11 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Input\Field;
 
+use ILIAS\UI\Component\Input\Container\Filter\FilterInput;
+
 /**
  * This describes optional group inputs.
  */
-interface OptionalGroup extends Group
+interface OptionalGroup extends Group, FilterInput
 {
 }

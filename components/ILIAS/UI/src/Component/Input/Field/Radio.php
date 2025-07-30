@@ -20,12 +20,12 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Input\Field;
 
-use ILIAS\UI\Component\Input\Container\Form\FormInput;
+use ILIAS\UI\Component\Input\Container\Filter\FilterInput;
 
 /**
  * This is what a radio-input looks like.
  */
-interface Radio extends FormInput
+interface Radio extends FilterInput
 {
     /**
      * Add an option-entry to the radio-input.

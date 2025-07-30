@@ -20,9 +20,11 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Component\Input\Field;
 
+use ILIAS\UI\Component\Input\Container\Filter\FilterInput;
+
 /**
  * This describes switchable group inputs.
  */
-interface SwitchableGroup extends Group
+interface SwitchableGroup extends Group, FilterInput
 {
 }

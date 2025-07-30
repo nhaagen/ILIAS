@@ -106,7 +106,6 @@ class Renderer extends AbstractComponentRenderer
             "
         );
         if ($is_expanded) {
-            //$tpl->touchBlock('expanded');
             $tpl->setVariable('COLLAPSED', 'hidden');
         } else {
             $component = $component->withAdditionalOnLoadCode(

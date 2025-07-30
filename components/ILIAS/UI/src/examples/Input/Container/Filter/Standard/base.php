@@ -42,6 +42,34 @@ function base()
         'f3' => $factory->input()->field()->checkbox('a checkbox filter')
             ->withValue(true)
             ->withRequired(true),
+
+        $factory->input()->field()->numeric('numeric'),
+        $factory->input()->field()->checkbox('checkbox'),
+        $factory->input()->field()->select('select', ['o1', 'o2', 'o3']),
+        $factory->input()->field()->radio('radio')
+            ->withOption('value1', 'label1', 'byline1')
+            ->withOption('value2', 'label2', 'byline2')
+            ->withOption('value3', 'label3', 'byline3'),
+        $factory->input()->field()->duration('duration'),
+        $factory->input()->field()->tag('tag', ['t1', 't2']),
+        $factory->input()->field()->optionalGroup(
+            [
+                'opt1' => $factory->input()->field()->text(''),
+                'opt2' => $factory->input()->field()->text(''),
+            ],
+            'optional group',
+        ),
+        $factory->input()->field()->switchableGroup(
+            [
+                'switch 1' => $factory->input()->field()->group([$factory->input()->field()->text('')]),
+                'switch 2' => $factory->input()->field()->group([$factory->input()->field()->text('')])
+            ],
+            'switchable'
+        ),
+        $factory->input()->field()->section(
+            [$factory->input()->field()->text('')],
+            'section'
+        ),
     ];
 
     $container = $factory->input()->container()->filter()->standard($filters)
