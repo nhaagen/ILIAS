@@ -51,15 +51,15 @@ function base()
             ->withOption('value2', 'label2', 'byline2')
             ->withOption('value3', 'label3', 'byline3'),
         $factory->input()->field()->duration('duration'),
-        $factory->input()->field()->tag('tag', ['t1', 't2']),
-        $factory->input()->field()->optionalGroup(
+        $factory->input()->field()->tag('tag', []),
+        'og' => $factory->input()->field()->optionalGroup(
             [
                 'opt1' => $factory->input()->field()->text(''),
                 'opt2' => $factory->input()->field()->text(''),
             ],
             'optional group',
         ),
-        $factory->input()->field()->switchableGroup(
+        'sg' => $factory->input()->field()->switchableGroup(
             [
                 'switch 1' => $factory->input()->field()->group([$factory->input()->field()->text('')]),
                 'switch 2' => $factory->input()->field()->group([$factory->input()->field()->text('')])
