@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace ILIAS\ILIASObject\Properties\CoreProperties;
 
 use ILIAS\ILIASObject\Properties\Property;
-use ILIAS\UI\Component\Input\Field\Checkbox;
+use ILIAS\UI\Implementation\Component\Input\Field\Checkbox;
 use ILIAS\UI\Component\Input\Field\Factory as FieldFactory;
 use ILIAS\Refinery\Factory as Refinery;
 
