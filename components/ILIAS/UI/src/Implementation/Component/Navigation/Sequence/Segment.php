@@ -18,14 +18,23 @@
 
 declare(strict_types=1);
 
-namespace ILIAS\UI\Component\Navigation\Sequence;
+namespace ILIAS\UI\Implementation\Component\Navigation\Sequence;
 
-use ILIAS\UI\Component\Component;
+use ILIAS\UI\Component\Navigation\Sequence\Segment as SegmentInterface;
 use ILIAS\UI\Component\Button;
 
-/**
- * A segment is the content resulting from operating a sequence.
- */
-interface Segment extends Component
+interface Segment extends SegmentInterface
 {
+    /**
+     * A segment MUST provide a title
+     */
+    public function getSegmentTitle(): string;
+
+    /**
+     * Segments MAY add actions to the sequence.
+     * Those actions MUST target the actually displayed contents rather
+     * than changing context entirely (i.e. breaking the sequence).
+     * @return Button\Standard[]
+     */
+    public function getSegmentActions(): array;
 }
