@@ -36,6 +36,7 @@ abstract class Filter extends Container implements I\Filter
     public const DEDICATED_NAME = 'filter';
     public const TOGGLE_FIELD = '__toggle';
     public const EXPAND_FIELD = '__expand';
+    public const INACTIVE_FILTERS_FIELD = '__inactive';
 
     protected Signal $submit_signal;
     protected Signal $expand_signal;
@@ -67,10 +68,19 @@ abstract class Filter extends Container implements I\Filter
 
         $filters[self::TOGGLE_FIELD] = $field_factory->text('toggle')
             ->withDedicatedName(self::TOGGLE_FIELD)
+            ->withRequired(true)
             ->withValue('true');
         $filters[self::EXPAND_FIELD] = $field_factory->text('expand')
             ->withDedicatedName(self::EXPAND_FIELD)
+            ->withRequired(true)
             ->withValue('true');
+        $filters[self::INACTIVE_FILTERS_FIELD] = $field_factory->text('inactive')
+            ->withDedicatedName(self::INACTIVE_FILTERS_FIELD)
+            ->withRequired(
+                true,
+                $refinery->custom()->constraint(fn() => true, '')
+            )
+            ->withValue('');
 
         $this->setInputGroup(
             $field_factory->group($filters)->withDedicatedName(self::DEDICATED_NAME)
@@ -169,6 +179,14 @@ abstract class Filter extends Container implements I\Filter
             );
     }
 
+    public function getInactiveFilters(
+    ): array {
+        $key = self::DEDICATED_NAME . '/' . self::INACTIVE_FILTERS_FIELD;
+        if (!array_key_exists($key, $this->getRequest()?->getQueryParams())) {
+            return [];
+        }
+        return explode(':', $this->getRequest()?->getQueryParams()[$key]);
+    }
 
     public function getData()
     {
@@ -178,7 +196,11 @@ abstract class Filter extends Container implements I\Filter
         }
         return array_filter(
             $data,
-            fn($v, $k) => !in_array($k, [self::TOGGLE_FIELD, self::EXPAND_FIELD]),
+            fn($v, $k) => !in_array($k, [
+                self::TOGGLE_FIELD,
+                self::EXPAND_FIELD,
+                self::INACTIVE_FILTERS_FIELD,
+            ]) && !in_array($k, $this->getInactiveFilters()),
             ARRAY_FILTER_USE_BOTH
         );
     }

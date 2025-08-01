@@ -51,6 +51,11 @@ class Renderer extends AbstractComponentRenderer
     protected function renderStandard(Filter\Standard $component, RendererInterface $default_renderer): string
     {
         $tpl = $this->getTemplate("tpl.filter_container.html", true, true);
+        $ui_factory = $this->getUIFactory();
+
+        $is_active = $component->isActive();
+        $is_expanded = $component->isExpanded();
+        $inactive_filters = $component->getInactiveFilters();
 
         $input_names = array_keys($component->getComponentInternalValues());
         $query_params = array_filter(
@@ -76,18 +81,22 @@ class Renderer extends AbstractComponentRenderer
             }
         }
 
-        foreach ($component->getInputs() as $input) {
-            $tpl->setCurrentBlock('filter');
-            $tpl->setVariable("INPUT", $default_renderer->render($input));
+        $single_filter_control = $ui_factory->symbol()->glyph()->remove();
+        foreach ($component->getInputs() as $k => $input) {
+            $tpl_field = $this->getTemplate("tpl.filter_field.html", true, true);
+            $tpl_field->setVariable("INPUT", $default_renderer->render($input));
+            if (!$input->isRequired()) {
+                $tpl_field->setVariable('SINGLE_FILTER_CONTROL', $default_renderer->render($single_filter_control));
+                $tpl_field->setVariable('KEY', $k);
+            }
+            $tpl->setCurrentBlock(in_array($k, $inactive_filters) ? 'inactive_filter' : 'filter');
+            $tpl->setVariable('FILTER', $tpl_field->get());
             $tpl->parseCurrentBlock();
         }
 
-        $is_active = $component->isActive();
-        $is_expanded = $component->isExpanded();
-
-        $ui_factory = $this->getUIFactory();
         $expand = $ui_factory->symbol()->glyph()->expand()->withOnClick($component->getExpandSignal(true));
         $collapse = $ui_factory->symbol()->glyph()->collapse()->withOnClick($component->getExpandSignal(false));
+        $filter_control = $ui_factory->symbol()->glyph()->settings();
         $submission_signal = $component->getSubmissionSignal();
 
         $toggle = $ui_factory->button()->toggle('', $submission_signal, $submission_signal, $is_active);
@@ -119,7 +128,11 @@ class Renderer extends AbstractComponentRenderer
         $tpl->setVariable('EXPAND', $default_renderer->render($expand));
         $tpl->setVariable('COLLAPSE', $default_renderer->render($collapse));
         $tpl->setVariable('TOGGLE', $default_renderer->render($toggle));
+        $tpl->setVariable('FILTER_CONTROL', $default_renderer->render($filter_control));
         $tpl->setVariable('ID', $id);
+
+
+
         return $tpl->get();
     }
 

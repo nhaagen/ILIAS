@@ -180,7 +180,7 @@ class FilterContextRenderer extends Renderer
         RendererInterface $default_renderer
     ): string {
         $f = $this->getUIFactory();
-        $tpl = $this->getTemplate("tpl.filter_field.html", true, true);
+        $tpl = $this->getTemplate("tpl.filter_field_deprecated.html", true, true);
 
         $popover = $f->popover()->standard($f->legacy()->content($input_html))->withVerticalPosition();
         $tpl->setVariable("POPOVER", $default_renderer->render($popover));

@@ -1,4 +1,18 @@
-<form role="form" class="c-filter__form" method="get" id="{ID}">
+<form class="c-filter__form" method="get" id="{ID}">
+
+    <dialog class="c-filter__filter-disabled_inputs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button formmethod="dialog" class="close" aria-label="close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN inactive_filter -->
+                {FILTER}
+                <!-- END inactive_filter -->
+            </div>
+        </div>
+    </dialog>
+
 
     <div class="c-filter__controls l-bar__space-keeper">
 
@@ -15,6 +29,10 @@
             {TOGGLE}
         </div>
 
+        <div class="c-filter__settings l-bar__element">
+            {FILTER_CONTROL}
+        </div>
+
     </div>
 
 
@@ -22,13 +40,13 @@
 
         <div class="c-filter__filter-inputs l-bar__space-keeper {EXPANDED}">
             <!-- BEGIN filter -->
-            <div class="c-filter__filter--input l-bar__element">
-                {INPUT}
-            </div>
+            {FILTER}
             <!-- END filter -->
         </div>
 
         <div class="c-filter__filter-shortvalues l-bar__space-keeper {COLLAPSED}">
+            
+            <!-- this is the place to display values if filter is collapsed -->
             <div class="l-bar__element">
             shortvalues
             </div>
@@ -38,12 +56,11 @@
             
         </div>
 
-        <!-- BEGIN param -->
-        <input  type="hidden" name="{PARAM_NAME}" value="{VALUE}" />
-        <!-- END param -->
-    
-        <input type="submit" />
-
     </div>
 
+    <!-- BEGIN param -->
+    <input  type="hidden" name="{PARAM_NAME}" value="{VALUE}" />
+    <!-- END param -->
+
+    <input type="submit" />
 </form>
