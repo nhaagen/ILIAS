@@ -54,9 +54,10 @@ class DTRenderer extends I\Table\Renderer
         TestDefaultRenderer $default_renderer,
         I\Table\Data $component,
         $tpl,
-        ?I\Signal $sortation_signal
+        ?I\Signal $sortation_signal,
+        array $header_summary
     ) {
-        $this->renderTableHeader($default_renderer, $component, $tpl, $sortation_signal, 1);
+        $this->renderTableHeader($default_renderer, $component, $tpl, $sortation_signal, 1, $header_summary);
     }
     public function p_renderActionsHeader(
         TestDefaultRenderer $default_renderer,
@@ -260,7 +261,13 @@ class DataRendererTest extends TableRendererTestBase
         $sortation_signal->addOption('value', 'f1:ASC');
         $table = $this->getUIFactory()->table()->data($data, '', $columns)
             ->withRequest($this->getDummyRequest());
-        $renderer->p_renderTableHeader($this->getDefaultRenderer(), $table, $tpl, $sortation_signal);
+        $renderer->p_renderTableHeader(
+            $this->getDefaultRenderer(),
+            $table,
+            $tpl,
+            $sortation_signal,
+            []
+        );
 
         $actual = $this->brutallyTrimHTML($tpl->get());
         $expected = <<<EOT
@@ -345,7 +352,7 @@ EOT;
 
         $table = $this->getUIFactory()->table()->data($data, '', $columns)
             ->withRequest($this->getDummyRequest());
-        $renderer->p_renderTableHeader($this->getDefaultRenderer(), $table, $tpl, $sortation_signal);
+        $renderer->p_renderTableHeader($this->getDefaultRenderer(), $table, $tpl, $sortation_signal, []);
         $actual = $this->brutallyTrimHTML($tpl->get());
         $expected = <<<EOT
 <div class="c-table-data" id="{ID}">

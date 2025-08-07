@@ -31,7 +31,7 @@ class DataRowBuilder extends RowBuilder implements T\DataRowBuilder
     /**
      * @param array<string, mixed> $record
      */
-    public function buildDataRow(string $id, array $record): T\DataRow
+    public function buildDataRow(string $id, array $record): DataRow
     {
         return new DataRow(
             $this->row_actions !== [],
@@ -49,5 +49,17 @@ class DataRowBuilder extends RowBuilder implements T\DataRowBuilder
         $clone = clone $this;
         $clone->highlighted_rows = $highlighted_rows;
         return $clone;
+    }
+
+    public function buildSummaryRow(array $record): SummaryRow
+    {
+        $data_factory = new \ILIAS\Data\Factory();
+        return new SummaryRow(
+            $this->row_actions !== [],
+            $this->table_has_multiactions,
+            $this->columns,
+            $data_factory,
+            $record
+        );
     }
 }
