@@ -537,7 +537,6 @@ class TestScoringByParticipantGUI extends \ilTestServiceGUI
         int|string $pass,
         ?string $name = null
     ): string {
-
         if ($name !== null
             && !$this->object->getAnonymity()
             && $this->getTestAccess()->checkScoreParticipantsAccess()
