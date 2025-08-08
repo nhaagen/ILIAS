@@ -737,6 +737,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id, true, true, true)
             ];
             $panel = $this->ui_factory->panel()->standard($question_title, $content);
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
             $entries[] = $panel;
         }
         return $entries;
@@ -752,6 +753,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id, true, true, true)
             ];
             $panel = $this->ui_factory->panel()->standard("", $content);
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
             $entries[] = $panel;
         }
         return $entries;
