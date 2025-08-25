@@ -552,7 +552,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 break;
 
             case strtolower(TestScoringByQuestionGUI::class):
-                if ((!$this->access->checkAccess("read", "", $this->testrequest->getRefId()))) {
+                if (!$this->access->checkAccess("read", "", $this->testrequest->getRefId())
+                    && !$this->access->checkAccess("score_anon", "", $this->testrequest->getRefId())
+                ) {
                     $this->redirectAfterMissingRead();
                 }
                 $this->prepareOutput();
@@ -563,7 +565,9 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 break;
 
             case strtolower(TestScoringByParticipantGUI::class):
-                if ((!$this->access->checkAccess("read", "", $this->testrequest->getRefId()))) {
+                if (!$this->access->checkAccess("read", "", $this->testrequest->getRefId())
+                    && !$this->access->checkAccess("score_anon", "", $this->testrequest->getRefId())
+                ) {
                     $this->redirectAfterMissingRead();
                 }
                 $this->prepareOutput();

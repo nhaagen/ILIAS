@@ -51,7 +51,13 @@ class TestSetupAgent extends NullAgent
                 7200,
                 ['tst']
             ),
-            new \ilAccessRBACOperationDeletedObjective('tst', 56)
+            new \ilAccessCustomRBACOperationAddedObjective(
+                'score_anon',
+                'Score Pseudonymously',
+                'object',
+                5000,
+                ['tst']
+            ),
         );
     }
 
