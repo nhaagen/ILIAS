@@ -20,12 +20,12 @@ declare(strict_types=1);
 
 namespace ILIAS\Test\Scoring\Manual;
 
+use ILIAS\Data\Factory as DataFactory;
 use ILIAS\TestQuestionPool\Questions\GeneralQuestionPropertiesRepository;
 use ILIAS\Test\Logging\TestLogger;
 use ILIAS\Test\Logging\TestScoringInteractionTypes;
 use ILIAS\Test\Logging\AdditionalInformationGenerator;
 use ILIAS\Test\TestManScoringDoneHelper;
-use ILIAS\UI\Implementation\Component\Symbol\Avatar\Avatar;
 
 class ConsecutiveScoring
 {
@@ -36,8 +36,9 @@ class ConsecutiveScoring
         protected readonly TestLogger $logger,
         protected TestScoring $scorer,
         protected TestManScoringDoneHelper $scoring_done_helper,
-        protected int $current_user_id,
-        protected readonly \ilTestAccess $test_access
+        protected \ilObjUser $current_user,
+        protected readonly \ilTestAccess $test_access,
+        protected DataFactory $data_factory,
     ) {
     }
 
@@ -86,17 +87,27 @@ class ConsecutiveScoring
         ) {
             return \ilObjTest::buildExamId($usr_active_id, $pass, $this->object->getId());
         }
+        $user_id = (string) $this->object->_getUserIdFromActiveId($usr_active_id);
+        $user_data = $this->object->getUserData([$user_id]);
+        $user = $user_data[$user_id];
+        return sprintf(
+            "%s %s [%s]",
+            $user["firstname"],
+            $user["lastname"],
+            $user["login"]
+        );
+        /**
         return $this->object->userLookupFullName(
             $this->object->_getUserIdFromActiveId($usr_active_id),
             false,
             true
-        );
+        );*/
     }
 
     public function getUserId(
         int $usr_active_id,
         string $pass,
-    ) :string {
+    ): string {
         if ($this->object->getAnonymity()
             || !$this->test_access->checkScoreParticipantsAccess()
         ) {
@@ -107,7 +118,13 @@ class ConsecutiveScoring
 
     public function getSingleManualFeedback(int $qid, int $usr_active_id, int $pass_id): array
     {
-        return $this->object->getSingleManualFeedback($usr_active_id, $qid, $pass_id);
+        $fb = $this->object->getSingleManualFeedback($usr_active_id, $qid, $pass_id);
+        if (array_key_exists("finalized_tstamp", $fb)) {
+            $fb["finalized_time"] = $this->current_user->getDateTimeFormat()->applyTo(
+                \DateTimeImmutable::createFromFormat('U', (string) $fb["finalized_tstamp"])
+            );
+        }
+        return $fb;
     }
 
     public function getUserQuestionGUI(int $qid, int $usr_active_id, int $pass_id): \assQuestionGUI
@@ -225,7 +242,7 @@ class ConsecutiveScoring
                 $this->logger->getInteractionFactory()->buildScoringInteraction(
                     $this->object->getRefId(),
                     $qid,
-                    $this->current_user_id,
+                    $this->current_user->getId(),
                     \ilObjTestAccess::_getParticipantId($usr_active_id),
                     TestScoringInteractionTypes::QUESTION_GRADED,
                     [
@@ -250,5 +267,6 @@ class ConsecutiveScoring
     {
         return $this->scoring_done_helper->isDone($usr_active_id);
     }
+
 
 }
