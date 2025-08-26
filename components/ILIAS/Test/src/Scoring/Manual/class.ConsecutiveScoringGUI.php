@@ -100,7 +100,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
             case self::ACT_FORM_STATE:
                 $answer_section =
                     $this->ui_renderer->render([
-                        $this->getUserRepresentation($uid),
+                        $this->getUserRepresentation($uid, $pid),
                         $this->getUserAnswer($qid, $uid, $pid, false, false),
                     ]);
                 $response = $this->ui_factory->prompt()->state()->show(
@@ -398,15 +398,16 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         }
         list($usr_active_ids, $question_ids) = $position_data;
 
+        $pass_id = $this->scoring->getPassUsedForEvaluation(current($usr_active_ids));
+
         $title = $viewcontrol_values->isUserCentric() ?
-            $this->getUserRepresentation(current($usr_active_ids)) :
+            $this->getUserRepresentation(current($usr_active_ids), $pass_id) :
             $this->getQuestionRepresentation(current($question_ids), true);
 
         $usr_active_id = current($usr_active_ids);
         $qid = current($question_ids);
 
         if ($viewcontrol_values->isSingle()) {
-            $pass_id = $this->scoring->getPassUsedForEvaluation($usr_active_id);
 
             $form = $this->getScoringForm(self::ACT_STORE, $qid, $usr_active_id, $pass_id);
 
@@ -416,13 +417,18 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
 
             $representation = $viewcontrol_values->isUserCentric() ?
                 $this->getQuestionRepresentation(current($question_ids), true) :
-                $this->getUserRepresentation(current($usr_active_ids));
+                $this->getUserRepresentation(current($usr_active_ids), $pass_id);
 
             $user_answer = $this->getUserAnswer($qid, $usr_active_id, $pass_id);
 
+            $feedback_properties = $this->ui_factory->listing()->property();
+            $feedback = $this->scoring->getSingleManualFeedback($qid, $usr_active_id, $pass_id);
+            $feedback_properties = $this->getWithFinalizedProperties($feedback, $feedback_properties);
+            $panel = $this->ui_factory->panel()->standard("", [$form, $feedback_properties]);
+
             $layout = $this->ui_factory->layout()->alignment()->horizontal()->evenlyDistributed(
                 $user_answer,
-                $form,
+                $panel,
             );
 
             $out = [
@@ -537,7 +543,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         );
     }
 
-    protected function getUserRepresentation(int $usr_active_id): \ILIAS\UI\Component\Entity\Entity
+    protected function getUserRepresentation(int $usr_active_id, $pass_id): \ILIAS\UI\Component\Entity\Entity
     {
         $pid = $this->scoring->getPassUsedForEvaluation($usr_active_id);
         $usr_fullname = $this->scoring->getUserFullName($usr_active_id, (string) $pid);
@@ -556,6 +562,9 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                     $this->lng->txt("usr_manscoring_complete"),
                     $this->scoring->isScoringComplete($usr_active_id) ?
                         $this->lng->txt('yes') : $this->lng->txt('no')
+                )->withProperty(
+                    $this->lng->txt("exam_id"),
+                    $this->object->lookupExamId($usr_active_id, $pass_id)
                 )
             );
         return $scored_participant_entity;
@@ -563,17 +572,22 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
 
     protected function getQuestionRepresentation(int $qid, bool $show_title = false): \ILIAS\UI\Component\Legacy\Content
     {
-        $tpl = new \ilTemplate('tpl.il_as_tst_manual_scoring_consecutive_question.html', false, false, 'components/ILIAS/Test');
+        $tpl = new \ilTemplate('tpl.il_as_tst_manual_scoring_consecutive_question.html', true, true, 'components/ILIAS/Test');
 
         $question = $this->scoring->getQuestionObject($qid);
 
+        $question_text = $question->getQuestion();
+
         if ($show_title) {
+            $tpl->setCurrentBlock("expandable_title");
             $question_title = $question->getTitle();
             $tpl->setVariable('TITLE', $question_title);
+        } else {
+            $tpl->setCurrentBlock("question_only");
+            $tpl->setVariable('EXPAND_COLLAPSE', $this->lng->txt("expand") . "/" . $this->lng->txt("collapse"));
         }
-
-        $question_text = $question->getQuestion();
         $tpl->setVariable('QUESTION', $question_text);
+        $tpl->parseCurrentBlock();
 
         $legacy_container = $this->ui_factory->legacy()->content($tpl->get());
 
@@ -618,6 +632,7 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
                         (bool) ($feedback['finalized_evaluation'] ?? false) ?
                             $this->lng->txt('yes') : $this->lng->txt('no')
                     );
+            $info = $this->getWithFinalizedProperties($feedback, $info);
             $tpl->setVariable('PROPERTIES', $this->ui_renderer->render($info));
         }
 
@@ -731,13 +746,12 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         $pass_id = $this->scoring->getPassUsedForEvaluation($usr_active_id);
         $entries = [];
         foreach ($question_ids as $qid) {
-            $question_title = $this->scoring->getQuestionObject($qid)->getTitle();
             $content = [
-                $this->getQuestionRepresentation($qid),
+                $this->getQuestionRepresentation($qid, true),
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id, true, true, true)
             ];
-            $panel = $this->ui_factory->panel()->standard($question_title, $content);
-            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
+            $panel = $this->ui_factory->panel()->standard("", $content);
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"></a>', $qid, $usr_active_id));
             $entries[] = $panel;
         }
         return $entries;
@@ -749,11 +763,11 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         foreach ($usr_active_ids as $usr_active_id) {
             $pass_id = $this->scoring->getPassUsedForEvaluation($usr_active_id);
             $content = [
-                $this->getUserRepresentation($usr_active_id),
+                $this->getUserRepresentation($usr_active_id, $pass_id),
                 $this->getUserAnswer($qid, $usr_active_id, $pass_id, true, true, true)
             ];
             $panel = $this->ui_factory->panel()->standard("", $content);
-            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"/>', $qid, $usr_active_id));
+            $entries[] = $this->ui_factory->legacy()->content(sprintf('<a id="anchor_%s_%s"></a>', $qid, $usr_active_id));
             $entries[] = $panel;
         }
         return $entries;
@@ -804,13 +818,26 @@ class ConsecutiveScoringGUI implements SegmentRetrieval
         );
     }
 
-    protected function appendSubPanels(ReportPanel $panel, SubPanel ...$subs): ReportPanel
+    /**
+     * @param array $feedback
+     * @param \ILIAS\UI\Component\Listing\Property $info
+     * @return \ILIAS\UI\Component\Listing\Property
+     */
+    public function getWithFinalizedProperties(array $feedback, \ILIAS\UI\Component\Listing\Property $info): \ILIAS\UI\Component\Listing\Property
     {
-        $panel_subs = $panel->getContent();
-        array_push($panel_subs, ...$subs);
-        return $this->ui_factory->panel()->report(
-            $panel->getTitle(),
-            $panel_subs
-        );
+
+        if (array_key_exists('finalized_by_usr_id', $feedback) && $feedback['finalized_by_usr_id'] !== 0) {
+            $feedback_usr_data = $this->object->getUserData([$feedback['finalized_by_usr_id']])[$feedback['finalized_by_usr_id']];
+            $feedback_usr_name = $feedback_usr_data['firstname'] . " " . $feedback_usr_data['lastname'];
+            $info = $info->withProperty(
+                $this->lng->txt('finalized_by'),
+                $feedback_usr_name
+            )->withProperty(
+                $this->lng->txt('finalized_on'),
+                (string) $feedback['finalized_time'],
+                false
+            );
+        }
+        return $info;
     }
 }

@@ -1,5 +1,6 @@
 @use "../../../010-settings/" as *;
 @use "../../../050-layout/basics" as *;
+@use "../../../050-layout/layout_breakpoints" as l-brk;
 @use "../../../030-tools/tool_fade-edge" as fade;
 @use "./_component_test_legacy.scss" as *;
 
@@ -151,6 +152,14 @@ $cons-scoring-bottom-fade-height: $il-padding-xxxlarge-vertical * 2;
   &__text {
     margin-bottom: $il-margin-xxxlarge-vertical * 2;
   }
+  &__title {
+    display: inline-block;
+  }
+}
+.panel .c-consecutive-scoring__question {
+  &__title {
+    margin-top: 0;
+  }
 }
 
 .c-consecutive-scoring__answer {
@@ -191,15 +200,23 @@ $cons-scoring-bottom-fade-height: $il-padding-xxxlarge-vertical * 2;
     border-left: $il-main-border;
     display: grid;
     grid-template-areas: "properties btn"
-                            "feedback feedback";
+                        "feedback feedback";
     grid-template-columns: 1fr max-content;
     grid-template-rows: max-content 1fr;
     margin-left: $il-padding-xxxlarge-vertical * 2;
     padding-left: $il-padding-xxxlarge-vertical * 2;
+
+    @include l-brk.on-screen-size(small) {
+      border-left: none;
+      margin-left: 0;
+      padding-left: 0;
+    }
     // background-color: $card-color;
     &__properties {
-      font-size: $il-font-size-large;
       grid-area: properties;
+      .c-listing-property__property:nth-child(-n + 2) {
+        font-size: $il-font-size-large;
+      }
     }
 
     &__grade-btn {
@@ -226,13 +243,20 @@ $cons-scoring-bottom-fade-height: $il-padding-xxxlarge-vertical * 2;
     }
   }
 }
-.panel:has(.c-consecutive-scoring__answer) {
 
+@include l-brk.on-screen-size(small) {
+  .c-consecutive-scoring__answer {
+    max-height: none;
+    display: block;
+    &__grade-card,
+    &__scroll-container {
+      width: 100%;
+    }
+  }
 }
 
-
 //
-// manual scoring prompt dialog
+// manual scoring prompt dialog modal
 // this is where the actual editing of the feedback takes place
 // suggestion for UI component: Guided Prompt or Guided Form, placing a form besides relevant content to be evaluated
 //
@@ -244,7 +268,10 @@ $cons-scoring-bottom-fade-height: $il-padding-xxxlarge-vertical * 2;
   grid-template-columns: 50% 50%;
   height: 100vh;
   width: $max-reading-width;
-  overflow: hidden;
+
+  @include l-brk.on-screen-size(small) {
+    display: block;
+  }
 
   hr {
     display: none;
@@ -291,16 +318,6 @@ $cons-scoring-bottom-fade-height: $il-padding-xxxlarge-vertical * 2;
   .il-prompt__contents {
     grid-area: feedback;
     overflow: auto;
-
-    form {
-      .c-input[data-il-ui-component="markdown-field-input"] {
-        display: block;
-
-        .c-field-markdown textarea {
-          height: 60vh;
-        }
-      }
-    }
   }
 
   .il-prompt__buttons {
@@ -333,7 +350,6 @@ $cons-scoring-bottom-fade-height: $il-padding-xxxlarge-vertical * 2;
   margin: 0 auto;
 }
 
-
 .c-sequence__segment:has(.c-consecutive-scoring__answer) {
   .panel {
     .c-entity {
@@ -348,20 +364,47 @@ $cons-scoring-bottom-fade-height: $il-padding-xxxlarge-vertical * 2;
 //
 // single view
 //
-.c-sequence__segment:has(.c-layout-alignment--horizontal-evenly .c-consecutive-scoring__answer)  {
-  .c-entity.__container {
-    margin-bottom: $il-margin-large-vertical;
-    margin-top: $il-margin-xxlarge-vertical;
-  }
-  .c-consecutive-scoring__answer {
-    &__grade-card {
-      display: none;
+.c-sequence:has(.c-layout-alignment--horizontal-evenly .c-consecutive-scoring__answer)  {
+  .c-sequence__segment {
+    .c-entity.__container {
+      margin-bottom: $il-margin-large-vertical;
+      margin-top: $il-margin-xxlarge-vertical;
     }
-    &__scroll-container {
-      width: 100%;
+    .c-layout-alignment__block {
+      align-content: space-around;
+    }
+    .c-consecutive-scoring__answer {
+      max-height: 60vh;
+      &__grade-card {
+        display: none;
+      }
+      &__scroll-container {
+        width: 100%;
+      }
     }
   }
-
 }
 
+// question header details in segment header
 
+.c-sequence:has(.c-consecutive-scoring__answer) {
+  .c-sequence__header__segment__title .c-consecutive-scoring__question {
+    details {
+      border-bottom: none;
+    }
+  }
+}
+
+// Change layout of Markdown Form Field in Single View and in Prompt Modal
+.c-sequence__segment:has(.c-layout-alignment--horizontal-evenly .c-consecutive-scoring__answer),
+.panel:has(.c-consecutive-scoring__answer) ~ .il-prompt > dialog[open] .il-prompt__contents {
+  form {
+    .c-input[data-il-ui-component="markdown-field-input"] {
+      display: block;
+
+      .c-field-markdown textarea {
+        height: 50vh;
+      }
+    }
+  }
+}

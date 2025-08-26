@@ -1,4 +1,24 @@
 <div class="c-consecutive-scoring__question">
-	<!-- BEGIN question_title --><h2 class="c-consecutive-scoring__question__title">{TITLE}</h2><!-- END question_title -->
-    <!-- BEGIN question --><div class="c-consecutive-scoring__question__text">{QUESTION}</div><!-- END question -->
+    <!-- BEGIN expandable_title -->
+    <details>
+        <summary>
+            <h2 class="c-consecutive-scoring__question__title">{TITLE}</h2>
+        </summary>
+        <div class="c-consecutive-scoring__question__text">
+            {QUESTION}
+        </div>
+    </details>
+    <!-- END expandable_title -->
+    <!-- BEGIN question_only -->
+    <div class="c-consecutive-scoring__question__text">
+        <details>
+            <summary>
+                <span class="btn btn-link">{EXPAND_COLLAPSE}</span>
+            </summary>
+            <div class="c-consecutive-scoring__question__text">
+                {QUESTION}
+            </div>
+        </details>
+    </div>
+    <!-- END question_only -->
 </div>
