@@ -111,13 +111,21 @@ class ilPluginInfo
 
     public function getPath(): string
     {
-        return implode('/', [
-            ilComponentRepository::PLUGIN_BASE_PATH,
-            $this->getType(),
-            $this->getComponent()->getName(),
-            $this->getPluginSlot()->getName(),
-            $this->getName()
-        ]);
+        /*
+                return implode('/', [
+                    ilComponentRepository::PLUGIN_BASE_PATH,
+                    $this->getType(),
+                    $this->getComponent()->getName(),
+                    $this->getPluginSlot()->getName(),
+                    $this->getName()
+                ]);
+        */
+        $loader = require __DIR__ . '/../../../../vendor/composer/vendor/autoload.php';
+        $plugin_file = $loader->findFile($this->getClassname());
+        if (!$plugin_file) {
+            throw new \Exception('file not found in autoloader: ' . $this->getClassname());
+        }
+        return realpath(dirname($plugin_file) . '/..');
     }
 
     public function getClassName(): string

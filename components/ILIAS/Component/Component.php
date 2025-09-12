@@ -48,10 +48,27 @@ class Component implements Component\Component
         $contribute[\ILIAS\Setup\Agent::class] = static fn() =>
             new \ilComponentsSetupAgent(
                 $internal[Component\Resource\PublicAssetManager::class],
-                $seek[Component\Resource\PublicAsset::class]
+                $seek[Component\Resource\PublicAsset::class],
+                $seek[Component\Resource\Plugin::class]
             );
 
         $internal[Component\Resource\PublicAssetManager::class] = static fn() =>
             new Component\Resource\PublicAssetManager();
+
+
+        $contribute[Component\Resource\Plugin::class] = fn() =>
+             new Component\Resource\Plugin(
+                 'RepositoryObject', //slot
+                 'CloudStorage', //name/plugin
+                 'xcls',
+                 '2.0.2',
+                 false,
+                 false,
+                 false,
+                 '9.0',
+                 '10.999',
+                 'Stefan Schneider',
+                 'eqsoft4@gmail.com'
+             );
     }
 }

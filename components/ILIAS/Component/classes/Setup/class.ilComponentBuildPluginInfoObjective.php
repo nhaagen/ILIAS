@@ -25,6 +25,11 @@ class ilComponentBuildPluginInfoObjective extends Setup\Artifact\BuildArtifactOb
     protected const PLUGIN_CLASS_FILE = "classes/class.il%sPlugin.php";
 
 
+    public function __construct(
+        protected array $plugin_components = []
+    ) {
+    }
+
     public function getArtifactName(): string
     {
         return "plugin_data";
@@ -33,6 +38,11 @@ class ilComponentBuildPluginInfoObjective extends Setup\Artifact\BuildArtifactOb
     public function build(): Setup\Artifact
     {
         $data = [];
+        $component_info = require ilComponentBuildComponentInfoObjective::PATH();
+        foreach ($this->plugin_components as $plug) {
+            $data = array_merge($data, $plug->toArtifactData($component_info));
+        }
+
         foreach (['Modules', 'Services'] as $type) {
             $base_path = static::BASE_PATH . $type . '/';
             if (! $this->isDir($base_path)) {
@@ -61,6 +71,7 @@ class ilComponentBuildPluginInfoObjective extends Setup\Artifact\BuildArtifactOb
                 }
             }
         }
+
         return new Setup\Artifact\ArrayArtifact($data);
     }
 
@@ -95,26 +106,29 @@ class ilComponentBuildPluginInfoObjective extends Setup\Artifact\BuildArtifactOb
             throw new \InvalidArgumentException("$plugin does not define \$ilias_max_version");
         }
 
+        /*
         if (isset($data[$id])) {
             throw new \RuntimeException(
                 "Plugin with id $id already exists."
             );
         }
-
-        $data[$id] = [
-            $type,
-            $component,
-            $slot,
-            $plugin,
-            $version,
-            $ilias_min_version,
-            $ilias_max_version,
-            $responsible ?? "",
-            $responsible_mail ?? "",
-            $learning_progress ?? null,
-            $supports_export ?? null,
-            $supports_cli_setup ?? null
-        ];
+        */
+        if (!array_key_exists($id, $data)) {
+            $data[$id] = [
+                $type,
+                $component,
+                $slot,
+                $plugin,
+                $version,
+                $ilias_min_version,
+                $ilias_max_version,
+                $responsible ?? "",
+                $responsible_mail ?? "",
+                $learning_progress ?? null,
+                $supports_export ?? null,
+                $supports_cli_setup ?? null
+            ];
+        }
     }
 
     /**

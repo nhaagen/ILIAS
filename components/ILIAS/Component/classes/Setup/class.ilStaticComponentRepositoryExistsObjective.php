@@ -53,7 +53,7 @@ class ilStaticComponentRepositoryExistsObjective implements Setup\Objective
     {
         return [
             new ilComponentBuildComponentInfoObjective(),
-            new ilComponentBuildPluginInfoObjective(),
+            //new ilComponentBuildPluginInfoObjective(),
         ];
     }
 

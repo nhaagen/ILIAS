@@ -29,7 +29,8 @@ class ilComponentsSetupAgent implements Setup\Agent
 
     public function __construct(
         protected PublicAssetManager $public_asset_manager,
-        protected array $public_assets
+        protected array $public_assets,
+        protected array $plugin_components
     ) {
     }
 
@@ -84,7 +85,9 @@ class ilComponentsSetupAgent implements Setup\Agent
                 "Artifacts for \\ILIAS\\Component",
                 false,
                 new ilComponentBuildComponentInfoObjective(),
-                new ilComponentBuildPluginInfoObjective()
+                new ilComponentBuildPluginInfoObjective(
+                    $this->plugin_components
+                )
             ),
             new PublicAssetsBuildObjective(
                 $this->public_asset_manager,
