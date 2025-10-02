@@ -52,6 +52,12 @@ function large()
     ];
 
     $url_builder = new URLBuilder($df->uri($request->getUri()->__toString()));
+    $examples_overall_namespace = ['datatable', 'examples', 'async'];
+    list($url_builder, $async_token) = $url_builder->acquireParameters(
+        $examples_overall_namespace,
+        "async"
+    );
+
     $query_params_namespace = ['datatable', 'example', 'large'];
     list($url_builder, $action_parameter_token, $row_id_token) = $url_builder->acquireParameters(
         $query_params_namespace,
@@ -117,6 +123,15 @@ function large()
     $table = $f->table()->data($data_retrieval, 'large ids data table', $columns)
         ->withActions($actions)
         ->withRequest($request);
+
+    $query = $DIC->http()->wrapper()->query();
+    if ($query->retrieve(
+        $async_token->getName(),
+        $refinery->byTrying([$refinery->kindlyTo()->bool(), $refinery->always(false)])
+    )
+    ) {
+        return '';
+    };
 
     return $r->render($table);
 }
