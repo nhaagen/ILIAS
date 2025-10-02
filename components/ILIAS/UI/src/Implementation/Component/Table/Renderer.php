@@ -270,6 +270,15 @@ class Renderer extends AbstractComponentRenderer
             }
         }
 
+        if ($creation_prompt = $component->getEntryCreation()) {
+            $btn = $this->getUIFactory()->button()->standard(
+                $this->txt('datatable_add_entry'),
+                $creation_prompt->getShowSignal()
+            );
+            $tpl->setVariable('SPAWN_CONTROLS', $default_renderer->render($btn));
+            $tpl->setVariable('SPAWN_CONTROLS_DIALOG', $default_renderer->render($creation_prompt));
+        }
+
         $this->renderTableHeader($default_renderer, $component, $tpl, $sortation_signal, $compensate_col_index);
         return $tpl->get();
     }
