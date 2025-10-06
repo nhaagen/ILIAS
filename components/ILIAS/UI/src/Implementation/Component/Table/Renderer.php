@@ -290,6 +290,7 @@ class Renderer extends AbstractComponentRenderer
         foreach ($columns as $col_id => $col) {
             $param_sort_direction = Order::ASC;
             $col_title = $col->getTitle();
+            $sortation_glyph = null;
             if ($col_id === $sort_col) {
                 if ($sort_direction === Order::ASC) {
                     $sortation = "ascending"; // aria-sort should not be translated and always be in English
@@ -311,12 +312,13 @@ class Renderer extends AbstractComponentRenderer
                 $sort_signal->addOption('value', "$col_id:$param_sort_direction");
                 $col_title = $default_renderer->render(
                     $this->getUIFactory()->button()->shy($col_title, $sort_signal)
+                    ->withSymbol($sortation_glyph ?? null)
                 );
 
                 if ($col_id === $sort_col) {
-                    $sortation_glyph = $default_renderer->render($sortation_glyph->withOnClick($sort_signal));
+                    //$sortation_glyph = $default_renderer->render($sortation_glyph->withOnClick($sort_signal));
                     $tpl->setVariable('COL_SORTATION', $sortation);
-                    $tpl->setVariable('COL_SORTATION_GLYPH', $sortation_glyph);
+                    //$tpl->setVariable('COL_SORTATION_GLYPH', $sortation_glyph);
                 }
             }
 
@@ -420,9 +422,13 @@ class Renderer extends AbstractComponentRenderer
         foreach ($rows as $row) {
             $row_contents = $default_renderer->render($row);
             $alternate = ($alternate === 'odd') ? 'even' : 'odd';
+            $highlighted = $row->isHighlighted() ? 'highlighted' : '';
+
             $tpl->setCurrentBlock('row');
             $tpl->setVariable('ALTERNATION', $alternate);
             $tpl->setVariable('CELLS', $row_contents);
+            $tpl->setVariable('HIGHLIGHTED', $highlighted);
+
             $tpl->parseCurrentBlock();
         }
     }

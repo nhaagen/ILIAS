@@ -46,6 +46,9 @@ class Data extends AbstractTable implements T\Data
     public const VIEWCONTROL_KEY_ORDERING = 'order';
     public const VIEWCONTROL_KEY_FIELDSELECTION = 'selected_optional';
 
+    //public const VIEWCONTROL_KEY_HIGHLIGHTED_ROWS = 'selected_optional';
+    public const KEY_HIGHLIGHTED_ROWS = 'hlrws';
+
     protected ?array $filter = null;
     protected ?array $additional_parameters = null;
 
@@ -141,8 +144,13 @@ class Data extends AbstractTable implements T\Data
                 ->withRange($range)
                 ->withOrder($order)
                 ->withSelectedOptionalColumns($data[self::VIEWCONTROL_KEY_FIELDSELECTION] ?? null);
+
             # This retrieves the view controls that should be displayed
             $view_controls = $table->applyValuesToViewcontrols($table->getViewControls($total_count), $request);
+
+            $table->data_row_builder = $table->data_row_builder->withHighlightedRows(
+                $request->getQueryParams()[self::KEY_HIGHLIGHTED_ROWS] ?? []
+            );
         }
 
         return [
@@ -157,8 +165,32 @@ class Data extends AbstractTable implements T\Data
             self::VIEWCONTROL_KEY_PAGINATION => $this->getViewControlPagination($total_count),
             self::VIEWCONTROL_KEY_ORDERING => $this->getViewControlOrdering($total_count),
             self::VIEWCONTROL_KEY_FIELDSELECTION => $this->getViewControlFieldSelection(),
+            /*self::KEY_highlighted_rows => $this->view_control_factory->fieldSelection(
+                [
+                    '123' => '123',
+                    '8749' => '8749',
+                    '8751' => '8751',
+                    '867' => '867',
+                ],
+                '',
+                'apply'
+            )*/
         ];
         $view_controls = array_filter($view_controls);
         return $this->view_control_container_factory->standard($view_controls);
     }
+
+    /*
+        public function withHighlightedRows(array $highlighted_rows): self
+        {
+            $clone = clone $this;
+            $clone->highlighted_rows = $highlighted_rows;
+            return $clone;
+        }
+
+        public function getHighlightedRows(): array
+        {
+            return $this->highlighted_rows;
+        }
+    */
 }
