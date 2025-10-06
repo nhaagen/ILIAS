@@ -35,6 +35,7 @@ use ILIAS\Data\Range;
 use ILIAS\Data\Order;
 use ILIAS\UI\Component\Prompt\Prompt as IPrompt;
 use ILIAS\UI\Implementation\Component\Prompt\Prompt;
+use ILIAS\UI\URLBuilderToken;
 
 class Data extends AbstractTable implements T\Data
 {
@@ -54,6 +55,7 @@ class Data extends AbstractTable implements T\Data
     protected mixed $additional_viewcontrol_data = null;
     protected ?ViewControlContainer\ViewControlInput $additional_view_control = null;
     protected ?Prompt $entry_creation = null;
+    protected ?URLBuilderToken $highlight_token = null;
 
     /**
      * @param array<string, Column> $columns
@@ -215,6 +217,14 @@ class Data extends AbstractTable implements T\Data
         $clone = clone $this;
         $clone->additional_view_control = $view_control
             ->withDedicatedName(self::VIEWCONTROL_KEY_ADDITIONAL);
+        return $clone;
+    }
+
+    public function withHighlightToken(
+        URLBuilderToken $highlight_token
+    ): self {
+        $clone = clone $this;
+        $clone->highlight_token = $highlight_token;
         return $clone;
     }
 

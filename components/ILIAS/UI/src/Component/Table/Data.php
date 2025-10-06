@@ -26,6 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use ILIAS\Data\Order;
 use ILIAS\Data\Range;
 use ILIAS\UI\Component\Prompt\Prompt;
+use ILIAS\UI\URLBuilderToken;
 
 /**
  * This describes a Data Table.
@@ -81,4 +82,13 @@ interface Data extends Table
      * the table will be reloaded afterwards.
      */
     public function withEntryCreation(Prompt $entry_creation): self;
+
+    /**
+     * This is to show access to highlighted rows via GET-parameters;
+     * actually, highlighting rows will follow a (prompt-)action and
+     * the announcement of the relevant token will be part of adding
+     * this action to the table.
+     * @deprecated 11
+     */
+    public function withHighlightToken(URLBuilderToken $highlight_token): self;
 }
