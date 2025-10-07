@@ -47,7 +47,7 @@ class DataRowBuilder extends RowBuilder implements T\DataRowBuilder
     public function withHighlightedRows(array $highlighted_rows): self
     {
         $clone = clone $this;
-        $clone->highlighted_rows = $highlighted_rows;
+        $clone->highlighted_rows = array_map('strval', $highlighted_rows);
         return $clone;
     }
 }

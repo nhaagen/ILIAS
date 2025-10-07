@@ -35,6 +35,7 @@ use ILIAS\Data\Range;
 use ILIAS\Data\Order;
 use ILIAS\UI\Component\Prompt\Prompt as IPrompt;
 use ILIAS\UI\Implementation\Component\Prompt\Prompt;
+use ILIAS\UI\URLBuilderToken;
 
 class Data extends AbstractTable implements T\Data
 {
@@ -48,12 +49,10 @@ class Data extends AbstractTable implements T\Data
     public const VIEWCONTROL_KEY_ORDERING = 'order';
     public const VIEWCONTROL_KEY_FIELDSELECTION = 'selected_optional';
 
-    //public const VIEWCONTROL_KEY_HIGHLIGHTED_ROWS = 'selected_optional';
-    public const KEY_HIGHLIGHTED_ROWS = 'hlrws';
-
     protected ?array $filter = null;
     protected ?array $additional_parameters = null;
     protected ?Prompt $entry_creation = null;
+    protected ?URLBuilderToken $highlight_token = null;
 
     /**
      * @param array<string, Column> $columns
@@ -111,10 +110,14 @@ class Data extends AbstractTable implements T\Data
         return $this->additional_parameters;
     }
 
-    public function withEntryCreation(IPrompt $entry_creation): self
+    public function withEntryCreation(
+        IPrompt $entry_creation, 
+        URLBuilderToken $highlight_token = null
+    ): self
     {
         $clone = clone $this;
         $clone->entry_creation = $entry_creation;
+        $clone->highlight_token = $highlight_token;
         return $clone;
     }
 
@@ -164,7 +167,7 @@ class Data extends AbstractTable implements T\Data
             $view_controls = $table->applyValuesToViewcontrols($table->getViewControls($total_count), $request);
 
             $table->data_row_builder = $table->data_row_builder->withHighlightedRows(
-                $request->getQueryParams()[self::KEY_HIGHLIGHTED_ROWS] ?? []
+                $request->getQueryParams()[$this->highlight_token?->getName()] ?? []
             );
         }
 
@@ -180,32 +183,9 @@ class Data extends AbstractTable implements T\Data
             self::VIEWCONTROL_KEY_PAGINATION => $this->getViewControlPagination($total_count),
             self::VIEWCONTROL_KEY_ORDERING => $this->getViewControlOrdering($total_count),
             self::VIEWCONTROL_KEY_FIELDSELECTION => $this->getViewControlFieldSelection(),
-            /*self::KEY_highlighted_rows => $this->view_control_factory->fieldSelection(
-                [
-                    '123' => '123',
-                    '8749' => '8749',
-                    '8751' => '8751',
-                    '867' => '867',
-                ],
-                '',
-                'apply'
-            )*/
         ];
         $view_controls = array_filter($view_controls);
         return $this->view_control_container_factory->standard($view_controls);
     }
 
-    /*
-        public function withHighlightedRows(array $highlighted_rows): self
-        {
-            $clone = clone $this;
-            $clone->highlighted_rows = $highlighted_rows;
-            return $clone;
-        }
-
-        public function getHighlightedRows(): array
-        {
-            return $this->highlighted_rows;
-        }
-    */
 }

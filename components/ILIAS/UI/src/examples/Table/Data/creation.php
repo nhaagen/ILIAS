@@ -55,9 +55,10 @@ function creation(): string
         "async"
     );
     $namespace = ['dt', 'creation'];
-    list($url_builder, $action_token) = $url_builder->acquireParameters(
+    list($url_builder, $action_token, $highlight_token) = $url_builder->acquireParameters(
         $namespace,
-        "action"
+        'action',
+        'hlrws'
     );
 
     $prompt_uri = $url_builder
@@ -89,10 +90,12 @@ function creation(): string
                 $recs[] = ['col1' => $data[0], 'col2' => $data[1]];
                 \ilSession::set('dt_example_rec', $recs);
 
+                $row_id = (string)$data[0];
                 $response = $factory->prompt()->state()->redirect(
                     $url_builder
                         ->withParameter($async_token, 'false')
                         ->withParameter($action_token, '')
+                        ->withParameter($highlight_token, [$row_id])
                         ->buildURI()
                 );
                 echo($renderer->renderAsync($response));
@@ -105,14 +108,10 @@ function creation(): string
         exit();
     }
 
-
-
     $records = [
         ['col1' => 1, 'col2' => 'a'],
         ['col1' => 2, 'col2' => 'b'],
     ] + (\ilSession::get('dt_example_rec') ?? []);
-
-
 
     $data_retrieval = new class ($records) implements DataRetrieval {
         public function __construct(
@@ -129,7 +128,8 @@ function creation(): string
             ?array $additional_parameters
         ): \Generator {
             foreach ($this->records as $idx => $record) {
-                yield $row_builder->buildDataRow('_' . $idx, $record);
+                $row_id = (string)$record['col1'];
+                yield $row_builder->buildDataRow($row_id, $record);
             }
         }
 
@@ -160,7 +160,7 @@ function creation(): string
 
     return $renderer->render(
         $table
-        ->withEntryCreation($prompt)
+        ->withEntryCreation($prompt, $highlight_token)
         ->withRequest($request)
     );
 }
