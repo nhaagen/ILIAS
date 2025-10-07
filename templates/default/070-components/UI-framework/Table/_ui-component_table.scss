@@ -145,13 +145,24 @@ $table-ordering__inset-row__shadow: inset 0px 0px 14px 2px #00000063;
     }
 }
 
+
 .c-table-data__cell {
-    background-color: $il-main-bg; // so sticky cells can cover up cells underneath them
     padding: $il-padding-large-vertical $il-padding-large-horizontal;
     border: 1px solid $il-main-border-color;
     &--multiaction {
         padding-bottom: $il-padding-large-vertical;
     }
+}
+
+.c-table-data .c-table-data__row:not(.highlighted) {
+    .c-table-data__cell {
+        background-color: $il-main-bg; // so sticky cells can cover up cells underneath them
+    }
+}
+
+// Highlighted Rows
+.c-table-data .c-table-data__row.highlighted {
+    background-color: #00bbff75;
 }
 
 // hover row on larger screens only
@@ -359,9 +370,12 @@ td.c-table-data__cell--number {
 }
 
 // Highlighted Columns
-td.c-table-data__cell--highlighted {
-    background-color: $il-main-dark-bg;
+.c-table-data .c-table-data__row :not(.highlighted) {
+    td.c-table-data__cell--highlighted {
+        background-color: $il-main-dark-bg;
+    }
 }
+
 // hover on larger screens only
 .c-table-data .c-table-data__row:hover td.c-table-data__cell--highlighted,
 .c-table-ordering:not(.dragInProgress) .c-table-data__row:hover td.c-table-data__cell--highlighted {
