@@ -48,7 +48,7 @@ class DataRow implements T\DataRow
         protected array $actions,
         protected string $id,
         protected array $record,
-        protected bool $highlighted
+        protected bool $highlighted = false
     ) {
     }
 
@@ -99,6 +99,13 @@ class DataRow implements T\DataRow
             return '';
         }
         return $this->columns[$col_id]->format($this->record[$col_id]);
+    }
+
+    public function withHighlighted(bool $highlighted): static
+    {
+        $clone = clone $this;
+        $clone->highlighted = $highlighted;
+        return $clone;
     }
 
     public function isHighlighted(): bool
