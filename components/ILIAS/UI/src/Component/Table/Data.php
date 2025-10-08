@@ -23,6 +23,7 @@ namespace ILIAS\UI\Component\Table;
 use Psr\Http\Message\ServerRequestInterface;
 use ILIAS\Data\Order;
 use ILIAS\Data\Range;
+use ILIAS\UI\URLBuilderToken;
 
 /**
  * This describes a Data Table.
@@ -60,4 +61,13 @@ interface Data extends Table
      * Set an Id to enable the storage and identify the distinct table.
      */
     public function withId(string $id): static;
+
+    /**
+     * This is to show access to highlighted rows via GET-parameters;
+     * actually, highlighting rows will follow a (prompt-)action and
+     * the announcement of the relevant token will be part of adding
+     * this action to the table.
+     * @deprecated 11
+     */
+    public function withHighlightToken(URLBuilderToken $highlight_token): self;
 }

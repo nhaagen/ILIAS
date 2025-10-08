@@ -101,10 +101,15 @@ class DataRow implements T\DataRow
         return $this->columns[$col_id]->format($this->record[$col_id]);
     }
 
-    public function withHighlighted(bool $highlighted): static
-    {
+    public function withHighlighted(
+        bool $highlighted,
+        bool $force = false,
+    ): static {
         $clone = clone $this;
-        $clone->highlighted = $highlighted;
+        $clone->highlighted = $force
+            ? $highlighted
+            : $highlighted || $this->highlighted;
+
         return $clone;
     }
 

@@ -185,13 +185,11 @@ function base()
                 if ($record['achieve'] < 30) {
                     $icon = $icons[1];
                 }
-
                 $record['achieve'] = $icon;
 
                 yield $row_builder->buildDataRow($row_id, $record)
                     /** Actions may be disabled for specific rows: */
-                    ->withDisabledAction('delete', ($record['login'] === 'superuser'))
-                    ->withHighlighted($row_id === '8748');
+                    ->withDisabledAction('delete', ($record['login'] === 'superuser'));
             }
         }
 

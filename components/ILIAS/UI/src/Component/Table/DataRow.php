@@ -36,7 +36,7 @@ interface DataRow extends Component
     /**
      * Emphasize a row (visually) by marking it as 'highlighted'.
      */
-    public function withHighlighted(bool $highlighted): static;
+    public function withHighlighted(bool $highlighted, bool $force = false): static;
 
     /**
      * @return array<string, Column>
