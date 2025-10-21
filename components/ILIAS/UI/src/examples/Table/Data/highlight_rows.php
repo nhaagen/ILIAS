@@ -33,7 +33,7 @@ use ILIAS\UI\URLBuilder;
  *
  * expected output: >
  *   Example showing a data table with a highlighted row.
- *   Below the table is a button "Highlight som rows".
+ *   Below the table is a button "Highlight some rows".
  *   When clicked, the page reloads and two more columns are highlighted.
  * ---
  */
