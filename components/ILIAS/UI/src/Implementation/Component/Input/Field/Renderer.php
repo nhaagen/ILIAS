@@ -519,24 +519,27 @@ class Renderer extends AbstractComponentRenderer
     {
         [$textarea_tpl, $component] = $this->getPreparedTextareaTemplate($component);
 
-        /** @var $component F\Markdown */
-        $component = $component->withAdditionalOnLoadCode(
-            static function ($id) use ($component): string {
-                return "
-                    il.UI.Input.markdown.init(
-                        document.querySelector('#$id .c-input__field textarea')?.id,
-                        '{$component->getMarkdownRenderer()->getAsyncUrl()}',
-                        '{$component->getMarkdownRenderer()->getParameterName()}'
-                    );
-                ";
-            }
-        );
-
         $textarea_id = $this->createId();
         $textarea_tpl->setVariable('ID', $textarea_id);
 
         $markdown_tpl = $this->getTemplate("tpl.markdown.html", true, true);
         $markdown_tpl->setVariable('TEXTAREA', $textarea_tpl->get());
+
+        $mustache_signal_option = F\Markdown::MUSTACHE_SIGNAL_OPTION;
+        /** @var $component F\Markdown */
+        $component = $component->withAdditionalOnLoadCode(
+            static function ($id) use ($component, $textarea_id, $mustache_signal_option): string {
+                return "
+                    il.UI.Input.markdown.init(
+                        document.querySelector('#$id .c-input__field textarea')?.id,
+                        '{$component->getMarkdownRenderer()->getAsyncUrl()}',
+                        '{$component->getMarkdownRenderer()->getParameterName()}',
+                        '{$component->getMustacheVaribaleSignal()}',
+                        '{$mustache_signal_option}'
+                    );
+                ";
+            }
+        );
 
         $markdown_tpl->setVariable(
             'PREVIEW',
@@ -562,8 +565,19 @@ class Renderer extends AbstractComponentRenderer
             'ACTION_BOLD' => $this->getUIFactory()->symbol()->glyph()->bold(),
             'ACTION_ITALIC' => $this->getUIFactory()->symbol()->glyph()->italic(),
             'ACTION_ORDERED_LIST' => $this->getUIFactory()->symbol()->glyph()->numberedlist(),
-            'ACTION_UNORDERED_LIST' => $this->getUIFactory()->symbol()->glyph()->bulletlist()
+            'ACTION_UNORDERED_LIST' => $this->getUIFactory()->symbol()->glyph()->bulletlist(),
         ];
+
+        $menu = $component->getMustacheVariablesSelection();
+        if ($menu !== null) {
+            $drilldown_modal = $this->getUIFactory()->modal()->roundtrip(
+                $this->txt('placeholders'),
+                [$menu]
+            );
+            $markdown_actions_glyphs['ACTION_PLACEHOLDER'] = $this->getUIFactory()->symbol()->glyph()->tileView();
+            $markdown_tpl->setVariable('SIGNAL_PLACEHOLDER', $drilldown_modal->getShowSignal());
+            $markdown_tpl->setVariable('PLACEHOLDER_DIALOG', $default_renderer->render($drilldown_modal));
+        }
 
         foreach ($markdown_actions_glyphs as $tpl_variable => $glyph) {
             if ($component->isDisabled()) {

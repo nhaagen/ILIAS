@@ -13,41 +13,62 @@
  * https://github.com/ILIAS-eLearning
  */
 
-import PreviewRenderer from "./preview.renderer.js";
-import Markdown from "./markdown.class.js";
+import PreviewRenderer from './preview.renderer.js';
+import Markdown from './markdown.class.js';
 
 /**
  * @author Thibeau Fuhrer <thibeau@sr.solutions>
  */
 export default class MarkdownFactory {
-    /**
+  /**
      * @type {Array<string, Markdown>}
      */
-    instances = [];
+  instances = [];
 
-    /**
-     * @param {string} input_id
-     * @param {string} preview_url
-     * @param {string} parameter_name
+  /** @type {JQueryEventDispatcher} */
+  #jqueryEventDispatcher;
+
+  /** @type {Document} */
+  #document;
+
+  /**
+   * @param {JQueryEventDispatcher} jqueryEventDispatcher
+   * @param {Document} doc
+   */
+  constructor(jqueryEventDispatcher, doc) {
+    this.#jqueryEventDispatcher = jqueryEventDispatcher;
+    this.#document = doc;
+  }
+
+  /**
+     * @param {string} inputId
+     * @param {string} previewURL
+     * @param {string} parameterName
+     * @param {string} mustacheVarSignal
+     * @param {string} mustacheVarSignalOption
      * @return {void}
      * @throws {Error} if the input was already initialized.
      */
-    init(input_id, preview_url, parameter_name) {
-        if (undefined !== this.instances[input_id]) {
-            throw new Error(`Markdown with input-id '${input_id}' has already been initialized.`);
-        }
-
-        this.instances[input_id] = new Markdown(
-            new PreviewRenderer(parameter_name, preview_url),
-            input_id
-        );
+  init(inputId, previewURL, parameterName, mustacheVarSignal, mustacheVarSignalOption) {
+    if (undefined !== this.instances[inputId]) {
+      throw new Error(`Markdown with input-id '${inputId}' has already been initialized.`);
     }
 
-    /**
-     * @param {string} input_id
+    this.instances[inputId] = new Markdown(
+      new PreviewRenderer(parameterName, previewURL),
+      inputId,
+      mustacheVarSignal,
+      mustacheVarSignalOption,
+      this.#jqueryEventDispatcher,
+      this.#document,
+    );
+  }
+
+  /**
+     * @param {string} inputId
      * @param {Markdown|null}
      */
-    get(input_id) {
-        return this.instances[input_id] ?? null;
-    }
+  get(inputId) {
+    return this.instances[inputId] ?? null;
+  }
 }

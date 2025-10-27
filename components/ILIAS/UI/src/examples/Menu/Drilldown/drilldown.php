@@ -23,7 +23,7 @@ namespace ILIAS\UI\examples\Menu\Drilldown;
 /**
  * ---
  * description: >
- *   The example shows how to create and render a basic markdown field and attach it to a form.
+ *   The example shows how to create and render a basic drilldown.
  *
  *   0 Animal of the year
  *   1    Switzerland

@@ -52,7 +52,8 @@ abstract class TextBase implements Text
         return $this->shape->getSupportedStructure();
     }
 
-    public function toHTML(): Text\HTML
+    //public function toHTML(): Text\HTML
+    public function toHTML(): HTML
     {
         return $this->shape->toHTML($this);
     }

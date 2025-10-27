@@ -12,7 +12,7 @@
  * https://www.ilias.de
  * https://github.com/ILIAS-eLearning
  *
- *********************************************************************/
+ ******************************************************************** */
 
 export default class DrilldownModel {
   /**
@@ -24,7 +24,50 @@ export default class DrilldownModel {
     engaged: false,
     headerDisplayElement: '',
     leaves: [],
+    filtered: false,
   };
+
+  #levels = [];
+
+  entries = {
+    data: [],
+    proto: {
+      id: null,
+      parentId: 0,
+      label: '',
+      searchableText: '',
+      engaged: false,
+    },
+    clone: (obj, attributes) => ({ ...obj, ...attributes }),
+    create: (id, parentId, label, searchableText) => {
+      this.entries.data[id] = this.entries.clone(
+        this.entries.proto,
+        {
+          id, parentId, label, searchableText,
+        },
+      );
+    },
+    childrenOf: (parentId) => this.entries.data.filter((entry) => entry.parentId === parentId),
+    path: (id) => (this.entries.data[id].parentId
+      ? [...this.entries.path(this.entries.data[id].parentId), this.entries.data[id]]
+      : [this.entries.data[id]]),
+    engage: (id) => this.entries.data.forEach((entry) => entry.engaged = (entry?.id === id)),
+    engaged: () => this.entries.data.find((entry) => entry.engaged) ?? null,
+    isLeaf: (id) => this.entries.childrenOf(id).length === 0,
+
+  };
+
+  childrenOf(parentId) {
+    return this.entries.childrenOf(parentId);
+  }
+
+  path(id) {
+    return this.entries.path(id);
+  }
+
+  topNodes() {
+    return this.entries.childrenOf(0);
+  }
 
   /**
    * @type {object}
@@ -55,21 +98,20 @@ export default class DrilldownModel {
     level.leaves = leaves;
     return level;
   }
-
+  /*
   buildLeaf(index, text) {
     const leaf = { ...this.#leaf };
     leaf.index = index;
     leaf.text = text;
     return leaf;
   }
-
+*/
   /**
    * @param {HTMLButtonElement} headerDisplayElement
    * @param {int} parent
    * @param {array} leaves
    * @param {string|null} existingLevelId
    * @returns {this.#level}
-   */
   addLevel(headerDisplayElement, parent, leaves, existingLevelId = null) {
     let levelId = existingLevelId;
     if (levelId === null) {
@@ -81,14 +123,25 @@ export default class DrilldownModel {
     }
     return this.#data[levelId];
   }
+   */
 
   /**
    * @param  {String} levelId
    */
   engageLevel(levelId) {
+    /*
+    console.log(levelId);
     this.#data.forEach((level) => {
       level.engaged = (level.id === levelId);
     });
+    console.log(this.#data);
+*/
+    console.log('model/engage:');
+    console.log(levelId);
+    console.log(this.entries.data[levelId]);
+    this.entries.engage(levelId);
+    console.log(this.entries.data[levelId]);
+    console.log(this.entries.data);
   }
 
   /**
@@ -107,6 +160,9 @@ export default class DrilldownModel {
    * @returns {this.#level}
    */
   getCurrent() {
+    console.log(`getCurrent, engaged:${this.entries.engaged()?.label}`);
+    return this.entries.engaged();
+    /*
     const cur = this.#data.find(
       (level) => level.engaged,
     );
@@ -114,27 +170,30 @@ export default class DrilldownModel {
       return cur;
     }
     return this.#data[0];
+  */
   }
 
   /**
    * @returns {integer}
    */
   getParent() {
+    return this.entries.engaged().parentId;
+    /*
+
     const cur = this.getCurrent();
     if (cur.parent) {
       return this.getLevel(cur.parent);
     }
     return {};
+*/
   }
 
   /**
    * @return {void}
    */
   upLevel() {
-    const cur = this.getCurrent();
-    if (cur.parent) {
-      this.engageLevel(this.getLevel(cur.parent).id);
-    }
+    const up = this.entries.engaged()?.parentId ?? 0;
+    this.entries.engage(up);
   }
 
   /**

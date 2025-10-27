@@ -61,8 +61,25 @@ class Renderer extends AbstractComponentRenderer
         if (!is_string($label)) {
             $label = $default_renderer->render($label);
         }
-        $tpl_menu->setVariable('LABEL', $label);
-        $tpl_menu->setVariable('ITEMS', $this->renderMenuItems($component, $default_renderer));
+
+        $description = $component->getDescription();
+        if ($description !== null) {
+            $tpl_menu->setVariable('LABEL', $label);
+            $tpl_menu->setVariable('DESCRIPTION', $description->toHTML());
+        } else {
+            $tpl_menu->setVariable('SIMPLE_LABEL', $label);
+        }
+
+        $node_action = $component->getNodeAction();
+        if ($node_action !== null) {
+            $tpl_menu->setVariable('NODE_ACTION', $default_renderer->render($node_action));
+        }
+
+        if ($component->getItems() !== []) {
+            $tpl_menu->setVariable('ITEMS', $this->renderMenuItems($component, $default_renderer));
+            $tpl_menu->touchBlock('drill_indicator');
+        }
+
         return $tpl_menu->get();
     }
 
@@ -112,11 +129,12 @@ class Renderer extends AbstractComponentRenderer
         $html = '';
         foreach ($component->getItems() as $item) {
             $tpl_item = $this->getTemplate('tpl.menuitem.html', true, true);
-            if ($item instanceof Menu\Sub) {
-                $tpl_item->setVariable('CLASS', self::PARENT_CLASS);
-            } else {
-                $tpl_item->setVariable('CLASS', self::LEAF_CLASS);
-            }
+            $tpl_item->setVariable(
+                'CLASS',
+                ($item instanceof Menu\Sub && $item->getItems() !== [])
+                ? self::PARENT_CLASS
+                : self::LEAF_CLASS
+            );
             $tpl_item->setVariable('ITEM', $default_renderer->render($item));
             $html .= $tpl_item->get();
         }

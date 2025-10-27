@@ -1,4 +1,27 @@
-<button class="c-drilldown__menulevel--trigger" aria-expanded="false">{LABEL}<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
+<div class="c-drilldown__menulevel--trigger" aria-expanded="false">
+    
+    <div class="c-drilldown__menulevel--label" aria-expanded="false">
+        {SIMPLE_LABEL}
+        <!-- BEGIN description -->
+        <details>
+            <summary>{LABEL}</summary>
+            {DESCRIPTION}
+        </details>
+        <!-- END description -->
+    </div>
+
+    <!-- BEGIN node_action -->
+    {NODE_ACTION}
+    <!-- END node_action -->
+
+    <!-- BEGIN drill_indicator -->
+    <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+    <!-- END drill_indicator -->
+
+</div>
+
+<!-- BEGIN items -->
 <ul>
     {ITEMS}
 </ul>
+<!-- END items -->

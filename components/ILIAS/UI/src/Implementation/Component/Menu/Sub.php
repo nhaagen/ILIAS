@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace ILIAS\UI\Implementation\Component\Menu;
 
 use ILIAS\UI\Component\Menu as IMenu;
+use ILIAS\UI\Component\Clickable;
+use ILIAS\Data\Text\SimpleDocumentMarkdown;
 
 /**
  * Level of Drilldown Control
@@ -32,10 +34,16 @@ class Sub extends Menu implements IMenu\Sub
     /**
      * @param array <Sub|Component\Clickable|Component\Divider\Horizontal> $items
      */
-    public function __construct(string $label, array $items)
-    {
+    public function __construct(
+        string $label,
+        array $items,
+        ?SimpleDocumentMarkdown $description,
+        ?Clickable $node_action,
+    ) {
         $this->checkItemParameter($items);
         $this->label = $label;
         $this->items = $items;
+        $this->description = $description;
+        $this->node_action = $node_action;
     }
 }

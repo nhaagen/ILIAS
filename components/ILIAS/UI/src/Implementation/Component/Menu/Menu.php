@@ -23,6 +23,8 @@ namespace ILIAS\UI\Implementation\Component\Menu;
 use ILIAS\UI\Component;
 use ILIAS\UI\Component\Menu as IMenu;
 use ILIAS\UI\Implementation\Component\ComponentHelper;
+use ILIAS\Data\Text\SimpleDocumentMarkdown;
+use ILIAS\UI\Component\Clickable;
 
 /**
  * Basic Menu Control
@@ -35,6 +37,8 @@ abstract class Menu implements IMenu\Menu
      * @var string
      */
     protected $label;
+    protected ?SimpleDocumentMarkdown $description = null;
+    protected ?Clickable $node_action = null;
 
     /**
      * @var array<Component\Menu\Sub, Component\Clickable, Component\Link\Link, Component\Divider\Horizontal, Component\Input\Field\Node\Node>
@@ -49,12 +53,23 @@ abstract class Menu implements IMenu\Menu
         return $this->label;
     }
 
+
     /**
      * @inheritdoc
      */
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function getDescription(): ?SimpleDocumentMarkdown
+    {
+        return $this->description;
+    }
+
+    public function getNodeaction(): ?Clickable
+    {
+        return $this->node_action;
     }
 
     protected function checkItemParameter(array $items): void

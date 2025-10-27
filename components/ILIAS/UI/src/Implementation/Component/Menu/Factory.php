@@ -22,6 +22,8 @@ namespace ILIAS\UI\Implementation\Component\Menu;
 
 use ILIAS\UI\Component\Menu as IMenu;
 use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
+use ILIAS\Data\Text\SimpleDocumentMarkdown;
+use ILIAS\UI\Component\Clickable;
 
 class Factory implements IMenu\Factory
 {
@@ -37,8 +39,12 @@ class Factory implements IMenu\Factory
         return new Drilldown($this->signal_generator, $label, $items);
     }
 
-    public function sub(string $label, array $items): Sub
-    {
-        return new Sub($label, $items);
+    public function sub(
+        string $label,
+        array $items,
+        ?SimpleDocumentMarkdown $description = null,
+        ?Clickable $node_action = null
+    ): Sub {
+        return new Sub($label, $items, $description, $node_action);
     }
 }

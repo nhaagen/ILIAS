@@ -56,7 +56,7 @@ export default class Drilldown {
     jqueryEventListener.on(document, this.#backSignal, () => { this.#upLevel(); });
     this.#mapping.maybeAddFilterHandler(
       (e) => {
-        if (e.key !== 'Tab' && e.key !== 'Shift') {
+        if (e.key !== 'Tab' && e.key !== 'Shift' && !e.isComposing) {
           this.#filter(e);
         }
       },
@@ -67,14 +67,24 @@ export default class Drilldown {
   }
 
   parseLevels() {
+    console.log(this.#model);
+
     this.#mapping.parseLevel(
+      /*
       (headerDisplayElement, parent, leaves, sublist, level) => this.#model
         .addLevel(headerDisplayElement, parent, leaves, sublist, level),
+
       (index, text) => this.#model.buildLeaf(index, text),
-      (levelId) => {
-        this.engageLevel(levelId);
+*/
+      // clickHandler
+      (entryId) => {
+        if (!this.#model.entries.isLeaf(entryId)) { this.engageLevel(entryId); }
       },
+      this.#model.entries.create,
     );
+
+    this.#model.entries.create(0, null, 'root', '');
+    console.log(this.#model.entries.data);
   }
 
   /**
@@ -104,15 +114,18 @@ export default class Drilldown {
   }
 
   /**
-   * @param {string} levelId
+   * @param {int} levelId
    * @returns {void}
    */
   engageLevel(levelId) {
     this.#model.engageLevel(levelId);
     this.#apply();
+
     this.#engageListeners.forEach((callback) => {
       callback(levelId);
     });
+    /*
+    */
   }
 
   /**
@@ -131,7 +144,7 @@ export default class Drilldown {
    */
   #upLevel() {
     this.#model.upLevel();
-    this.engageLevel(this.#model.getCurrent().id);
+    this.engageLevel(this.#model.getCurrent()?.id) ?? 0;
   }
 
   /**
@@ -139,17 +152,13 @@ export default class Drilldown {
    */
   #apply() {
     const current = this.#model.getCurrent();
-    const parent = this.#model.getParent();
-    let level = 2;
-    if (current.parent === null) {
-      level = 0;
-    } else if (current.parent === '0') {
-      level = 1;
-    }
-    this.#mapping.setEngaged(current.id);
-    this.#persistence.store(current.id);
-    this.#mapping.setHeader(current.headerDisplayElement, parent.headerDisplayElement);
-    this.#mapping.setHeaderBacknav(level);
-    this.#mapping.correctRightColumnPositionAndHeight(current.id);
+    const currentId = current?.id ?? 0;
+    const parentId = current?.parentId ?? 0;
+
+    this.#mapping.setEngaged(currentId);
+    this.#persistence.store(currentId);
+    this.#mapping.setHeader(currentId, parentId);
+    this.#mapping.setHeaderBacknav(currentId, parentId);
+    this.#mapping.correctRightColumnPositionAndHeight(currentId);
   }
 }

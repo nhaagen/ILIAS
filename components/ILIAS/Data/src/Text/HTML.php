@@ -31,4 +31,11 @@ class HTML
     ) {
         $this->html_text = $html_text;
     }
+
+    public function __toString(
+    ) {
+        return $this->html_text;
+    }
+
+
 }

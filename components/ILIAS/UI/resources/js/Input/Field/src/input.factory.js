@@ -27,12 +27,13 @@
 import $ from 'jquery';
 import il from 'ilias';
 import document from 'document';
+import Tagify from '@yaireo/tagify';
 import TextareaFactory from './Textarea/textarea.factory.js';
 import createMustacheVariables from './Textarea/createMustacheVariables.js';
 import MarkdownFactory from './Markdown/markdown.factory.js';
 import TreeSelectFactory from './TreeSelect/TreeSelectFactory.js';
 import JQueryEventListener from '../../../Core/src/JQueryEventListener.js';
-import Tagify from '@yaireo/tagify';
+import JQueryEventDispatcher from '../../../Core/src/jqueryeventdispatcher.js';
 import tag from './Tag/tag.js';
 import OptionFilterFactory from './OptionFilter/OptionFilterFactory.js';
 
@@ -47,7 +48,7 @@ il.UI.Input = il.UI.Input || {};
       inputElement,
     ),
   };
-  Input.markdown = new MarkdownFactory();
+  Input.markdown = new MarkdownFactory(new JQueryEventDispatcher($), document);
   Input.optionFilter = new OptionFilterFactory();
   Input.treeSelect = new TreeSelectFactory(
     new JQueryEventListener($),
@@ -57,6 +58,7 @@ il.UI.Input = il.UI.Input || {};
     document,
   );
   Input.tagInput = Input.tag || {};
-  Input.tagInput.init = (input, config, value, autocompleteEndpoint, autocompleteToken) => tag(
-    Tagify, input, config, value, autocompleteEndpoint, autocompleteToken);
+  Input.tagInput.init = function (input, config, value, autocompleteEndpoint, autocompleteToken) {
+    return tag(Tagify, input, config, value, autocompleteEndpoint, autocompleteToken);
+  };
 }(il.UI.Input));

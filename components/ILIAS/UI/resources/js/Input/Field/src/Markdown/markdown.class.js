@@ -13,6 +13,10 @@
  * https://github.com/ILIAS-eLearning
  */
 
+/* global HTMLSpanElement */
+/* global HTMLCollection */
+/* global KeyboardEvent */
+
 import Textarea from '../Textarea/textarea.class.js';
 
 /**
@@ -32,56 +36,79 @@ export default class Markdown extends Textarea {
   /**
      * @type {string[]}
      */
-  preview_history = [];
+  previewHistory = [];
 
   /**
      * @type {PreviewRenderer}
      */
-  preview_renderer;
+  previewRenderer;
 
   /**
      * @type {Map}
      */
-  content_wrappers;
+  contentWrappers;
 
   /**
      * @type {HTMLButtonElement[]}
      */
-  view_controls;
+  viewControls;
 
   /**
      * @type {HTMLButtonElement[]}
      */
   actions;
 
+  /** @type {JQueryEventDispatcher} */
+  #jqueryEventDispatcher;
+
+  /** @type {Document} */
+  #document;
+
+  /** @type {string} */
+  #mustacheVarSignalOption;
+
   /**
-     * @param {PreviewRenderer} preview_renderer
-     * @param {string} input_id
+     * @param {PreviewRenderer} previewRenderer
+     * @param {string} inputId
+     * @param {string} mustacheVarSignal
+     * @param {string} mustacheVarSignalOption
+     * @param {JQueryEventDispatcher} jqueryEventDispatcher
+     * @param {Document} doc
      * @throws {Error} if DOM elements are missing.
      */
-  constructor(preview_renderer, input_id) {
-    super(input_id);
+  constructor(
+    previewRenderer,
+    inputId,
+    mustacheVarSignal,
+    mustacheVarSignalOption,
+    jqueryEventDispatcher,
+    doc,
+  ) {
+    super(inputId);
 
-    const input_wrapper = this.textarea.closest('.c-field-markdown');
+    const inputWrapper = this.textarea.closest('.c-field-markdown');
 
-    if (input_wrapper === null) {
-      throw new Error(`Could not find input-wrapper for input-id '${input_id}'.`);
+    if (inputWrapper === null) {
+      throw new Error(`Could not find input-wrapper for input-id '${inputId}'.`);
     }
 
-    this.preview_renderer = preview_renderer;
+    this.previewRenderer = previewRenderer;
+    this.#jqueryEventDispatcher = jqueryEventDispatcher;
+    this.#document = doc;
+    this.#mustacheVarSignalOption = mustacheVarSignalOption;
 
-    this.content_wrappers = getContentWrappersOrAbort(input_wrapper);
-    this.view_controls = getViewControlsOrAbort(input_wrapper);
-    this.actions = getMarkdownActions(input_wrapper);
+    this.contentWrappers = getContentWrappersOrAbort(inputWrapper);
+    this.viewControls = getViewControlsOrAbort(inputWrapper);
+    this.actions = getMarkdownActions(inputWrapper);
 
-    let has_newline_been_inserted = true;
+    let hasNewlineBeenInserted = true;
 
     this.textarea.addEventListener('keydown', (event) => {
-      has_newline_been_inserted = this.handleEnterKeyBeforeInsertionHook(event);
+      hasNewlineBeenInserted = this.handleEnterKeyBeforeInsertionHook(event);
     });
 
     this.textarea.addEventListener('keyup', (event) => {
-      this.handleEnterKeyAfterInsertionHook(event, has_newline_been_inserted);
+      this.handleEnterKeyAfterInsertionHook(event, hasNewlineBeenInserted);
     });
 
     this.actions.forEach((action) => {
@@ -90,11 +117,17 @@ export default class Markdown extends Textarea {
       });
     });
 
-    this.view_controls.forEach((control) => {
+    this.viewControls.forEach((control) => {
       control.addEventListener('click', () => {
         this.toggleViewingModeHook();
       });
     });
+
+    jqueryEventDispatcher.register(
+      doc,
+      mustacheVarSignal,
+      (event, sigData) => this.insertMustacheVarFromSignal(event, sigData),
+    );
   }
 
   /**
@@ -105,24 +138,24 @@ export default class Markdown extends Textarea {
      * newline, otherwise this would undo the previous action.
      *
      * @param {KeyboardEvent} event
-     * @param {boolean} newline_inserted
+     * @param {boolean} newlineInserted
      * @return {void}
      */
-  handleEnterKeyAfterInsertionHook(event, newline_inserted) {
+  handleEnterKeyAfterInsertionHook(event, newlineInserted) {
     // skip this hook if the previous one didn't insert a newline,
     // otherwise this hook would undo the previous action.
-    if (!newline_inserted || !isEnterKeyPressed(event)) {
+    if (!newlineInserted || !isEnterKeyPressed(event)) {
       return;
     }
 
-    const previous_line = this.getLinesBeforeSelection().pop();
+    const previousLine = this.getLinesBeforeSelection().pop();
 
-    if (undefined !== previous_line && isBulletPointed(previous_line)) {
+    if (undefined !== previousLine && isBulletPointed(previousLine)) {
       this.applyTransformationToSelection(toggleBulletPoints);
       return;
     }
 
-    if (undefined !== previous_line && isEnumerated(previous_line)) {
+    if (undefined !== previousLine && isEnumerated(previousLine)) {
       this.insertSingleEnumeration();
     }
   }
@@ -139,28 +172,28 @@ export default class Markdown extends Textarea {
       return false;
     }
 
-    const current_line = this.getLinesOfSelection().shift();
+    const currentLine = this.getLinesOfSelection().shift();
 
     // nothing to do if the current line is not an empty list entry.
-    if (undefined === current_line || !isEmptyListEntry(current_line)) {
+    if (undefined === currentLine || !isEmptyListEntry(currentLine)) {
       return true;
     }
 
-    let text_before_selection = this.getLinesBeforeSelection().join('\n');
-    let text_after_selection = this.getLinesAfterSelection().join('\n');
+    let textBeforeSelection = this.getLinesBeforeSelection().join('\n');
+    let textAfterSelection = this.getLinesAfterSelection().join('\n');
 
-    if (text_before_selection.length > 0) {
-      text_before_selection += '\n';
+    if (textBeforeSelection.length > 0) {
+      textBeforeSelection += '\n';
     }
 
-    if (text_after_selection.length > 0) {
-      text_after_selection = `\n${text_after_selection}`;
+    if (textAfterSelection.length > 0) {
+      textAfterSelection = `\n${textAfterSelection}`;
     }
 
     this.updateTextareaContent(
-      text_before_selection + text_after_selection,
-      this.getAbsoluteSelectionStart() - current_line.length,
-      this.getAbsoluteSelectionEnd() - current_line.length,
+      textBeforeSelection + textAfterSelection,
+      this.getAbsoluteSelectionStart() - currentLine.length,
+      this.getAbsoluteSelectionEnd() - currentLine.length,
     );
 
     // prevent newline from being added.
@@ -173,9 +206,9 @@ export default class Markdown extends Textarea {
      * @return {void}
      */
   performMarkdownActionHook(event) {
-    const markdown_action = getMarkdownActionOfButton(event.target);
+    const markdownAction = getMarkdownActionOfButton(event.target);
 
-    switch (markdown_action) {
+    switch (markdownAction) {
       case 'insert-heading':
         this.insertCharactersAroundSelection('# ', '');
         break;
@@ -196,8 +229,16 @@ export default class Markdown extends Textarea {
           ? this.applyTransformationToSelection(toggleEnumeration)
           : this.insertSingleEnumeration();
         break;
+      case 'insert-placeholder':
+        this.#jqueryEventDispatcher.dispatch(
+          this.#document,
+          getActionSignalOfButton(event.target),
+          {},
+        );
+        break;
+
       default:
-        throw new Error(`Could not perform markdown-action '${markdown_action}'.`);
+        throw new Error(`Could not perform markdown-action '${markdownAction}'.`);
     }
   }
 
@@ -205,11 +246,11 @@ export default class Markdown extends Textarea {
      * @return {void}
      */
   toggleViewingModeHook() {
-    this.content_wrappers.forEach((wrapper) => {
+    this.contentWrappers.forEach((wrapper) => {
       toggleClassOfElement(wrapper, 'hidden');
     });
 
-    this.view_controls.forEach((control) => {
+    this.viewControls.forEach((control) => {
       toggleClassOfElement(control, 'engaged');
     });
 
@@ -235,43 +276,48 @@ export default class Markdown extends Textarea {
      * @return {void}
      */
   insertSingleEnumeration() {
-    const lines_of_selection = this.getLinesOfSelection();
+    const linesOfSelection = this.getLinesOfSelection();
 
     // abort (refocus) if the current selection is not a single line or
     // is already enumerated.
-    if (lines_of_selection.length !== 1) {
+    if (linesOfSelection.length !== 1) {
       this.textarea.focus();
       return;
     }
 
-    const lines_before_selection = this.getLinesBeforeSelection();
-    const last_index = lines_before_selection.length - 1;
-    let previous_number = (last_index >= 0) ? getFirstNumber(lines_before_selection[last_index]) ?? 0 : 0;
+    const linesBeforeSelection = this.getLinesBeforeSelection();
+    const lastIndex = linesBeforeSelection.length - 1;
+    let previousNumber = (lastIndex >= 0)
+      ? getFirstNumber(linesBeforeSelection[lastIndex]) ?? 0
+      : 0;
 
-    const new_lines_of_selection = toggleEnumeration(lines_of_selection, ++previous_number);
-    const lines_after_selection = reindexContinuousLinesOfEnumeration(this.getLinesAfterSelection(), previous_number);
+    const newLinesOfSelection = toggleEnumeration(linesOfSelection, ++previousNumber);
+    const linesAfterSelection = reindexContinuousLinesOfEnumeration(
+      this.getLinesAfterSelection(),
+      previousNumber,
+    );
 
-    let text_before_selection = lines_before_selection.join('\n');
-    const text_after_selection = lines_after_selection.join('\n');
-    let text_of_selection = new_lines_of_selection.join('\n');
+    let textBeforeSelection = linesBeforeSelection.join('\n');
+    const textAfterSelection = linesAfterSelection.join('\n');
+    let textOfSelection = newLinesOfSelection.join('\n');
 
-    if (text_before_selection.length > 0 && text_of_selection.length > 0) {
-      text_before_selection += '\n';
+    if (textBeforeSelection.length > 0 && textOfSelection.length > 0) {
+      textBeforeSelection += '\n';
     }
 
-    if (text_of_selection.length > 0 && text_after_selection.length > 0) {
-      text_of_selection += '\n';
+    if (textOfSelection.length > 0 && textAfterSelection.length > 0) {
+      textOfSelection += '\n';
     }
 
-    const new_content = text_before_selection + text_of_selection + text_after_selection;
-    const character_diff = new_content.length - this.textarea.value.length;
+    const newContent = textBeforeSelection + textOfSelection + textAfterSelection;
+    const characterDiff = newContent.length - this.textarea.value.length;
 
     // the selection should be shifted by the amount of newly added/removed
     // characters, so that the same text is still highlighted.
     this.updateTextareaContent(
-      new_content,
-      this.getAbsoluteSelectionStart() + character_diff,
-      this.getAbsoluteSelectionEnd() + character_diff,
+      newContent,
+      this.getAbsoluteSelectionStart() + characterDiff,
+      this.getAbsoluteSelectionEnd() + characterDiff,
     );
   }
 
@@ -282,45 +328,45 @@ export default class Markdown extends Textarea {
      *                 if the transformation is not a function.
      */
   applyTransformationToSelection(transformation) {
-    if (!transformation instanceof Function) {
+    if (!(transformation instanceof Function)) {
       throw new Error(`Transformation must be an instance of Function, ${typeof transformation} given.`);
     }
 
-    const transformed_selection = transformation(this.getLinesOfSelection());
+    const transformedSelection = transformation(this.getLinesOfSelection());
 
-    if (!transformed_selection instanceof Array) {
-      throw new Error(`Transformation must return an instance of Array, ${typeof transformed_selection} returned.`);
+    if (!(transformedSelection instanceof Array)) {
+      throw new Error(`Transformation must return an instance of Array, ${typeof transformedSelection} returned.`);
     }
 
-    const is_multiline = (transformed_selection.length > 1);
+    const isMultiline = (transformedSelection.length > 1);
 
-    let text_before_selection = this.getLinesBeforeSelection().join('\n');
-    const text_after_selection = this.getLinesAfterSelection().join('\n');
-    let text_of_selection = transformed_selection.join('\n');
+    let textBeforeSelection = this.getLinesBeforeSelection().join('\n');
+    const textAfterSelection = this.getLinesAfterSelection().join('\n');
+    let textOfSelection = transformedSelection.join('\n');
 
-    if (text_before_selection.length > 0 && text_of_selection.length > 0) {
-      text_before_selection += '\n';
+    if (textBeforeSelection.length > 0 && textOfSelection.length > 0) {
+      textBeforeSelection += '\n';
     }
 
-    if (text_of_selection.length > 0 && text_after_selection.length > 0) {
-      text_of_selection += '\n';
+    if (textOfSelection.length > 0 && textAfterSelection.length > 0) {
+      textOfSelection += '\n';
     }
 
-    const new_content = text_before_selection + text_of_selection + text_after_selection;
-    const character_diff = new_content.length - this.textarea.value.length;
+    const newContent = textBeforeSelection + textOfSelection + textAfterSelection;
+    const characterDiff = newContent.length - this.textarea.value.length;
 
     // the new selection should hold all transformed lines if they're a
     // multiline selection. Otherwise, the selection should be shifted
     // by the amount of newly added/removed characters, so that the same
     // text is still highlighted.
 
-    const new_selection_start = (is_multiline)
-      ? text_before_selection.length
-      : this.getAbsoluteSelectionStart() + character_diff;
-    const new_selection_end = (is_multiline)
-      ? new_selection_start + text_of_selection.length - 1
-      : this.getAbsoluteSelectionEnd() + character_diff;
-    this.updateTextareaContent(new_content, new_selection_start, new_selection_end);
+    const newSelectionStart = (isMultiline)
+      ? textBeforeSelection.length
+      : this.getAbsoluteSelectionStart() + characterDiff;
+    const newSelectionEnd = (isMultiline)
+      ? newSelectionStart + textOfSelection.length - 1
+      : this.getAbsoluteSelectionEnd() + characterDiff;
+    this.updateTextareaContent(newContent, newSelectionStart, newSelectionEnd);
   }
 
   /**
@@ -329,17 +375,17 @@ export default class Markdown extends Textarea {
      * @return {void}
      */
   maybeUpdatePreviewContent() {
-    const previous_content = this.preview_history[(this.preview_history.length - 1)] ?? '';
-    const current_content = this.textarea.value;
+    const previousContent = this.previewHistory[(this.previewHistory.length - 1)] ?? '';
+    const currentContent = this.textarea.value;
 
-    if (current_content === previous_content) {
+    if (currentContent === previousContent) {
       return;
     }
 
-    this.preview_history.push(current_content);
-    this.preview_renderer
-      .getPreviewHtmlOf(current_content).then((html) => {
-        this.content_wrappers.get(CONTENT_WRAPPER_KEY_PREVIEW).innerHTML = html;
+    this.previewHistory.push(currentContent);
+    this.previewRenderer
+      .getPreviewHtmlOf(currentContent).then((html) => {
+        this.contentWrappers.get(CONTENT_WRAPPER_KEY_PREVIEW).innerHTML = html;
       });
   }
 
@@ -356,39 +402,50 @@ export default class Markdown extends Textarea {
   getEnumerationTransformation() {
     return toggleEnumeration;
   }
+
+  /**
+   * @param {MouseEvent} event
+   * @param {array} sigData
+   * @return {void}
+   */
+  insertMustacheVarFromSignal(event, sigData) {
+    const value = `{{${sigData.options[this.#mustacheVarSignalOption]}}}`;
+    this.insertCharactersAroundSelection(value, '');
+    event.target.closest('dialog').close();
+  }
 }
 
 /**
- * @param {HTMLDivElement} input_wrapper
+ * @param {HTMLDivElement} inputWrapper
  * @return {Map}
  * @throws {Error}
  */
-function getContentWrappersOrAbort(input_wrapper) {
-  const content_wrappers = new Map();
+function getContentWrappersOrAbort(inputWrapper) {
+  const contentWrappers = new Map();
 
-  content_wrappers.set(CONTENT_WRAPPER_KEY_TEXTAREA, input_wrapper.querySelector('textarea'));
-  content_wrappers.set(CONTENT_WRAPPER_KEY_PREVIEW, input_wrapper.querySelector('.c-field-markdown__preview'));
+  contentWrappers.set(CONTENT_WRAPPER_KEY_TEXTAREA, inputWrapper.querySelector('textarea'));
+  contentWrappers.set(CONTENT_WRAPPER_KEY_PREVIEW, inputWrapper.querySelector('.c-field-markdown__preview'));
 
-  content_wrappers.forEach((wrapper) => {
+  contentWrappers.forEach((wrapper) => {
     if (wrapper === null) {
       throw new Error('Could not find all content-wrappers for markdown-input.');
     }
   });
 
-  return content_wrappers;
+  return contentWrappers;
 }
 
 /**
- * @param {HTMLDivElement} input_wrapper
+ * @param {HTMLDivElement} inputWrapper
  * @return {HTMLButtonElement[]}
  * @throws {Error}
  */
-function getViewControlsOrAbort(input_wrapper) {
-  const controls = input_wrapper
+function getViewControlsOrAbort(inputWrapper) {
+  const controls = inputWrapper
     .querySelector('.il-viewcontrol-mode')
     ?.getElementsByTagName('button');
 
-  if (!controls instanceof HTMLCollection || controls.length !== 2) {
+  if (!(controls instanceof HTMLCollection) || controls.length !== 2) {
     throw new Error('Could not find exactly two view-controls.');
   }
 
@@ -396,12 +453,12 @@ function getViewControlsOrAbort(input_wrapper) {
 }
 
 /**
- * @param {HTMLDivElement} input_wrapper
+ * @param {HTMLDivElement} inputWrapper
  * @return {HTMLButtonElement[]}
  * @throws {Error}
  */
-function getMarkdownActions(input_wrapper) {
-  const actions = input_wrapper
+function getMarkdownActions(inputWrapper) {
+  const actions = inputWrapper
     .querySelector('.c-field-markdown__actions')
     ?.getElementsByTagName('button');
 
@@ -417,78 +474,78 @@ function getMarkdownActions(input_wrapper) {
  * @return {string|null}
  */
 function getMarkdownActionOfButton(button) {
-  const action_wrapper = button.closest('span[data-action]');
-  if (!action_wrapper instanceof HTMLSpanElement) {
+  const actionWrapper = button.closest('span[data-action]');
+  if (!(actionWrapper instanceof HTMLSpanElement)) {
     return null;
   }
 
-  if (!action_wrapper.hasAttribute('data-action')) {
+  if (!actionWrapper.hasAttribute('data-action')) {
     return null;
   }
 
-  return action_wrapper.dataset.action;
+  return actionWrapper.dataset.action;
 }
 
 /**
- * @param {string[]} lines_after_selection
- * @param {number} previous_number
+ * @param {string[]} linesAfterSelection
+ * @param {number} previousNumber
  * @return {string[]}
  */
-function reindexContinuousLinesOfEnumeration(lines_after_selection, previous_number = 0) {
-  if (lines_after_selection.length < 1) {
+function reindexContinuousLinesOfEnumeration(linesAfterSelection, previousNumber = 0) {
+  if (linesAfterSelection.length < 1) {
     return [];
   }
 
-  const reindexed_lines = [];
-  for (const line of lines_after_selection) {
+  const reindexedLines = [];
+  for (const line of linesAfterSelection) {
     if (!isEnumerated(line)) {
       break;
     }
 
-    reindexed_lines.push(line.replace(/([0-9]+)/, (++previous_number).toString()));
+    reindexedLines.push(line.replace(/([0-9]+)/, (++previousNumber).toString()));
   }
 
   // replace all reindexed lines in the actual array of lines if necessary.
-  if (reindexed_lines.length > 0) {
-    lines_after_selection = reindexed_lines.concat(
-      lines_after_selection.slice(reindexed_lines.length),
+  if (reindexedLines.length > 0) {
+    linesAfterSelection = reindexedLines.concat(
+      linesAfterSelection.slice(reindexedLines.length),
     );
   }
 
-  return lines_after_selection;
+  return linesAfterSelection;
 }
 
 /**
- * @param {string[]} lines_of_selection
+ * @param {string[]} linesOfSelection
  * @return {string[]}
  */
-function toggleBulletPoints(lines_of_selection) {
-  const transformed_lines = [];
-  const to_list = !isBulletPointed(lines_of_selection[0] ?? '');
-  for (const line of lines_of_selection) {
-    transformed_lines.push(
-      (to_list) ? `- ${line}` : removeBulletPointOrEnummeration(line),
+function toggleBulletPoints(linesOfSelection) {
+  const transformedLines = [];
+  const toList = !isBulletPointed(linesOfSelection[0] ?? '');
+  for (const line of linesOfSelection) {
+    transformedLines.push(
+      (toList) ? `- ${line}` : removeBulletPointOrEnummeration(line),
     );
   }
 
-  return transformed_lines;
+  return transformedLines;
 }
 
 /**
- * @param {string[]} lines_of_selection
- * @param {number} next_number
+ * @param {string[]} linesOfSelection
+ * @param {number} nextNumber
  * @return {string[]}
  */
-function toggleEnumeration(lines_of_selection, next_number = 1) {
-  const transformed_lines = [];
-  const to_list = !isEnumerated(lines_of_selection[0] ?? '');
-  for (const line of lines_of_selection) {
-    transformed_lines.push(
-      (to_list) ? `${next_number++}. ${line}` : removeBulletPointOrEnummeration(line),
+function toggleEnumeration(linesOfSelection, nextNumber = 1) {
+  const transformedLines = [];
+  const toList = !isEnumerated(linesOfSelection[0] ?? '');
+  for (const line of linesOfSelection) {
+    transformedLines.push(
+      (toList) ? `${nextNumber++}. ${line}` : removeBulletPointOrEnummeration(line),
     );
   }
 
-  return transformed_lines;
+  return transformedLines;
 }
 
 /**
@@ -498,7 +555,7 @@ function toggleEnumeration(lines_of_selection, next_number = 1) {
 function getFirstNumber(line) {
   const numbers = line.match(/([0-9]+)/);
   if (numbers !== null) {
-    return parseInt(numbers[0]);
+    return parseInt(numbers[0], 10);
   }
 
   return null;
@@ -506,14 +563,14 @@ function getFirstNumber(line) {
 
 /**
  * @param {HTMLElement} element
- * @param {string} css_class
+ * @param {string} cssClass
  * @return {void}
  */
-function toggleClassOfElement(element, css_class) {
-  if (element.classList.contains(css_class)) {
-    element.classList.remove(css_class);
+function toggleClassOfElement(element, cssClass) {
+  if (element.classList.contains(cssClass)) {
+    element.classList.remove(cssClass);
   } else {
-    element.classList.add(css_class);
+    element.classList.add(cssClass);
   }
 }
 
@@ -559,4 +616,21 @@ function isBulletPointed(line) {
  */
 function isEnumerated(line) {
   return ((line.match(/^(\s*\d+\.)/g) ?? []).length > 0);
+}
+
+/**
+ * @param {HTMLButtonElement} button
+ * @return {string|null}
+ */
+function getActionSignalOfButton(button) {
+  const actionWrapper = button.closest('span[data-signal]');
+  if (!(actionWrapper instanceof HTMLSpanElement)) {
+    return null;
+  }
+
+  if (!actionWrapper.hasAttribute('data-signal')) {
+    return null;
+  }
+
+  return actionWrapper.dataset.signal;
 }

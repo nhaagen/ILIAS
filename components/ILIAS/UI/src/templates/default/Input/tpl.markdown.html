@@ -8,8 +8,12 @@
             <span data-action="insert-italic">{ACTION_ITALIC}</span>
             <span data-action="insert-bullet-points">{ACTION_UNORDERED_LIST}</span>
             <span data-action="insert-enumeration">{ACTION_ORDERED_LIST}</span>
+            <!-- BEGIN placeholders -->
+            <span data-action="insert-placeholder" data-signal="{SIGNAL_PLACEHOLDER}">{ACTION_PLACEHOLDER}</span>
+            <!-- END placeholders -->
         </div>
     </div>
     <div class="c-field-markdown__preview hidden">{PREVIEW}</div>
     {TEXTAREA}
+    {PLACEHOLDER_DIALOG}
 </div>

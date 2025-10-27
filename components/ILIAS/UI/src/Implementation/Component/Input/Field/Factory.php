@@ -178,7 +178,14 @@ class Factory implements I\Factory
 
     public function markdown(I\MarkdownRenderer $md_renderer, string $label, ?string $byline = null): Markdown
     {
-        return new Markdown($this->data_factory, $this->refinery, $md_renderer, $label, $byline);
+        return new Markdown(
+            $this->data_factory,
+            $this->refinery,
+            $this->signal_generator,
+            $md_renderer,
+            $label,
+            $byline
+        );
     }
 
     public function rating(string $label, ?string $byline = null): Rating

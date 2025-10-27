@@ -35,6 +35,7 @@ export default {
       jquery: '$',
       ilias: 'il',
     },
+    /*
     plugins: [
       terser({
         format: {
@@ -42,5 +43,6 @@ export default {
         },
       }),
     ],
+    */
   },
 };

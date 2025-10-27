@@ -28,7 +28,8 @@ interface Text
      * @return Structure[]
      */
     public function getSupportedStructure(): array;
-    public function toHTML(): Text\HTML;
+    //public function toHTML(): Text\HTML;
+    public function toHTML(): HTML;
     public function toPlainText(): Text\PlainText;
     public function getRawRepresentation(): string;
 }
