@@ -242,9 +242,9 @@ class AdministrationMainBarProvider extends AbstractStaticMainMenuProvider
             "search_and_find" =>
                 array("seas", "mds", "taxs"),
             "extending_ilias" =>
-                array('ecss', "ltis", "wbdv", "cmis", "maps", "cmps"),
+                array('ecss', "ltis", "wbdv", "cmis", "maps", "cmps", 'acts'), // 'acts' ==> Activities
             "legal_regulations" =>
-                array("impr" ,"tos", "accs", 'dpro')
+                array("impr" ,"tos", "accs", 'dpro'),
         );
         $groups = [];
         // now get all items and groups that are accessible

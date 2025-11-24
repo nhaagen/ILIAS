@@ -21,24 +21,41 @@ declare(strict_types=1);
 namespace ILIAS\Setup\Activities;
 
 use ILIAS\Component\Dependencies\Name;
-use ILIAS\UI\Component\Input\Control\Form\FormInput;
+use ILIAS\UI\Component\Input\Container\Form\FormInput;
 use ILIAS\Data\Result;
 use ILIAS\Data\Text;
+use ILIAS\Data\Description;
+use ILIAS\Data\Factory as DataFactory;
+use ILIAS\UI\Factory as UIFactory;
+use ILIAS\Setup\CLI\StatusCommand;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Output\Output;
 
-/**
- * This is a stub...
- */
 class GetStatus extends \ILIAS\Component\Activities\Query
 {
+    public function __construct(
+        private StatusCommand $status_command,
+        private Input $symfony_input,
+        private Output $symfony_output,
+        private DataFactory $data_factory,
+        private UIFactory $ui_factory
+    ) {
+    }
+
     public function getDescription(): Text\SimpleDocumentMarkdown
     {
+
+        return $this->data_factory->text()->markdown()->simpleDocument('
+            This is the description of Query "GetStatus".
+        ');
     }
 
-    public function getInputDescription(): \ILIAS\UI\Component\Input\Control\Form\FormInput
+    public function getInputDescription(): FormInput
     {
+        return $this->ui_factory->input()->field()->hidden();
     }
 
-    public function getOutputDescription(\ILIAS\Data\Description\Factory $f): \ILIAS\Data\Description\Description
+    public function getOutputDescription(Description\Factory $f): Description\Description
     {
     }
 
@@ -48,6 +65,15 @@ class GetStatus extends \ILIAS\Component\Activities\Query
 
     public function perform(mixed $parameters): mixed
     {
+        $parameters = $this->getInputDescription()->withValue($parameters)->getValue();
+        try {
+            $this->status_command->run($this->symfony_input, $this->symfony_output);
+            $result = $this->symfony_output->fetch();
+
+        } catch (\Exception $e) {
+            return $this->data_factory->error($e->getMessage());
+        }
+        return $this->data_factory->ok($result);
     }
 
     public function maybePerformAs(int $usr_id, array $raw_parameters): Result

@@ -1,0 +1,16 @@
+<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" fill="#4C6586">
+
+  <!-- Central activity block -->
+  <rect x="135" y="140" width="50" height="50" rx="6"></rect>
+
+  <!-- Three offset modules -->
+  <rect x="60" y="90" width="50" height="28" rx="4"></rect>
+  <rect x="210" y="100" width="50" height="28" rx="4"></rect>
+  <rect x="90" y="210" width="50" height="28" rx="4"></rect>
+
+  <!-- Connectors (angled, not symmetric) -->
+  <line x1="135" y1="150" x2="110" y2="104" stroke="#4C6586" stroke-width="6" stroke-linecap="round"></line>
+  <line x1="180" y1="150" x2="235" y2="114" stroke="#4C6586" stroke-width="6" stroke-linecap="round"></line>
+  <line x1="150" y1="190" x2="115" y2="210" stroke="#4C6586" stroke-width="6" stroke-linecap="round"></line>
+
+</svg>

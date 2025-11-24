@@ -123,6 +123,7 @@ class Init implements Component\Component
                 $pull[\ILIAS\UI\Implementation\Component\Input\UploadLimitResolver::class],
                 $use[\ILIAS\Setup\AgentFinder::class],
                 $pull[\ILIAS\UI\Implementation\Component\Navigation\Factory::class],
+                $use[Component\Activities\Repository::class],
             );
     }
 }
