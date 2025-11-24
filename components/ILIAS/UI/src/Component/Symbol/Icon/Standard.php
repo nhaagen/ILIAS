@@ -192,5 +192,6 @@ interface Standard extends Icon
     public const CRON = 'cron';     //Administration - Cron Jobs
     public const BNMK = 'bnmk';     //Administration - Benchmarking
     public const MAPS = 'maps';     //Administration - Maps
+    public const ACTS = 'acts';     //Administration - Activities
 
 }

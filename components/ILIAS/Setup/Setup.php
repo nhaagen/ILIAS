@@ -55,7 +55,17 @@ class Setup implements Component\Component
                 $internal["agent_finder"];
 
         $contribute[\ILIAS\Component\Activities\Activity::class] = static fn() =>
-            new \ILIAS\Setup\Activities\GetStatus();
+            $internal['\ILIAS\Setup\Activities\GetStatus'];
+
+        $internal['\ILIAS\Setup\Activities\GetStatus'] = static fn() =>
+            new \ILIAS\Setup\Activities\GetStatus(
+                $internal['command.status'],
+                new \Symfony\Component\Console\Input\StringInput(''),
+                new \Symfony\Component\Console\Output\BufferedOutput(),
+                $pull[Data\Factory::class],
+                $use[UI\Factory::class],
+            );
+
 
         $internal["command.install"] = static fn() =>
             new \ILIAS\Setup\CLI\InstallCommand(

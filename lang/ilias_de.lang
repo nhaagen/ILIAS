@@ -71,6 +71,20 @@ acc#:#acc_tbl_docs_head_title#:#Titel
 acc#:#acc_tbl_docs_title#:#Dokumente
 acc#:#acc_tree_off#:#Baumansicht aus
 acc#:#acc_tree_on#:#Baumansicht an
+acts#:#activities#:#Activities
+acts#:#activities_overview#:#Übersicht
+acts#:#acts#:#Activities
+acts#:#actually_perform#:#Ausführen
+acts#:#actually_perform_desc#:#Die Aktivity wird mit den angegebenen Parameter ausgeführt. Je nach Aktivity wird der Zustand des Systems verändert. Es erfolgt keine weitere Nachfrage!
+acts#:#component#:#Component
+acts#:#details#:#Details/Ausführen
+acts#:#obj_acts#:#Activities
+acts#:#obj_acts_desc#:#In ILIAS verfügbare (Domain-)Activities
+acts#:#output#:#Ausgabe
+acts#:#readme#:#Readme
+acts#:#section_actually_perform#:#Validierung/Ausführen
+acts#:#section_actually_perform_desc#:#Die Parameter werden entweder validiert oder die Activity wird effektiv ausgeführt.
+acts#:#table#:#Tabelle
 adm#:#adm_acc_ctrl_cpt_desc#:#Zeigt im Footer den Link zur „Info Barrierefreiheit“ an.
 adm#:#adm_acc_ctrl_cpt_enable#:#Info Barrierefreiheit
 adm#:#adm_accessibility_contacts#:#Anlaufstelle für Barrierefreiheit

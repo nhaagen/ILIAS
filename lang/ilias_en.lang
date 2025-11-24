@@ -71,6 +71,20 @@ acc#:#acc_tbl_docs_head_title#:#Title
 acc#:#acc_tbl_docs_title#:#Documents
 acc#:#acc_tree_off#:#Tree Off
 acc#:#acc_tree_on#:#Tree On
+acts#:#activities#:#Activities
+acts#:#activities_overview#:#Overview
+acts#:#acts#:#Activities
+acts#:#actually_perform#:#Perform
+acts#:#actually_perform_desc#:#The activity is performed with the given paramters. The system-state might be altered!
+acts#:#component#:#Component
+acts#:#details#:#Details/Perform
+acts#:#obj_acts#:#Activities
+acts#:#obj_acts_desc#:#(Domain-)Activities in ILIAS
+acts#:#output#:#Output
+acts#:#readme#:#Readme
+acts#:#section_actually_perform#:#Validation/Perform
+acts#:#section_actually_perform_desc#:#Parameters are validated or the activity is actually performed.
+acts#:#table#:#Table
 adm#:#adm_acc_ctrl_cpt_desc#:#Display the link to your Accessibility document in the footer of your installation.
 adm#:#adm_acc_ctrl_cpt_enable#:#Accessibility Link in Footer
 adm#:#adm_accessibility_contacts#:#Contact Point for Accessibility Issues

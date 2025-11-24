@@ -159,7 +159,8 @@ class Standard extends Icon implements C\Symbol\Icon\Standard
         self::SERV,
         self::CRON,
         self::BNMK,
-        self::MAPS
+        self::MAPS,
+        self::ACTS,
     ];
 
     private static array $standard_page_editor_icons = [
