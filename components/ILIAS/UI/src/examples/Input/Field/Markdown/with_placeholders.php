@@ -154,6 +154,7 @@ function with_placeholders()
             return [];
         }
         if ($obj instanceof \ILIAS\Data\Description\DList) {
+            $carry[] = '0';
             return $recurse($recurse, $obj->getValueType(), $carry);
         }
 

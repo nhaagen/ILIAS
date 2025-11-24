@@ -15,8 +15,8 @@
 
 import terser from '@rollup/plugin-terser';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import copyright from '../../../../../../../scripts/Copyright-Checker/copyright.js';
-import preserveCopyright from '../../../../../../../scripts/Copyright-Checker/preserveCopyright.js';
+import copyright from '../../../../../../../scripts/Copyright-Checker/copyright';
+import preserveCopyright from '../../../../../../../scripts/Copyright-Checker/preserveCopyright';
 
 export default {
   input: './src/input.factory.js',
@@ -45,5 +45,5 @@ export default {
   },
   plugins: [
     nodeResolve(),
-  ]
+  ],
 };
