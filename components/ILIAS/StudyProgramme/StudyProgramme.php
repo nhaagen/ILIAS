@@ -20,6 +20,9 @@ declare(strict_types=1);
 
 namespace ILIAS;
 
+use ILIAS\Component\Activities as ComponentActivities;
+use ILIAS\StudyProgramme\Activities;
+
 class StudyProgramme implements Component\Component
 {
     public function init(
@@ -38,5 +41,45 @@ class StudyProgramme implements Component\Component
         );
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\ComponentCSS($this, "css/ilStudyProgramme.css");
+
+
+        $internal[Activities\ActivityFactories::class] = static fn() =>
+            new Activities\ActivityFactories(
+                $pull[Data\Factory::class],
+                $pull[UI\Implementation\Component\Input\Field\Factory::class],
+                $pull[Refinery\Factory::class],
+            );
+
+        $internal[Activities\Assignment\CmdAssignmentAdd::class] = static fn() =>
+            new Activities\Assignment\CmdAssignmentAdd($internal[Activities\ActivityFactories::class]);
+        $provide[Activities\Assignment\CmdAssignmentAdd::class] = fn() =>
+            $internal[Activities\Assignment\CmdAssignmentAdd::class];
+        $contribute[ComponentActivities\Activity::class] = fn() =>
+            $internal[Activities\Assignment\CmdAssignmentAdd::class];
+
+        $internal[Activities\Assignment\CmdAssignmentRemove::class] = static fn() =>
+            new Activities\Assignment\CmdAssignmentRemove($internal[Activities\ActivityFactories::class]);
+        $provide[Activities\Assignment\CmdAssignmentRemove::class] = fn() =>
+            $internal[Activities\Assignment\CmdAssignmentRemove::class];
+        $contribute[ComponentActivities\Activity::class] = fn() =>
+            $internal[Activities\Assignment\CmdAssignmentRemove::class];
+
+        $internal[Activities\Assignment\CmdAssignmentAccredit::class] = static fn() =>
+            new Activities\Assignment\CmdAssignmentAccredit($internal[Activities\ActivityFactories::class]);
+        $provide[Activities\Assignment\CmdAssignmentAccredit::class] = fn() =>
+            $internal[Activities\Assignment\CmdAssignmentAccredit::class];
+        $contribute[ComponentActivities\Activity::class] = fn() =>
+            $internal[Activities\Assignment\CmdAssignmentAccredit::class];
+
+
+
+        $internal[Activities\Settings\QuerySettingsStatus::class] = static fn() =>
+            new Activities\Settings\QuerySettingsStatus($internal[Activities\ActivityFactories::class]);
+        $provide[Activities\Settings\QuerySettingsStatus::class] = fn() =>
+            $internal[Activities\Settings\QuerySettingsStatus::class];
+        $contribute[ComponentActivities\Activity::class] = fn() =>
+            $internal[Activities\Settings\QuerySettingsStatus::class];
+
+
     }
 }
