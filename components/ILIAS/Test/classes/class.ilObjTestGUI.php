@@ -65,6 +65,7 @@ use ILIAS\Skill\Service\SkillService;
 use ILIAS\ResourceStorage\Services as IRSS;
 use ILIAS\Taxonomy\DomainService as TaxonomyService;
 use ILIAS\Style\Content\Service as ContentStyle;
+use ILIAS\Test\GUIFactory;
 
 /**
  * Class ilObjTestGUI
@@ -103,6 +104,7 @@ use ILIAS\Style\Content\Service as ContentStyle;
  * @ilCtrl_Calls ilObjTestGUI: ilAssQuestionPreviewGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestQuestionBrowserTableGUI, ilTestInfoScreenToolbarGUI, ilLTIProviderObjectSettingGUI
  * @ilCtrl_Calls ilObjTestGUI: ilTestPageGUI
+ * @ilCtrl_Calls ilObjTestGUI: ILIAS\Test\Scoring\Manual\ConsecutiveScoringGUI
  *
  * @ingroup components\ILIASTest
  */
@@ -160,7 +162,7 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
     protected ?QuestionsTableActions $table_actions = null;
     protected DataFactory $data_factory;
     protected TaxonomyService $taxonomy;
-
+    protected GUIFactory $gui_factory;
     protected bool $create_question_mode;
 
     /**
@@ -251,6 +253,8 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
             $this->objective_oriented_container,
             $this->test_session_factory->getSession()
         );
+
+        $this->gui_factory = $local_dic['gui.factory'];
     }
 
     /**
@@ -269,7 +273,6 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
         }
 
         $next_class = $this->ctrl->getNextClass($this);
-
         // add entry to navigation history
         if (!$this->getCreationMode() &&
             $this->access->checkAccess('read', '', $this->testrequest->getRefId())
@@ -571,6 +574,17 @@ class ilObjTestGUI extends ilObjectGUI implements ilCtrlBaseClassInterface, ilDe
                 $output_gui = new TestScoringByParticipantGUI($this->getTestObject());
                 $output_gui->setTestAccess($this->getTestAccess());
                 $this->ctrl->forwardCommand($output_gui);
+                break;
+
+            case strtolower(ConsecutiveScoringGUI::class):
+            case 'ilias\test\scoring\manual\consecutivescoringgui':
+                if ((!$this->access->checkAccess("read", "", $this->testrequest->getRefId()))) {
+                    $this->redirectAfterMissingRead();
+                }
+                $output_gui = $this->gui_factory->get(ConsecutiveScoringGUI::class, $this->getTestObject());
+                $this->prepareOutput();
+                $this->ctrl->forwardCommand($output_gui);
+                $this->addHeaderAction();
                 break;
 
             case strtolower(MarkSchemaGUI::class):

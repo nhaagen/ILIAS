@@ -214,6 +214,9 @@ class TestDIC extends PimpleContainer
         $dic['participant.repository'] = static fn($c): ParticipantRepository =>
             new ParticipantRepository($DIC['ilDB']);
 
+        $dic['gui.factory'] = static fn($c): GUIFactory =>
+            new GUIFactory($DIC, $c);
+
         return $dic;
     }
 }

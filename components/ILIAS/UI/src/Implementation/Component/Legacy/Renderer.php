@@ -23,6 +23,7 @@ namespace ILIAS\UI\Implementation\Component\Legacy;
 use ILIAS\UI\Implementation\Render\AbstractComponentRenderer;
 use ILIAS\UI\Renderer as RendererInterface;
 use ILIAS\UI\Component;
+use ILIAS\UI\Implementation\Component as I;
 
 /**
  * Class Renderer
@@ -35,10 +36,13 @@ class Renderer extends AbstractComponentRenderer
      */
     public function render(Component\Component $component, RendererInterface $default_renderer): string
     {
+        if ($component instanceof I\Legacy\Segment) {
+            return $this->renderSegment($component, $default_renderer);
+        }
+
         if (!$component instanceof Component\Legacy\Legacy) {
             $this->cannotHandleComponent($component);
         }
-
         $component = $this->registerSignals($component);
         $this->bindJavaScript($component);
         return $component->getContent();
@@ -57,5 +61,9 @@ class Renderer extends AbstractComponentRenderer
             }
             return $code;
         });
+    }
+    protected function renderSegment(Segment $component, RendererInterface $default_renderer): string
+    {
+        return $component->getSegmentContent();
     }
 }

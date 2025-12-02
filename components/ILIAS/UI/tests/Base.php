@@ -156,6 +156,9 @@ class NoUIFactory implements Factory
     public function prompt(): C\Prompt\Factory
     {
     }
+    public function navigation(): C\Navigation\Factory
+    {
+    }
 }
 
 class LoggingRegistry implements ResourceRegistry

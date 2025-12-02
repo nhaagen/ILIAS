@@ -25,6 +25,7 @@ use ILIAS\Test\Settings\ScoreReporting\SettingsScoringGUI;
 use ILIAS\Test\Scoring\Manual\TestScoringByQuestionGUI;
 use ILIAS\Test\Scoring\Marks\MarkSchemaGUI;
 use ILIAS\Test\Presentation\TestScreenGUI;
+use ILIAS\Test\Scoring\Manual\ConsecutiveScoringGUI;
 
 /**
  * @author		Björn Heyser <bheyser@databay.de>
@@ -436,23 +437,32 @@ class TabsManager
         if ($this->checkScoreParticipantsTabAccess()) {
             if ($this->test_object->getGlobalSettings()->isManualScoringEnabled()) {
                 // scoring tab
+                /*
+                                $this->tabs->addTarget(
+                                    self::TAB_ID_MANUAL_SCORING,
+                                    $this->ctrl->getLinkTargetByClass(
+                                        [\ilObjTestGUI::class, TestScoringByQuestionGUI::class],
+                                        'showManScoringByQuestionParticipantsTable'
+                                    ),
+                                    [
+                                        'showManScoringParticipantsTable',
+                                        'applyManScoringParticipantsFilter',
+                                        'resetManScoringParticipantsFilter',
+                                        'showManScoringParticipantScreen',
+                                        'showManScoringByQuestionParticipantsTable',
+                                        'applyManScoringByQuestionFilter',
+                                        'resetManScoringByQuestionFilter',
+                                        'saveManScoringByQuestion'
+                                    ],
+                                    ''
+                                );
+                */
                 $this->tabs->addTarget(
                     self::TAB_ID_MANUAL_SCORING,
                     $this->ctrl->getLinkTargetByClass(
-                        [\ilObjTestGUI::class, TestScoringByQuestionGUI::class],
-                        'showManScoringByQuestionParticipantsTable'
-                    ),
-                    [
-                        'showManScoringParticipantsTable',
-                        'applyManScoringParticipantsFilter',
-                        'resetManScoringParticipantsFilter',
-                        'showManScoringParticipantScreen',
-                        'showManScoringByQuestionParticipantsTable',
-                        'applyManScoringByQuestionFilter',
-                        'resetManScoringByQuestionFilter',
-                        'saveManScoringByQuestion'
-                    ],
-                    ''
+                        [\ilObjTestGUI::class, ConsecutiveScoringGUI::class],
+                        ConsecutiveScoringGUI::DEFAULT_COMMAND
+                    )
                 );
             }
         }

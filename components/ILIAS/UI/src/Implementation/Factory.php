@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace ILIAS\UI\Implementation;
 
+use ILIAS\UI\Implementation\Component as I;
 use ILIAS\UI\Component as C;
 use ILIAS\UI\Help;
 // TODO: This might cache the created factories.
@@ -57,6 +58,7 @@ class Factory implements \ILIAS\UI\Factory
         protected C\launcher\Factory $launcher_factory,
         protected C\Entity\Factory $entity_factory,
         protected C\Prompt\Factory $prompt_factory,
+        protected I\Navigation\Factory $navigation_factory,
     ) {
     }
 
@@ -119,6 +121,14 @@ class Factory implements \ILIAS\UI\Factory
     public function legacy(string $content): C\Legacy\Legacy
     {
         return $this->legacy_factory->legacy($content);
+    }
+
+    /**
+     * backports legacy factory from 11
+     */
+    public function legacyFactory(): C\Legacy\Factory
+    {
+        return $this->legacy_factory;
     }
 
     /**
@@ -306,4 +316,10 @@ class Factory implements \ILIAS\UI\Factory
     {
         return $this->prompt_factory;
     }
+
+    public function navigation(): I\Navigation\Factory
+    {
+        return $this->navigation_factory;
+    }
+
 }

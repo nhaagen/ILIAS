@@ -140,5 +140,14 @@ class UI implements Component\Component
                 return "assets/css/delos_cont.css";
             }
         };
+
+        $internal[UI\Implementation\Component\Navigation\Factory::class] = static fn() =>
+            new UI\Implementation\Component\Navigation\Factory(
+                $pull[Data\Factory::class],
+                $pull[Refinery\Factory::class],
+                $use[UI\Storage::class],
+            );
+        $contribute[Component\Resource\PublicAsset::class] = fn() =>
+            new Component\Resource\ComponentJS($this, 'js/Input/ViewControl/dist/input.viewcontrols.min.js');
     }
 }

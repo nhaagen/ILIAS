@@ -18,11 +18,15 @@ declare(strict_types=1);
  *
  *********************************************************************/
 
+declare(strict_types=1);
+
 namespace ILIAS\UI\Implementation\Component\Legacy;
 
 use ILIAS\UI\Implementation\Component\SignalGeneratorInterface;
+use ILIAS\UI\Component as C;
+use ILIAS\UI\Implementation\Component as I;
 
-class Factory implements \ILIAS\UI\Component\Legacy\Factory
+class Factory implements C\Legacy\Factory
 {
     protected SignalGeneratorInterface $signal_generator;
 
@@ -37,5 +41,10 @@ class Factory implements \ILIAS\UI\Component\Legacy\Factory
     public function legacy(string $content): \ILIAS\UI\Component\Legacy\Legacy
     {
         return new Legacy($content, $this->signal_generator);
+    }
+
+    public function segment(string $title, string $content): I\Legacy\Segment
+    {
+        return new Segment($title, $content);
     }
 }

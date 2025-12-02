@@ -638,6 +638,7 @@ assessment#:#edit_answer#:#Edit Answer
 assessment#:#edit_concluding_remarks#:#Edit Concluding Remarks
 assessment#:#edit_introduction#:#Edit Introduction
 assessment#:#edit_question#:#Edit Question
+assessment#:#edit_score#:#Edit Score
 assessment#:#edit_test_questions#:#List View
 assessment#:#element_height#:#Minimum Height
 assessment#:#element_height_info#:#This is the minimum height in pixels for term and definition/picture items during the test output.
@@ -937,6 +938,10 @@ assessment#:#min_auto_complete#:#Autocomplete
 assessment#:#min_ip_label#:#Lowest IP With Access
 assessment#:#min_percentage_ne_0#:#One of your grade categories needs to start at the ‘Minimum Score Required (in %)’ level of 0%  Your grading system hasn’t been saved.
 assessment#:#misc#:#Misc Options
+assessment#:#mode_allatonce#:#All
+assessment#:#mode_onebyone#:#One by One
+assessment#:#mode_question#:#Question oriented
+assessment#:#mode_user#:#Participant oriented
 assessment#:#msg_circle_added#:#Circle added
 assessment#:#msg_no_questions_selected#:#No questions were selected.
 assessment#:#msg_number_of_terms_too_low#:#The number of terms must be greater or equal to the number of definitions.
@@ -1110,8 +1115,13 @@ assessment#:#qpl_skill_point_eval_by_quest_result#:#Evaluation of Competence Poi
 assessment#:#qpl_skill_point_eval_by_solution_compare#:#Evaluation of Competence Points by Solution Compare
 assessment#:#qpl_skill_point_eval_mode_quest_result#:#Question Result
 assessment#:#qpl_skill_point_eval_mode_solution_compare#:#Solution Compare
+assessment#:#qpl_skl_all_questions#:#All questions
+assessment#:#qpl_skl_assigned_questions#:#Questions with assignment
+assessment#:#qpl_skl_assignment_for_question#:#Competence assignments for question „%s“
 assessment#:#qpl_skl_sub_tab_quest_assign#:#Question/Competence Assignment
 assessment#:#qpl_skl_sub_tab_usages#:#Assignment Frequency
+assessment#:#qpl_skl_unassigned_questions#:#Questions without assignment
+assessment#:#qpl_skl_view_control_mode_aria:#:#View control mode
 assessment#:#qpl_sync_quest_skl_assigns_confirmation#:#The question was inserted from another repository object. Should the question's original be updated with the current config of competence assignments?
 assessment#:#qpl_tab_competences#:#Competences
 assessment#:#qpl_taxonomy_tab_info_message#:#Taxonomies in question pools can be used to filter the questions. After activating the function in the "Settings" tab, they are displayed in the filter in the "Questions" tab.
@@ -1225,8 +1235,10 @@ assessment#:#save_on_navigation_confirmation#:#Your changed answers will be auto
 assessment#:#save_on_navigation_forced_feedback_hint#:#Before you get feedback on your given answer.###fau: testNav
 assessment#:#save_on_navigation_locked_confirmation#:#Your changed answers will be automatically saved and locked when you navigate.###fau: testNav
 assessment#:#saved_adjustment#:#Changes saved.
+assessment#:#score_anon#:#Score anonymously
 assessment#:#score_partsol_enabled#:#Activate Half-Point Scoring
 assessment#:#score_partsol_enabled_info#:#Usually the participant has to answer the question fully correct to get the configured points. With this option the participant gets the half of the configured points with at least three correct decisions.
+assessment#:#scored_by#:#Scored BY
 assessment#:#scored_pass#:#Scored Test Attempt
 assessment#:#scoring#:#Scoring and Results
 assessment#:#scoringadjust#:#Corrections
@@ -1246,6 +1258,7 @@ assessment#:#selection#:#Selection
 assessment#:#set_edit_mode#:#Set Edit Mode
 assessment#:#set_filter#:#Set Filter
 assessment#:#set_manscoring_done#:#Mark as ‘Scored Participant’
+assessment#:#set_manscoring_open#:#Remove 'scoring complete' flag
 assessment#:#set_manual_feedback#:#Manual Feedback
 assessment#:#shape#:#Shape
 assessment#:#showSuggestedSolution#:#Type
@@ -1407,6 +1420,7 @@ assessment#:#tst_change_workingtime#:#Add extra time for a participant
 assessment#:#tst_comp_eval_mode#:#Evaluation by
 assessment#:#tst_comp_points#:#Competence Points
 assessment#:#tst_competence#:#Competence
+assessment#:#tst_competence_tree#:#Competence tree
 assessment#:#tst_conditions_checkbox_enabled#:#Exam Conditions
 assessment#:#tst_conditions_checkbox_enabled_desc#:#Participants must select a checkbox to start the test. Please use the introductory message to present the exam to the participants.
 assessment#:#tst_confirm_submit_answers#:#Please confirm your submission of your solution. You won't be able to revert your answers after pressing the submit button.
@@ -1605,11 +1619,19 @@ assessment#:#tst_list_of_questions_start#:#Show prior to the first question
 assessment#:#tst_list_of_questions_with_description#:#Include question descriptions
 assessment#:#tst_man_scoring_by_part#:#Scoring by Participant
 assessment#:#tst_man_scoring_by_qst#:#Scoring by Question
+assessment#:#tst_man_scoring_finalized#:#Show finalized gradings
+assessment#:#tst_man_scoring_finalized_hide#:#Hide finalized gradings
+assessment#:#tst_man_scoring_finalized_only#:#Show only finalized gradings
 assessment#:#tst_man_scoring_only_answered#:#Only answered
+assessment#:#tst_man_scoring_questionselection#:#Questions
+assessment#:#tst_man_scoring_userselection#:#Participants
 assessment#:#tst_manage_competence_assigns#:#Manage Competence Assignments
+assessment#:#tst_manage_competence_select_skills#:#Select Competences
 assessment#:#tst_manscoring_input_max_points_for_question#:#Maximum Points for Question
+assessment#:#tst_manscoring_input_of_max#:#of
 assessment#:#tst_manscoring_input_question_and_user_solution#:#Question and User Solution
 assessment#:#tst_manscoring_maxpoints_exceeded_input_alert#:#The maximum of %s point(s) is exceeded!
+assessment#:#tst_manscoring_no_feedback#:#No written feedback has been given yet.
 assessment#:#tst_manscoring_question_section_header#:#Question: %s
 assessment#:#tst_manscoring_user_notification#:#Send Notification
 assessment#:#tst_mark#:#Mark
@@ -2067,6 +2089,7 @@ assessment#:#use_previous_solution_advice#:#The shown solution for the question 
 assessment#:#user_has_finished_a_test#:#A participant has finished a test.
 assessment#:#user_ip_outside_range#:#You are not allowed to access the test from this IP.
 assessment#:#user_not_invited#:#You are not supposed to take this test.
+assessment#:#usr_manscoring_complete#:#Marke as 'scored'
 assessment#:#value_between_x_and_y#:#The value should be between %s and %s
 assessment#:#values#:#Values
 assessment#:#variable#:#Variable
