@@ -389,11 +389,16 @@ class Renderer extends AbstractComponentRenderer
      */
     protected function registerActions(Component\Table\Table $component): array
     {
-        if ($component->hasMultiActions()) {
-            $component = $component->withAdditionalOnLoadCode(
-                static fn($id): string => "il.UI.table.data.get('{$id}').selectAll(false);"
-            );
-        }
+        $opt_action_id = Action::OPT_ACTIONID;
+        $opt_row_id = Action::OPT_ROWID;
+        $component = $component
+            ->withAdditionalOnLoadCode(
+                static fn($id): string =>
+                    "il.UI.table.data.init('{$id}','{$opt_action_id}','{$opt_row_id}');"
+            )
+            ->withAdditionalOnLoadCode($this->getAsyncActionHandler($component->getAsyncActionSignal()))
+            ->withAdditionalOnLoadCode($this->getMultiActionHandler($component->getMultiActionSignal()))
+            ->withAdditionalOnLoadCode($this->getSelectionHandler($component->getSelectionSignal()));
 
         $prompts = [];
         $actions_js = [];
@@ -422,16 +427,11 @@ class Renderer extends AbstractComponentRenderer
         }
         $component = $component->withActions($actions);
 
-        $opt_action_id = Action::OPT_ACTIONID;
-        $opt_row_id = Action::OPT_ROWID;
-        $component = $component
-            ->withAdditionalOnLoadCode(
-                static fn($id): string =>
-                    "il.UI.table.data.init('{$id}','{$opt_action_id}','{$opt_row_id}');"
-            )
-            ->withAdditionalOnLoadCode($this->getAsyncActionHandler($component->getAsyncActionSignal()))
-            ->withAdditionalOnLoadCode($this->getMultiActionHandler($component->getMultiActionSignal()))
-            ->withAdditionalOnLoadCode($this->getSelectionHandler($component->getSelectionSignal()));
+        if ($component->hasMultiActions()) {
+            $component = $component->withAdditionalOnLoadCode(
+                static fn($id): string => "il.UI.table.data.get('{$id}').selectAll(false);"
+            );
+        }
 
         return [$component, $prompts];
     }
