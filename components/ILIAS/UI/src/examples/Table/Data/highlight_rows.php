@@ -66,9 +66,18 @@ function highlight_rows(): string
         ['col1' => 5, 'col2' => 'e'],
     ];
 
-    $data_retrieval = new class ($records) implements DataRetrieval {
+    $highlighted = $query->retrieve(
+        $highlight_token->getName(),
+        $refinery->byTrying([
+            $refinery->kindlyTo()->listOf($refinery->kindlyTo()->string()),
+            $refinery->always([4])
+        ])
+    );
+
+    $data_retrieval = new class ($records, $highlighted) implements DataRetrieval {
         public function __construct(
-            protected array $records
+            private array $records,
+            private array $highlighted
         ) {
         }
 
@@ -83,8 +92,9 @@ function highlight_rows(): string
         ): \Generator {
             foreach ($this->records as $record) {
                 $row_id = (string) $record['col1'];
+
                 yield $row_builder->buildDataRow($row_id, $record)
-                    ->withHighlighted($row_id === '4');
+                    ->withHighlighted(in_array($row_id, $this->highlighted));
             }
         }
 
@@ -113,7 +123,7 @@ function highlight_rows(): string
     $button = $factory->button()->standard(
         'Highlight some rows',
         $url_builder
-            ->withParameter($highlight_token, ['1', '2'])
+            ->withParameter($highlight_token, ['1', '2', '5'])
             ->buildURI()
             ->__toString()
     );
