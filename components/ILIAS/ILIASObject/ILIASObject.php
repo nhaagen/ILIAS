@@ -40,5 +40,19 @@ class ILIASObject implements Component\Component
             new Component\Resource\ComponentJS($this, "ilContainer.js");
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\ComponentJS($this, "ilCopyRedirection.js");
+
+        $contribute[\ILIAS\Component\Activities\Activity::class] = static fn() =>
+            new \ILIAS\ILIASObject\Activities\GetOnlineStatus(
+                $pull[Data\Factory::class],
+                $use[UI\Factory::class],
+            );
+
+        $contribute[\ILIAS\Component\Activities\Activity::class] = static fn() =>
+            new \ILIAS\ILIASObject\Activities\SetOnlineStatus(
+                $pull[Data\Factory::class],
+                $use[UI\Factory::class],
+            );
+
+
     }
 }
