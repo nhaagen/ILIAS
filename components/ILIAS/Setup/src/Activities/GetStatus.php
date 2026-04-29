@@ -27,39 +27,78 @@ use ILIAS\UI\Component\Input\Field\Factory as FieldFactory;
 use ILIAS\Data\Result;
 use ILIAS\Data\Text;
 use ILIAS\Data\UserId;
-use ILIAS\Data\Result\ResultFactory;
 use ILIAS\Data\Description;
+use ILIAS\Data\Factory as DataFactory;
+use ILIAS\Setup\CLI\StatusCommand;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Output\Output;
 
-/**
- * This is a stub...
- */
 class GetStatus extends \ILIAS\Component\Activities\Query
 {
+    public function __construct(
+        private StatusCommand $status_command,
+        private Input $symfony_input,
+        private Output $symfony_output,
+        protected DataFactory $data_factory,
+    ) {
+    }
+
     public function getDescription(): Text\SimpleDocumentMarkdown
     {
+        return $this->data_factory->text()->markdown()->simpleDocument(
+            'Retrieve status information about the installation.'
+        );
     }
 
     public function getInputDescription(FieldFactory $f): FormInput
     {
+        return $f->hidden();
     }
 
     public function getOutputDescription(Description\Factory $f): Description\Description
     {
+        $md = fn(string $markdown) => $this->data_factory->text()->markdown()->simpleDocument($markdown);
+
+        return $f->map(
+            $md(implode("\n\r", [
+                'Status information about the installation.',
+                'Result of Setup\CLI\StatusCommand.',
+                'Format is YAML.',
+            ])),
+            $f->string(
+                $md('The component\'s name')
+            ),
+            $f->map(
+                $md('The metrics of a certain Step or Objective'),
+                $f->string(
+                    $md('The topic of the metric')
+                ),
+                $f->map(
+                    $md('Measurements/Aggregations'),
+                    $f->string(
+                        $md('the topic')
+                    ),
+                    $f->int(
+                        $md('the value (actually \'mixed\')')
+                    )
+                )
+            )
+        );
     }
 
     public function isAllowedToPerform(UserId $usr_id, mixed $parameters): bool
     {
+        return true;
     }
 
-    public function perform(mixed $parameters): mixed
+    public function perform(mixed $parameters): string
     {
-    }
+        try {
+            $this->status_command->run($this->symfony_input, $this->symfony_output);
+            return $this->symfony_output->fetch();
 
-    public function maybePerformAs(
-        InputFactory $input_factory,
-        ResultFactory $result_factory,
-        UserId $usr_id,
-        array $raw_parameters
-    ): Result {
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }
