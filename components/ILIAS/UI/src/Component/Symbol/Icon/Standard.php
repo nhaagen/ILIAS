@@ -185,4 +185,5 @@ interface Standard extends Icon
     public const FILS = 'fils';	    //File System Service
     public const TALA = 'tala';	    //Employee Talk Template Admin
     public const QST = 'ques';     //Question
+    public const ACTS = 'acts';     //Administration - Activities
 }

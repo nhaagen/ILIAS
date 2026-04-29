@@ -69,7 +69,8 @@ class ilComponentsSetupAgent implements Setup\Agent
             new ilDatabaseUpdateStepsExecutedObjective(
                 new ilIntroduceComponentArtifactDBUpdateSteps()
             ),
-            new ilComponentDefinitionsStoredObjective(false)
+            new ilComponentDefinitionsStoredObjective(false),
+            new ilTreeAdminNodeAddedObjective('acts', 'ActivitiesOverview'),
         );
     }
 
