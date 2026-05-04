@@ -20,6 +20,11 @@ declare(strict_types=1);
 
 namespace ILIAS\Component\Activities;
 
+use ILIAS\Data\Result;
+use ILIAS\UI\Component\Input\Factory as InputFactory;
+use ILIAS\Data\Result\ResultFactory;
+use ILIAS\Data\UserId;
+
 /**
  * Basic Implementation for Activities. Use Command or Query for more speficism
  * instead.
@@ -29,5 +34,39 @@ abstract class ActivityImpl implements Activity
     public function getName(): \ILIAS\Component\Dependencies\Name
     {
         return new \ILIAS\Component\Dependencies\Name(static::class);
+    }
+
+    public function maybePerformAs(
+        InputFactory $input_factory,
+        ResultFactory $result_factory,
+        UserId $usr_id,
+        array $raw_parameters
+    ): Result {
+        try {
+            $parameters = $input_factory->container()->form()->standard(
+                "", // no need for an URL, the Form won't be displayed
+                [$this->getInputDescription($input_factory->field())]
+            )
+            ->withInput(
+                new \ILIAS\UI\Implementation\Component\Input\ArrayInputData(
+                    $raw_parameters
+                )
+            );
+
+            if (!$parameters) {
+                return $result_factory->error(
+                    'Parameters do not match input description.'
+                );
+            }
+
+            if (!$this->isAllowedToPerform($usr_id, $parameters)) {
+                return $result_factory->error('Failed due to permissions.');
+            }
+
+            return $result_factory->ok($this->perform($parameters));
+        } catch (\Exception $e) {
+            return $result_factory->error($e->getMessage());
+        }
+
     }
 }
