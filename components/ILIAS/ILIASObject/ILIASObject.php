@@ -36,5 +36,16 @@ class ILIASObject implements Component\Component
             new \ILIAS\Object\Setup\ilObjectSetupAgent(
                 $pull[\ILIAS\Refinery\Factory::class]
             );
+
+        $contribute[\ILIAS\Component\Activities\Activity::class] = static fn() =>
+            $internal['\ILIAS\Object\Activities\GetOnlineStatus'];
+
+        $internal['\ILIAS\Object\Activities\GetOnlineStatus'] = static fn() =>
+            new \ILIAS\Object\Activities\GetOnlineStatus(
+                $pull[Data\Factory::class],
+                $pull[\ILIAS\Refinery\Factory::class],
+                $pull[\ILIAS\AccessControl\RBACAccess::class]
+            );
+
     }
 }
