@@ -41,6 +41,8 @@ class ILIASObject implements Component\Component
             $internal['\ILIAS\Object\Activities\GetOnlineStatus'];
         $contribute[\ILIAS\Component\Activities\Activity::class] = static fn() =>
             $internal['\ILIAS\Object\Activities\SetObjectOnline'];
+        $contribute[\ILIAS\Component\Activities\Activity::class] = static fn() =>
+            $internal['\ILIAS\Object\Activities\SetObjectOffline'];
 
         $internal['\ILIAS\Object\Activities\GetOnlineStatus'] = static fn() =>
             new \ILIAS\Object\Activities\GetOnlineStatus(
@@ -50,6 +52,12 @@ class ILIASObject implements Component\Component
             );
         $internal['\ILIAS\Object\Activities\SetObjectOnline'] = static fn() =>
             new \ILIAS\Object\Activities\SetObjectOnline(
+                $pull[Data\Factory::class],
+                $pull[\ILIAS\Refinery\Factory::class],
+                $pull[\ILIAS\AccessControl\RBACAccess::class]
+            );
+        $internal['\ILIAS\Object\Activities\SetObjectOffline'] = static fn() =>
+            new \ILIAS\Object\Activities\SetObjectOffline(
                 $pull[Data\Factory::class],
                 $pull[\ILIAS\Refinery\Factory::class],
                 $pull[\ILIAS\AccessControl\RBACAccess::class]
