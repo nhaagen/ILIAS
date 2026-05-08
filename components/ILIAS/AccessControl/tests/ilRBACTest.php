@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use ILIAS\DI\Container;
+use ILIAS\AccessControl\RBACAccessLegacyInitialisationAdapter;
 
 /**
  * Unit tests for tree table
@@ -92,5 +93,25 @@ class ilRBACTest extends TestCase
         if (!defined('ILIAS_LOG_DIR')) {
             define('ILIAS_LOG_DIR', '/var/log');
         }
+
+        if (!defined("ILIAS_LOG_FILE")) {
+            define("ILIAS_LOG_FILE", "/var/log/ilias.log");
+        }
+    }
+
+    public function testRBACComponentAdapter(): void
+    {
+        global $DIC;
+        $DIC['ilAccess'] = $this->createMock(\ilAccess::class);
+        $DIC['ilAccess']
+            ->expects($this->once())
+            ->method('checkAccess');
+        $DIC['ilAccess']
+            ->expects($this->once())
+            ->method('checkAccessOfUser');
+
+        $rbac = new RBACAccessLegacyInitialisationAdapter();
+        $rbac->checkAccess('write', 765);
+        $rbac->checkAccessOfUser(6, 'read', 765);
     }
 }

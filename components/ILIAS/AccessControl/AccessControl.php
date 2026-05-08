@@ -42,5 +42,13 @@ class AccessControl implements Component\Component
             );
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\ComponentJS($this, "ilPermSelect.js");
+
+        $define[] = \ILIAS\AccessControl\RBACAccess::class;
+
+        $provide[\ILIAS\AccessControl\RBACAccess::class] = static fn() =>
+            $internal[\ILIAS\AccessControl\RBACAccess::class];
+
+        $internal[\ILIAS\AccessControl\RBACAccess::class] = static fn() =>
+            new \ILIAS\AccessControl\RBACAccessLegacyInitialisationAdapter();
     }
 }
