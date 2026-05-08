@@ -52,6 +52,6 @@ function reduce_with()
     );
 
     return $r->render([
-        $f->legacy()->content('<pre>' . print_r(json_encode($array, JSON_PRETTY_PRINT), true) . '</pre>')
+        $f->legacy('<pre>' . print_r(json_encode($array, JSON_PRETTY_PRINT), true) . '</pre>')
     ]);
 }
