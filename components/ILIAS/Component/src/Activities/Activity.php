@@ -25,6 +25,7 @@ use ILIAS\UI\Component\Input\Container\Form\FormInput;
 use ILIAS\Data\Result;
 use ILIAS\Data\Text;
 use ILIAS\Data\Description;
+use ILIAS\Data\UserId;
 
 /**
  * An Activity is an action on the domain layer action of a component.
@@ -59,7 +60,7 @@ interface Activity
      *
      * @param mixed $parameters whatever the `FormInput` from `getInputDescription` produces.
      */
-    public function isAllowedToPerform(int $usr_id, mixed $parameters): bool;
+    public function isAllowedToPerform(UserId $usr_id, mixed $parameters): bool;
 
     /**
      * This shall perform the activity. This shall not check if a user is allowed to
@@ -76,5 +77,5 @@ interface Activity
      * is allowed to perform the action as requested and, if so, then attempts to
      * performs it. Wraps the result and possible errors in the `Result` type.
      */
-    public function maybePerformAs(int $usr_id, array $raw_parameters): Result;
+    public function maybePerformAs(UserId $usr_id, array $raw_parameters): Result;
 }

@@ -245,4 +245,9 @@ class Factory
         }
         return $this->description_factory;
     }
+
+    public function userId(int $usr_id): UserId
+    {
+        return new UserId($usr_id);
+    }
 }

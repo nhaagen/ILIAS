@@ -107,4 +107,11 @@ class DataFactoryTest extends TestCase
         $this->expectException(NotOKException::class);
         $this->f->languageTag('d$');
     }
+
+    public function testUserId(): void
+    {
+        $usr_id = $this->f->userId(6);
+        $this->assertInstanceOf(Data\UserId::class, $usr_id);
+        $this->assertEquals(6, $usr_id->toInt());
+    }
 }
