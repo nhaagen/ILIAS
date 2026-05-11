@@ -26,6 +26,7 @@ use ILIAS\Data\Result;
 use ILIAS\Data\Text;
 use ILIAS\Data\Description;
 use ILIAS\Data\UserId;
+use ILIAS\Data\Result\ResultFactory;
 
 /**
  * An Activity is an action on the domain layer action of a component.
@@ -77,5 +78,9 @@ interface Activity
      * is allowed to perform the action as requested and, if so, then attempts to
      * performs it. Wraps the result and possible errors in the `Result` type.
      */
-    public function maybePerformAs(UserId $usr_id, array $raw_parameters): Result;
+    public function maybePerformAs(
+        ResultFactory $result_factory,
+        UserId $usr_id,
+        array $raw_parameters
+    ): Result;
 }

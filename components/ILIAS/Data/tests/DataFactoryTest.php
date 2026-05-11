@@ -114,4 +114,12 @@ class DataFactoryTest extends TestCase
         $this->assertInstanceOf(Data\UserId::class, $usr_id);
         $this->assertEquals(6, $usr_id->toInt());
     }
+
+    public function testResultFactory(): void
+    {
+        $rf = $this->f->result();
+        $this->assertInstanceOf(Data\Result\Factory::class, $rf);
+        $this->assertInstanceOf(Data\Result\Ok::class, $rf->ok('something'));
+        $this->assertInstanceOf(Data\Result\Error::class, $rf->error('something'));
+    }
 }

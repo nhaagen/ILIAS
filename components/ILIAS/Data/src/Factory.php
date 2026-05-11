@@ -32,7 +32,7 @@ use ILIAS\Data\Meta;
  * @author Nils Haagen <nils.haagen@concepts-and-training.de>
  * @author Michael Jansen <mjansen@databay.de>
  */
-class Factory
+class Factory implements Result\ResultFactory
 {
     // TODO: move this to proper dependency_injection
     private ?Color\Factory $colorfactory = null;
@@ -43,24 +43,24 @@ class Factory
     private ?Description\Factory $description_factory = null;
 
     /**
-     * Get an ok result.
-     *
-     * @param mixed $value
+     * @inheritdoc
      */
-    public function ok($value): Result
+    public function ok(mixed $value): Result\Ok
     {
-        return new Result\Ok($value);
+        return $this->result()->ok($value);
     }
 
     /**
-     * Get an error result.
-     *
-     * @param string|\Exception $e
-     * @return Result
+     * @inheritdoc
      */
-    public function error($e): Result
+    public function error(string|\Exception $e): Result\Error
     {
-        return new Result\Error($e);
+        return $this->result()->error($e);
+    }
+
+    public function result(): Result\ResultFactory
+    {
+        return new Result\Factory();
     }
 
     /**

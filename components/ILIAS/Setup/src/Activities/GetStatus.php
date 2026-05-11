@@ -25,6 +25,7 @@ use ILIAS\UI\Component\Input\Control\Form\FormInput;
 use ILIAS\Data\Result;
 use ILIAS\Data\Text;
 use ILIAS\Data\UserId;
+use ILIAS\Data\Result\ResultFactory;
 
 /**
  * This is a stub...
@@ -51,7 +52,10 @@ class GetStatus extends \ILIAS\Component\Activities\Query
     {
     }
 
-    public function maybePerformAs(UserId $usr_id, array $raw_parameters): Result
-    {
+    public function maybePerformAs(
+        ResultFactory $result_factory,
+        UserId $usr_id,
+        array $raw_parameters
+    ): Result {
     }
 }
