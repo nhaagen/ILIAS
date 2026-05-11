@@ -38,5 +38,15 @@ class OrgUnit implements Component\Component
             );
         $contribute[Component\Resource\PublicAsset::class] = fn() =>
             new Component\Resource\ComponentJS($this, "authority.js");
+
+        $define[] = \ILIAS\OrgUnit\PositionAccess::class;
+
+        $provide[\ILIAS\OrgUnit\PositionAccess::class] = static fn() =>
+            $internal[\ILIAS\OrgUnit\PositionAccess::class];
+
+        $internal[\ILIAS\OrgUnit\PositionAccess::class] = static fn() =>
+            new \ILIAS\OrgUnit\PositionAccessLegacyInitialisationAdapter(
+                $pull[\ILIAS\AccessControl\RBACAccess::class]
+            );
     }
 }

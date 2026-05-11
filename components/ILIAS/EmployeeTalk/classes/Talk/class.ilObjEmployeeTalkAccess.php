@@ -50,7 +50,9 @@ final class ilObjEmployeeTalkAccess extends ilObjectAccess
 
         $this->set = ilOrgUnitGlobalSettings::getInstance();
         $this->ua = ilOrgUnitUserAssignmentQueries::getInstance();
-        $this->orgUnitAccess = new ilOrgUnitPositionAccess($this->container->access());
+        $this->orgUnitAccess = new ilOrgUnitPositionAccess(
+            new \ILIAS\AccessControl\RBACAccessLegacyInitialisationAdapter()
+        );
         $this->talkPositionSettings = $this->set->getObjectPositionSettingsByType(ilObjEmployeeTalk::TYPE);
         $this->seriesSettingsRepository = new IliasDBEmployeeTalkSeriesRepository($this->container->user(), $this->container->database());
     }

@@ -18,6 +18,8 @@ declare(strict_types=1);
  *
  *********************************************************************/
 
+use ILIAS\AccessControl\RBACAccessLegacyInitialisationAdapter;
+
 /**
  * Class ilAccessHandler
  * Checks access for ILIAS objects
@@ -83,7 +85,9 @@ class ilAccess implements ilAccessHandler
         $this->obj_tree_cache = [];
         $this->ac_cache = [];
 
-        $this->ilOrgUnitPositionAccess = new ilOrgUnitPositionAccess($this);
+        $this->ilOrgUnitPositionAccess = new ilOrgUnitPositionAccess(
+            new RBACAccessLegacyInitialisationAdapter()
+        );
 
         $this->ac_logger = ilLoggerFactory::getLogger('ac');
     }

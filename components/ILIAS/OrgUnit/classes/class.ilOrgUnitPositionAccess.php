@@ -17,6 +17,8 @@
  ********************************************************************
  */
 
+use ILIAS\AccessControl\RBACAccess;
+
 /**
  * Class ilOrgUnitPositionAccess
  * @author Fabian Schmid <fs@studer-raimann.ch>
@@ -25,17 +27,16 @@ class ilOrgUnitPositionAccess implements ilOrgUnitPositionAccessHandler, ilOrgUn
 {
     protected static array $ref_id_obj_type_map = array();
     private \ilOrgUnitGlobalSettings $set;
-    private ilAccess $access;
     private ilObjUser $user;
     protected \ilOrgUnitUserAssignmentDBRepository $assignmentRepo;
     protected \ilOrgUnitOperationDBRepository $operationRepo;
     protected \ilOrgUnitPermissionDBRepository $permissionRepo;
 
-    public function __construct(ilAccess $access)
-    {
+    public function __construct(
+        private RBACAccess $access
+    ) {
         global $DIC;
         $this->set = ilOrgUnitGlobalSettings::getInstance();
-        $this->access = $access;
         $this->user = $DIC->user();
 
         $dic = \ilOrgUnitLocalDIC::dic();
@@ -226,7 +227,7 @@ class ilOrgUnitPositionAccess implements ilOrgUnitPositionAccessHandler, ilOrgUn
     public function checkRbacOrPositionPermissionAccess(string $rbac_perm, string $pos_perm, int $ref_id): bool
     {
         // If RBAC allows, just return true
-        if ($this->access->checkAccess($rbac_perm, '', $ref_id)) {
+        if ($this->access->checkAccess($rbac_perm, $ref_id)) {
             return true;
         }
 
@@ -247,7 +248,7 @@ class ilOrgUnitPositionAccess implements ilOrgUnitPositionAccessHandler, ilOrgUn
         global $DIC;
 
         // If RBAC allows, just return true
-        if ($this->access->checkAccess($rbac_perm, '', $ref_id)) {
+        if ($this->access->checkAccess($rbac_perm, $ref_id)) {
             return $user_ids;
         }
 
@@ -257,7 +258,7 @@ class ilOrgUnitPositionAccess implements ilOrgUnitPositionAccessHandler, ilOrgUn
 
     public function hasUserRBACorAnyPositionAccess(string $rbac_perm, int $ref_id): bool
     {
-        if ($this->access->checkAccess($rbac_perm, '', $ref_id)) {
+        if ($this->access->checkAccess($rbac_perm, $ref_id)) {
             return true;
         }
 

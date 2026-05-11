@@ -42,7 +42,9 @@ class ilStudyProgrammeDIC
                 $DIC['ilAccess'],
                 ilOrgUnitGlobalSettings::getInstance(),
                 $DIC['ilObjDataCache'],
-                new ilOrgUnitPositionAccess($DIC['ilAccess']),
+                new ilOrgUnitPositionAccess(
+                    new \ILIAS\AccessControl\RBACAccessLegacyInitialisationAdapter()
+                ),
                 (int) $prg->getRefid()
             );
         };
@@ -335,7 +337,9 @@ class ilStudyProgrammeDIC
                 $DIC['ilAccess'],
                 ilOrgUnitGlobalSettings::getInstance(),
                 $DIC['ilObjDataCache'],
-                new ilOrgUnitPositionAccess($DIC['ilAccess']),
+                new ilOrgUnitPositionAccess(
+                    new \ILIAS\AccessControl\RBACAccessLegacyInitialisationAdapter()
+                ),
                 -1
             );
         };
