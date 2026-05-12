@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace ILIAS\Component\Activities;
 
 use ILIAS\UI\Component\Input\Container\Form\FormInput;
+use ILIAS\UI\Component\Input\Factory as InputFactory;
+use ILIAS\UI\Component\Input\Field\Factory as FieldFactory;
 
 /**
  * An Activity that refers to a certain object in the system. This also is a
@@ -38,7 +40,7 @@ interface ObjectActivity extends Activity
      * For an ObjectActivity, this needs to return an input with one field named
      * "id" that can accept a string value.
      */
-    public function getInputDescription(): FormInput;
+    public function getInputDescription(FieldFactory $f): FormInput;
 
     /**
      * Works just like `getInputDescription` but checks if that description
@@ -46,7 +48,7 @@ interface ObjectActivity extends Activity
      *
      * @throws \LogicException if there is no "id" field in the Input.
      */
-    public function getCheckedInputDescription(): FormInput;
+    public function getCheckedInputDescription(FieldFactory $f): FormInput;
 
     /**
      * To allow consumers to build an understanding of internal object structure of
